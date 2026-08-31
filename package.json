@@ -1,0 +1,15 @@
+{
+  "name": "vestige-vapes-checkout",
+  "version": "22.0.0",
+  "private": true,
+  "engines": {
+    "node": "20.x"
+  },
+  "scripts": {
+    "build": "node scripts/verify-build.js",
+    "verify": "node scripts/verify-build.js"
+  },
+  "dependencies": {
+    "@netlify/blobs": "10.7.13"
+  }
+}
