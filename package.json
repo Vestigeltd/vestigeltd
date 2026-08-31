@@ -1,9 +1,0 @@
-{
-  "name": "vestige-vapes-checkout",
-  "version": "19.0.0",
-  "private": true,
-  "engines": { "node": ">=20" },
-  "dependencies": {
-    "@netlify/blobs": "10.7.13"
-  }
-}
