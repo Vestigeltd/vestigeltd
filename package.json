@@ -3,7 +3,7 @@
   "version": "22.0.0",
   "private": true,
   "engines": {
-    "node": "20.x"
+    "node": "22.x"
   },
   "scripts": {
     "build": "node scripts/verify-build.js",
