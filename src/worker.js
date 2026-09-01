@@ -1,0 +1,64 @@
+import zohoModule from './zoho-integration.cjs';
+import cleanupModule from './cleanup-expired-checkouts.cjs';
+
+const { handler: zohoHandler, bindCloudflareRuntime: bindZohoRuntime } = zohoModule;
+const { handler: cleanupHandler, bindCloudflareRuntime: bindCleanupRuntime } = cleanupModule;
+
+const SECURITY_HEADERS = {
+  'X-Content-Type-Options': 'nosniff',
+  'Referrer-Policy': 'strict-origin-when-cross-origin',
+  'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=()',
+  'X-Frame-Options': 'DENY',
+  'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+  'Content-Security-Policy': "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; media-src 'self'; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests",
+};
+
+function headersObject(headers) {
+  const out = {};
+  for (const [k, v] of headers.entries()) out[k] = v;
+  return out;
+}
+
+async function toNetlifyEvent(request) {
+  const url = new URL(request.url);
+  return {
+    path: url.pathname,
+    rawUrl: request.url,
+    httpMethod: request.method,
+    headers: headersObject(request.headers),
+    queryStringParameters: Object.fromEntries(url.searchParams.entries()),
+    body: ['GET', 'HEAD'].includes(request.method) ? null : await request.text(),
+    isBase64Encoded: false,
+  };
+}
+
+function fromLambdaResult(result) {
+  const headers = new Headers(result?.headers || {});
+  return new Response(result?.body ?? '', { status: Number(result?.statusCode || 200), headers });
+}
+
+async function apiResponse(request, env) {
+  bindZohoRuntime(env);
+  const event = await toNetlifyEvent(request);
+  return fromLambdaResult(await zohoHandler(event));
+}
+
+function withSecurityHeaders(response) {
+  const headers = new Headers(response.headers);
+  for (const [name, value] of Object.entries(SECURITY_HEADERS)) headers.set(name, value);
+  return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
+}
+
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+    if (url.pathname === '/api/zoho') return apiResponse(request, env);
+    if (!env.ASSETS) return new Response('Static asset binding is missing.', { status: 503 });
+    return withSecurityHeaders(await env.ASSETS.fetch(request));
+  },
+
+  async scheduled(_controller, env, ctx) {
+    bindCleanupRuntime(env);
+    ctx.waitUntil(cleanupHandler());
+  },
+};

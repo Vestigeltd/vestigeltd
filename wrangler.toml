@@ -1,0 +1,17 @@
+name = "vestigeltd"
+main = "src/worker.js"
+compatibility_date = "2026-08-31"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+
+[[d1_databases]]
+binding = "CHECKOUT_DB"
+database_name = "vestige-checkout"
+database_id = "da38e52e-adc9-407a-8cf9-6f4b59821f4b"
+migrations_dir = "migrations"
+
+[triggers]
+crons = ["*/15 * * * *"]

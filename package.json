@@ -1,15 +1,23 @@
 {
-  "name": "vestige-vapes-checkout",
-  "version": "22.0.0",
+  "name": "vestige-vapes-cloudflare-checkout",
+  "version": "23.0.0",
   "private": true,
   "engines": {
-    "node": "20.x"
+    "node": ">=20"
   },
   "scripts": {
-    "build": "node scripts/verify-build.js",
-    "verify": "node scripts/verify-build.js"
+    "build": "node scripts/verify-cloudflare-build.js",
+    "verify": "node scripts/verify-cloudflare-build.js",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:migrate:local": "wrangler d1 migrations apply vestige-checkout --local",
+    "db:migrate:remote": "wrangler d1 migrations apply vestige-checkout --remote"
   },
-  "dependencies": {
-    "@netlify/blobs": "10.7.13"
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  },
+  "allowScripts": {
+    "esbuild@0.28.1": true,
+    "workerd@1.20260828.1": true
   }
 }
