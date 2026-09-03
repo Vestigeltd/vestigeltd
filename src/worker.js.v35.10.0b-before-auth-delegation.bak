@@ -1,0 +1,291 @@
+import zohoModule from './zoho-integration.cjs';
+import cleanupModule from './cleanup-expired-checkouts.cjs';
+
+const { handler: zohoHandler, bindCloudflareRuntime: bindZohoRuntime } = zohoModule;
+const { handler: cleanupHandler, bindCloudflareRuntime: bindCleanupRuntime } = cleanupModule;
+
+const SECURITY_HEADERS = {
+  'X-Content-Type-Options': 'nosniff',
+  'Referrer-Policy': 'strict-origin-when-cross-origin',
+  'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=()',
+  'X-Frame-Options': 'DENY',
+  'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+  'Content-Security-Policy':
+    "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; media-src 'self'; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests",
+};
+
+function headersObject(headers) {
+  const out = {};
+
+  for (const [key, value] of headers.entries()) {
+    out[key] = value;
+  }
+
+  return out;
+}
+
+async function toNetlifyEvent(request) {
+  const url = new URL(request.url);
+
+  return {
+    path: url.pathname,
+    rawUrl: request.url,
+    httpMethod: request.method,
+    headers: headersObject(request.headers),
+    queryStringParameters: Object.fromEntries(url.searchParams.entries()),
+    body: ['GET', 'HEAD'].includes(request.method)
+      ? null
+      : await request.text(),
+    isBase64Encoded: false,
+  };
+}
+
+function fromLambdaResult(result) {
+  const headers = new Headers(result?.headers || {});
+
+  return new Response(result?.body ?? '', {
+    status: Number(result?.statusCode || 200),
+    headers,
+  });
+}
+
+async function apiResponse(request, env) {
+  bindZohoRuntime(env);
+
+  const event = await toNetlifyEvent(request);
+
+  return fromLambdaResult(
+    await zohoHandler(event)
+  );
+}
+
+function cachePolicyForPath(pathname) {
+  const path = String(pathname || '').toLowerCase();
+
+  if (
+    path === '/api/zoho' ||
+    path === '/owner' ||
+    path === '/owner.html' ||
+    path === '/owner.js' ||
+    path === '/owner.css' ||
+    path === '/order-status' ||
+    path === '/order-status.html'
+  ) {
+    return 'no-store';
+  }
+
+  if (path === '/robots.txt' || path === '/sitemap.xml') {
+    return 'public, max-age=300, s-maxage=3600, must-revalidate';
+  }
+
+  if (
+    path === '/' ||
+    path.endsWith('.html') ||
+    (!path.includes('.') && path !== '')
+  ) {
+    return 'public, max-age=300, s-maxage=1800, must-revalidate';
+  }
+
+  if (path.endsWith('.css') || path.endsWith('.js')) {
+    return 'public, max-age=3600, s-maxage=86400, must-revalidate';
+  }
+
+  if (/\.(png|jpe?g|webp|gif|svg|ico|mp4|webm|woff2?|ttf|otf)$/.test(path)) {
+    return 'public, max-age=86400, s-maxage=604800';
+  }
+
+  return 'public, max-age=300, s-maxage=3600, must-revalidate';
+}
+
+function withSecurityHeaders(response, pathname = '') {
+  const headers = new Headers(response.headers);
+
+  for (const [name, value] of Object.entries(SECURITY_HEADERS)) {
+    headers.set(name, value);
+  }
+
+  headers.set('Cache-Control', cachePolicyForPath(pathname));
+
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
+}
+
+
+function canonicalRedirectResponse(request) {
+  const url = new URL(request.url);
+  let changed = false;
+
+  // Production hostname canonicalisation only.
+  // Preview workers.dev URLs remain untouched for safe testing.
+  if (url.hostname.toLowerCase() === 'www.vestigeltd.co.za') {
+    url.hostname = 'vestigeltd.co.za';
+    changed = true;
+  }
+
+  // Public page canonical paths.
+  if (url.pathname === '/index.html') {
+    url.pathname = '/';
+    changed = true;
+  } else if (url.pathname === '/contact.html') {
+    url.pathname = '/contact';
+    changed = true;
+  }
+
+  if (!changed) return null;
+
+  return new Response(null, {
+    status: 301,
+    headers: {
+      Location: url.toString(),
+      'Cache-Control': 'public, max-age=3600, s-maxage=86400'
+    }
+  });
+}
+
+
+/* VESTIGE_CONVERSION_ANALYTICS_V35_10_0
+   First-party, no-PII conversion analytics stored in existing D1 kv_store. */
+const VESTIGE_ANALYTICS_NAMESPACE = 'vestige-analytics';
+const VESTIGE_ANALYTICS_EVENTS = new Set([
+  'page_view','shop_view','product_selected','basket_created',
+  'checkout_started','payment_claimed','payment_confirmed'
+]);
+
+function analyticsJson(data,status=200){
+  return new Response(JSON.stringify(data),{
+    status,
+    headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'}
+  });
+}
+function cleanAnalyticsText(v,max=80){
+  return String(v==null?'':v).trim().slice(0,max);
+}
+function cleanAnalyticsNumber(v){
+  const n=Number(v);
+  return Number.isFinite(n)&&n>=0?Math.round(n*100)/100:null;
+}
+async function analyticsWrite(env,payload){
+  if(!env.CHECKOUT_DB) throw new Error('Analytics database unavailable.');
+  const event=cleanAnalyticsText(payload&&payload.event,40);
+  if(!VESTIGE_ANALYTICS_EVENTS.has(event)) return analyticsJson({success:false,message:'Unsupported event.'},400);
+  const sessionId=cleanAnalyticsText(payload&&payload.sessionId,64);
+  if(!/^[A-Za-z0-9_-]{8,64}$/.test(sessionId)) return analyticsJson({success:false,message:'Invalid analytics session.'},400);
+
+  const now=Date.now();
+  const id=now.toString(36)+'-'+crypto.randomUUID();
+  const record={
+    event,
+    sessionId,
+    at:now,
+    path:cleanAnalyticsText(payload&&payload.path,160),
+    flavour:cleanAnalyticsText(payload&&payload.flavour,60),
+    quantity:cleanAnalyticsNumber(payload&&payload.quantity),
+    basketItems:cleanAnalyticsNumber(payload&&payload.basketItems),
+    amount:cleanAnalyticsNumber(payload&&payload.amount)
+  };
+  const valueJson=JSON.stringify(record);
+  await env.CHECKOUT_DB.prepare(
+    'INSERT INTO kv_store (namespace,key,value_json,etag,updated_at) VALUES (?1,?2,?3,?4,?5)'
+  ).bind(VESTIGE_ANALYTICS_NAMESPACE,id,valueJson,crypto.randomUUID(),now).run();
+  return analyticsJson({success:true});
+}
+async function analyticsSummary(env,days=30){
+  if(!env.CHECKOUT_DB) throw new Error('Analytics database unavailable.');
+  const safeDays=Math.min(365,Math.max(1,Number(days)||30));
+  const cutoff=Date.now()-(safeDays*86400000);
+  const result=await env.CHECKOUT_DB.prepare(
+    'SELECT value_json FROM kv_store WHERE namespace=?1 AND updated_at>=?2 ORDER BY updated_at DESC LIMIT 10000'
+  ).bind(VESTIGE_ANALYTICS_NAMESPACE,cutoff).all();
+  const rows=Array.isArray(result&&result.results)?result.results:[];
+  const counts={};
+  const sessions=new Set();
+  let confirmedRevenue=0;
+  let confirmedOrders=0;
+  const flavour={};
+  for(const row of rows){
+    let r; try{r=JSON.parse(row.value_json||'{}');}catch(_){continue;}
+    if(!VESTIGE_ANALYTICS_EVENTS.has(r.event)) continue;
+    counts[r.event]=(counts[r.event]||0)+1;
+    if(r.sessionId)sessions.add(r.sessionId);
+    if(r.event==='payment_confirmed'){
+      confirmedOrders++;
+      if(Number.isFinite(Number(r.amount))) confirmedRevenue+=Number(r.amount);
+    }
+    if(r.event==='product_selected'&&r.flavour){
+      flavour[r.flavour]=(flavour[r.flavour]||0)+1;
+    }
+  }
+  const starts=counts.checkout_started||0;
+  const claims=counts.payment_claimed||0;
+  const confirmed=counts.payment_confirmed||0;
+  const baskets=counts.basket_created||0;
+  const conversion=starts?Math.round((confirmed/starts)*1000)/10:0;
+  const claimRate=starts?Math.round((claims/starts)*1000)/10:0;
+  return {
+    success:true,days:safeDays,events:counts,uniqueSessions:sessions.size,
+    checkoutStarts:starts,baskets,paymentClaims:claims,confirmedOrders:confirmed,
+    confirmedRevenue:Math.round(confirmedRevenue*100)/100,
+    averageOrderValue:confirmedOrders?Math.round((confirmedRevenue/confirmedOrders)*100)/100:0,
+    checkoutConversionPercent:conversion,paymentClaimPercent:claimRate,
+    flavourSelections:Object.entries(flavour).sort((a,b)=>b[1]-a[1]).map(([name,count])=>({name,count}))
+  };
+}
+async function handleVestigeAnalytics(request,env){
+  if(request.method!=='POST') return analyticsJson({success:false,message:'Method not allowed.'},405);
+  let body={}; try{body=await request.json();}catch(_){return analyticsJson({success:false,message:'Invalid JSON.'},400);}
+  if(body&&body.action==='admin_summary'){
+    const expected=String(env.VESTIGE_PAYMENT_ADMIN_KEY||'');
+    const supplied=String(request.headers.get('X-Vestige-Payment-Admin-Key')||'');
+    if(!expected||!supplied||supplied!==expected) return analyticsJson({success:false,message:'Unauthorized.'},401);
+    return analyticsJson(await analyticsSummary(env,body.days));
+  }
+  return analyticsWrite(env,body);
+}
+
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+
+    const canonicalRedirect = canonicalRedirectResponse(request);
+    if (canonicalRedirect) {
+      return withSecurityHeaders(canonicalRedirect, url.pathname);
+    }
+
+    if (url.pathname === '/api/analytics') {
+      return withSecurityHeaders(await handleVestigeAnalytics(request, env), url.pathname);
+    }
+
+    if ((url.pathname === '/api/zoho' || url.pathname === '/api/analytics')) {
+      return withSecurityHeaders(
+        await apiResponse(request, env),
+        url.pathname
+      );
+    }
+
+
+    if (!env.ASSETS) {
+      return new Response(
+        'Static asset binding is missing.',
+        {
+          status: 503,
+        }
+      );
+    }
+
+    return withSecurityHeaders(
+      await env.ASSETS.fetch(request),
+      url.pathname
+    );
+  },
+
+  async scheduled(_controller, env, ctx) {
+    bindCleanupRuntime(env);
+
+    ctx.waitUntil(
+      cleanupHandler()
+    );
+  },
+};
