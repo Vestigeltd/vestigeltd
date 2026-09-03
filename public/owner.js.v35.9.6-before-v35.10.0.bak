@@ -1,0 +1,551 @@
+
+(function(){
+'use strict';
+
+var API_URL='/api/zoho';
+var keyInput=document.getElementById('adminKey');
+var rememberTab=document.getElementById('rememberTab');
+var unlockButton=document.getElementById('unlockConsole');
+var lockButton=document.getElementById('lockConsole');
+var loginPanel=document.getElementById('loginPanel');
+var consolePanel=document.getElementById('consolePanel');
+var loginMessage=document.getElementById('loginMessage');
+var securityStatus=document.getElementById('securityStatus');
+var operationMessage=document.getElementById('operationMessage');
+var refInput=document.getElementById('paymentReference');
+var orderPanel=document.getElementById('orderPanel');
+var currentOrder=null;
+var adminKey='';
+var recentOrdersCache=[];
+var activeOrderFilter='all';
+var autoRefreshTimer=null;
+var auditEventsCache=[];
+var activeAuditFilter='all';
+var exceptionCache=[];
+
+function esc(value){
+  return String(value==null?'':value).replace(/[&<>"']/g,function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+function money(value){return 'R'+Number(value||0).toFixed(2);}
+function fmtDateTime(value){
+  var n=Number(value||0);
+  if(!n)return '—';
+  var d=new Date(n);
+  return isNaN(d.getTime())?'—':d.toLocaleString();
+}
+function stateLabel(value){
+  return String(value||'unknown').replace(/_/g,' ');
+}
+
+function orderGroup(state){
+  state=String(state||'');
+  if(state==='confirmed')return 'confirmed';
+  if(state==='pending_payment'||state==='confirming_payment'||state==='cancelling_customer'||state==='cancelling_unpaid_admin')return 'pending';
+  if(state==='cancelled_unpaid'||state==='cancelled_customer'||state==='expired')return 'closed';
+  return 'other';
+}
+function expiryText(order){
+  var state=String(order&&order.state||'');
+  if(state!=='pending_payment')return {text:'—',cls:'closed'};
+  var end=Number(order.paymentExpiresAt||0);
+  if(!end)return {text:'Unknown',cls:'closed'};
+  var ms=end-Date.now();
+  if(ms<=0)return {text:'Expired',cls:'soon'};
+  var mins=Math.ceil(ms/60000);
+  return {text:mins+' min',cls:mins<=5?'soon':''};
+}
+function updateDashboardCounts(orders){
+  var pending=0,confirmed=0,closed=0,paymentAction=0;
+  orders.forEach(function(o){
+    var g=orderGroup(o.state);
+    if(g==='pending')pending++;
+    else if(g==='confirmed')confirmed++;
+    else if(g==='closed')closed++;
+    if(o.state==='pending_payment'&&Number(o.paymentClaimedAt||0)>0)paymentAction++;
+  });
+  document.getElementById('paymentActionCount').textContent=String(paymentAction);
+  document.getElementById('pendingCount').textContent=String(pending);
+  document.getElementById('confirmedCount').textContent=String(confirmed);
+  document.getElementById('closedCount').textContent=String(closed);
+  document.getElementById('recentCount').textContent=String(orders.length);
+}
+function updateLastRefresh(){
+  var el=document.getElementById('lastRefresh');
+  if(el)el.textContent='Last refreshed '+new Date().toLocaleTimeString();
+}
+async function copyText(value,button){
+  try{
+    await navigator.clipboard.writeText(String(value||''));
+    var old=button.textContent;
+    button.textContent='Copied';
+    setTimeout(function(){button.textContent=old;},1000);
+  }catch(_){
+    window.prompt('Copy value:',String(value||''));
+  }
+}
+function scheduleAutoRefresh(){
+  if(autoRefreshTimer){clearInterval(autoRefreshTimer);autoRefreshTimer=null;}
+  var box=document.getElementById('autoRefresh');
+  if(box&&box.checked){
+    autoRefreshTimer=setInterval(function(){
+      if(!consolePanel.hidden&&adminKey)refreshDashboard(true);
+    },60000);
+  }
+}
+
+function setMessage(el,text,type){
+  if(!el)return;
+  el.textContent=text||'';
+  el.className='owner-message'+(type?' '+type:'');
+}
+function getStoredKey(){
+  try{return sessionStorage.getItem('vestigeOwnerKey')||'';}catch(_){return '';}
+}
+function saveKey(key){
+  try{
+    if(rememberTab&&rememberTab.checked)sessionStorage.setItem('vestigeOwnerKey',key);
+    else sessionStorage.removeItem('vestigeOwnerKey');
+  }catch(_){}
+}
+function clearKey(){
+  adminKey='';
+  try{sessionStorage.removeItem('vestigeOwnerKey');}catch(_){}
+}
+async function api(payload){
+  if(!adminKey)throw new Error('Owner console is locked.');
+  var response=await fetch(API_URL,{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'X-Vestige-Payment-Admin-Key':adminKey
+    },
+    credentials:'same-origin',
+    cache:'no-store',
+    body:JSON.stringify(payload)
+  });
+  var ct=(response.headers.get('content-type')||'').toLowerCase();
+  var data=ct.indexOf('application/json')!==-1?await response.json():null;
+  if(!response.ok){
+    var error=new Error((data&&data.message)||('Request failed ('+response.status+').'));
+    error.status=response.status;
+    throw error;
+  }
+  return data||{};
+}
+function lockConsole(){
+  if(autoRefreshTimer){clearInterval(autoRefreshTimer);autoRefreshTimer=null;}
+  clearKey();
+  currentOrder=null;
+  if(keyInput)keyInput.value='';
+  consolePanel.hidden=true;
+  loginPanel.hidden=false;
+  lockButton.hidden=true;
+  securityStatus.textContent='Locked';
+  securityStatus.classList.remove('unlocked');
+  orderPanel.hidden=true;
+  setMessage(operationMessage,'');
+}
+async function unlock(){
+  var candidate=String(keyInput&&keyInput.value||'').trim();
+  if(!candidate){
+    setMessage(loginMessage,'Enter the payment-admin key.','error');
+    return;
+  }
+  unlockButton.disabled=true;
+  setMessage(loginMessage,'Verifying secure owner access…');
+  adminKey=candidate;
+  try{
+    var health=await api({action:'admin_bank_confirmation_health'});
+    if(!health.ready)throw new Error('Owner API is not ready.');
+    saveKey(candidate);
+    loginPanel.hidden=true;
+    consolePanel.hidden=false;
+    lockButton.hidden=false;
+    securityStatus.textContent='Unlocked';
+    securityStatus.classList.add('unlocked');
+    document.getElementById('healthState').textContent='Ready';
+    document.getElementById('healthDetail').textContent=(health.ownerNotificationsConfigured?'Email alerts ready · ':'Email alerts need setup · ')+(health.zohoBankAccountMapped?'Zoho bank mapping configured':'Admin API connected');
+    setMessage(loginMessage,'');
+    await refreshDashboard();
+    scheduleAutoRefresh();
+  }catch(e){
+    clearKey();
+    setMessage(loginMessage,e.status===401?'Incorrect owner key.':e.message,'error');
+  }finally{
+    unlockButton.disabled=false;
+  }
+}
+async function refreshDashboard(silent){
+  if(!silent)setMessage(operationMessage,'Refreshing owner dashboard…');
+  try{
+    var results=await Promise.all([
+      api({action:'admin_recent_orders',limit:25}),
+      api({action:'admin_stock_dashboard'}),
+      api({action:'admin_recent_audit_events',limit:75}),
+      api({action:'admin_order_exceptions',limit:50})
+    ]);
+    recentOrdersCache=results[0].orders||[];
+    auditEventsCache=results[2].events||[];
+    exceptionCache=results[3].exceptions||[];
+    updateDashboardCounts(recentOrdersCache);
+    renderRecent(recentOrdersCache);
+    renderStock(results[1].stock||{});
+    renderAudit(auditEventsCache);
+    renderExceptions(exceptionCache);
+    var stockRows=Object.values(results[1].stock||{});
+    var urgentStock=stockRows.some(function(item){return item.alertLevel==='critical'||item.alertLevel==='out';});
+    var lowStock=stockRows.some(function(item){return item.alertLevel==='low';});
+    document.getElementById('stockState').textContent=urgentStock?'Attention':(lowStock?'Low':'Live');
+    updateLastRefresh();
+    if(!silent)setMessage(operationMessage,'Dashboard refreshed.','ok');
+  }catch(e){
+    if(e.status===401){lockConsole();setMessage(loginMessage,'Owner session expired. Unlock again.','error');return;}
+    document.getElementById('stockState').textContent='Check';
+    if(!silent)setMessage(operationMessage,e.message,'error');
+  }
+}
+
+
+function renderExceptions(items){
+  var host=document.getElementById('exceptionList');
+  if(!host)return;
+  exceptionCache=items||[];
+  var critical=exceptionCache.filter(function(x){return x.severity==='critical';}).length;
+  var warning=exceptionCache.filter(function(x){return x.severity==='warning';}).length;
+  document.getElementById('criticalExceptionCount').textContent=String(critical);
+  document.getElementById('warningExceptionCount').textContent=String(warning);
+  document.getElementById('totalExceptionCount').textContent=String(exceptionCache.length);
+
+  if(!exceptionCache.length){
+    host.innerHTML='<div class="owner-exception-empty">No actionable exceptions were detected in the recent order set.</div>';
+    return;
+  }
+
+  host.innerHTML=exceptionCache.map(function(item){
+    return '<article class="owner-exception '+esc(item.severity||'warning')+'">'+
+      '<div class="owner-exception-main">'+
+        '<h3>'+esc(item.title||'Order requires attention')+'</h3>'+
+        '<p>'+esc(item.message||'Review this order before taking further action.')+'</p>'+
+        '<div class="owner-exception-meta">'+
+          '<span class="owner-exception-ref">'+esc(item.paymentReference||'—')+'</span>'+
+          '<span>'+esc(stateLabel(item.state))+'</span>'+
+          '<span>'+money(item.amount)+'</span>'+
+          '<span>'+Number(item.totalQuantity||0)+' item(s)</span>'+
+          '<span>Updated '+esc(fmtDateTime(item.updatedAt))+'</span>'+
+        '</div>'+
+      '</div>'+
+      '<div>'+
+        '<span class="owner-exception-severity '+esc(item.severity||'warning')+'">'+esc(item.severity||'warning')+'</span> '+
+        '<button class="owner-filter" type="button" data-open-ref="'+esc(item.paymentReference||'')+'">Open order</button>'+
+      '</div>'+
+    '</article>';
+  }).join('');
+}
+async function refreshExceptions(silent){
+  try{
+    var result=await api({action:'admin_order_exceptions',limit:50});
+    renderExceptions(result.exceptions||[]);
+    if(!silent)setMessage(operationMessage,'Exception scan completed.','ok');
+  }catch(e){
+    if(e.status===401){lockConsole();setMessage(loginMessage,'Owner session expired. Unlock again.','error');return;}
+    if(!silent)setMessage(operationMessage,e.message,'error');
+  }
+}
+
+function auditActionLabel(action){
+  var labels={
+    bank_order_created:'Order created',
+    customer_cancel_order:'Customer cancelled',
+    admin_cancel_unpaid_order:'Owner voided unpaid',
+    admin_confirm_bank_payment:'Payment confirmation'
+  };
+  return labels[action]||String(action||'Activity').replace(/_/g,' ');
+}
+function renderAudit(events){
+  var host=document.getElementById('auditLog');
+  if(!host)return;
+  var filtered=(events||[]).filter(function(e){
+    if(activeAuditFilter==='all')return true;
+    if(activeAuditFilter==='failed')return String(e.outcome||'')==='failed';
+    return String(e.actor||'')===activeAuditFilter;
+  });
+  if(!filtered.length){
+    host.innerHTML='<p class="owner-message">No audit events match this filter.</p>';
+    return;
+  }
+  host.innerHTML='<table class="owner-table"><thead><tr><th>Time</th><th>Actor</th><th>Action</th><th>Ref</th><th>Outcome</th><th>Details</th></tr></thead><tbody>'+
+    filtered.map(function(e){
+      var ref=e.paymentReference||'—';
+      var detail=e.message||'—';
+      return '<tr><td>'+esc(fmtDateTime(e.at))+'</td><td>'+esc(e.actor||'system')+'</td><td>'+esc(auditActionLabel(e.action))+'</td><td><strong>'+esc(ref)+'</strong></td><td><span class="owner-audit-outcome '+esc(e.outcome||'')+'">'+esc(e.outcome||'recorded')+'</span></td><td class="owner-audit-message">'+esc(detail)+'</td></tr>';
+    }).join('')+'</tbody></table>';
+}
+async function refreshAudit(silent){
+  try{
+    var result=await api({action:'admin_recent_audit_events',limit:75});
+    auditEventsCache=result.events||[];
+    renderAudit(auditEventsCache);
+    if(!silent)setMessage(operationMessage,'Activity log refreshed.','ok');
+  }catch(e){
+    if(e.status===401){lockConsole();setMessage(loginMessage,'Owner session expired. Unlock again.','error');return;}
+    if(!silent)setMessage(operationMessage,e.message,'error');
+  }
+}
+
+function renderRecent(orders){
+  var host=document.getElementById('recentOrders');
+  var filtered=(orders||[]).filter(function(o){
+    return activeOrderFilter==='all'||orderGroup(o.state)===activeOrderFilter;
+  });
+  if(!filtered.length){
+    host.innerHTML='<p class="owner-message">No orders match this filter.</p>';
+    return;
+  }
+  host.innerHTML='<table class="owner-table"><thead><tr><th>Ref</th><th>State</th><th>Total</th><th>Qty</th><th>Expires</th><th>Updated</th><th></th></tr></thead><tbody>'+
+    filtered.map(function(o){
+      var ex=expiryText(o);
+      var rowClass=orderGroup(o.state)==='pending'?'owner-row-pending':(orderGroup(o.state)==='confirmed'?'owner-row-confirmed':'');
+      return '<tr class="'+rowClass+(Number(o.paymentClaimedAt||0)>0&&o.state==='pending_payment'?' owner-row-payment-claimed':'')+'"><td><strong>'+esc(o.paymentReference)+'</strong> <button class="owner-copy" type="button" data-copy-ref="'+esc(o.paymentReference)+'" aria-label="Copy '+esc(o.paymentReference)+'">Copy</button></td><td>'+esc(stateLabel(o.state))+(Number(o.paymentClaimedAt||0)>0&&o.state==='pending_payment'?'<br><span class="owner-payment-claimed-badge">CUSTOMER SAYS PAID</span>':'')+'</td><td>'+money(o.amount)+'</td><td>'+Number(o.totalQuantity||0)+'</td><td><span class="owner-expiry '+esc(ex.cls)+'">'+esc(ex.text)+'</span></td><td>'+esc(fmtDateTime(o.updatedAt))+'</td><td><button type="button" data-open-ref="'+esc(o.paymentReference)+'">Open</button></td></tr>';
+    }).join('')+'</tbody></table>';
+}
+function renderStock(stock){
+  var host=document.getElementById('stockTable');
+  var alerts=document.getElementById('stockAlerts');
+  var rows=Object.keys(stock).map(function(name){return [name,stock[name]||{}];});
+
+  if(!rows.length){
+    host.innerHTML='<p class="owner-message">No stock data returned.</p>';
+    if(alerts)alerts.innerHTML='';
+    return;
+  }
+
+  var attention=rows.filter(function(row){
+    return ['low','critical','out'].indexOf(String(row[1].alertLevel||''))!==-1;
+  });
+
+  if(alerts){
+    if(!attention.length){
+      alerts.innerHTML='<div class="owner-exception-empty">All flavours are above the low-stock attention threshold.</div>';
+    }else{
+      alerts.innerHTML=attention.map(function(row){
+        var name=row[0],item=row[1];
+        var level=String(item.alertLevel||'low');
+        var message=level==='out'
+          ? 'No immediately sellable units remain.'
+          : (level==='critical'
+              ? 'Only '+Number(item.sellableStock||0)+' sellable unit(s) remain.'
+              : 'Stock is running low at '+Number(item.sellableStock||0)+' sellable unit(s).');
+        return '<div class="owner-stock-alert '+esc(level)+'"><strong>'+esc(name)+':</strong> '+esc(message)+
+          (Number(item.websiteReserved||0)>0?' '+Number(item.websiteReserved||0)+' unit(s) are currently held by pending website order(s).':'')+
+          '</div>';
+      }).join('');
+    }
+  }
+
+  host.innerHTML='<table class="owner-table"><thead><tr><th>Flavour</th><th>Zoho stock</th><th>Reserved</th><th>Sellable now</th><th>Status</th></tr></thead><tbody>'+
+    rows.map(function(row){
+      var name=row[0],item=row[1]||{};
+      var level=String(item.alertLevel||'healthy');
+      var status=level==='healthy'?'Healthy':(level==='low'?'Low stock':(level==='critical'?'Critical':'Out of stock'));
+      return '<tr class="owner-stock-row '+esc(level)+'">'+
+        '<td>'+esc(name)+'</td>'+
+        '<td class="owner-stock-value">'+Number(item.zohoStock||0)+'</td>'+
+        '<td class="owner-stock-reserved">'+Number(item.websiteReserved||0)+'</td>'+
+        '<td class="owner-stock-value">'+Number(item.sellableStock||0)+'</td>'+
+        '<td class="'+(level==='healthy'?'owner-ok':'owner-warn')+'">'+esc(status)+'</td>'+
+      '</tr>';
+    }).join('')+'</tbody></table>';
+}
+function renderOrder(order){
+  currentOrder=order;
+  orderPanel.hidden=false;
+  document.getElementById('orderTitle').textContent=order.paymentReference||'Order';
+  var state=document.getElementById('orderState');
+  state.textContent=stateLabel(order.state);
+  state.className='owner-state-pill '+String(order.state||'');
+  document.getElementById('orderAmount').textContent=money(order.amount);
+  document.getElementById('orderQuantity').textContent=String(order.totalQuantity||0);
+  document.getElementById('orderCustomer').textContent=(order.customer&&order.customer.name)||'—';
+  document.getElementById('orderLocker').textContent=order.deliveryMethod==='collection'?'Collection from Vestige Ltd':('Courier — '+(order.courierLocker||'locker not recorded'));
+  document.getElementById('invoiceId').textContent=order.invoiceId||'Not created';
+  document.getElementById('paymentId').textContent=order.paymentId||'Not created';
+  document.getElementById('storedPaymentDate').textContent=order.paymentDate||'—';
+  document.getElementById('confirmAmount').value=Number(order.amount||0).toFixed(2);
+
+  var table=document.getElementById('orderItems');
+  var reservations=order.reservations||[];
+  table.innerHTML='<table class="owner-table"><thead><tr><th>Flavour</th><th>Qty</th><th>Reservation</th><th>Expires</th></tr></thead><tbody>'+
+    (order.items||[]).map(function(item){
+      var r=reservations.find(function(x){return String(x.itemId)===String(item.itemId);})||{};
+      return '<tr><td>'+esc(item.flavour)+'</td><td>'+Number(item.quantity||0)+'</td><td class="'+(r.reservationActive?'owner-ok':'owner-warn')+'">'+(r.reservationActive?'Active':'Not active')+'</td><td>'+esc(fmtDateTime(r.reservationExpiresAt))+'</td></tr>';
+    }).join('')+'</tbody></table>';
+
+  document.getElementById('confirmPayment').disabled=!order.confirmable;
+  document.getElementById('cancelUnpaid').disabled=!order.cancellable;
+}
+async function lookup(refOverride){
+  var ref=String(refOverride||refInput.value||'').trim().toUpperCase();
+  if(!/^V\d{4,8}$/.test(ref)){
+    setMessage(operationMessage,'Enter a valid V000x payment reference.','error');
+    return;
+  }
+  refInput.value=ref;
+  setMessage(operationMessage,'Loading '+ref+'…');
+  try{
+    var result=await api({action:'admin_order_lookup',paymentReference:ref});
+    renderOrder(result.order);
+    setMessage(operationMessage,ref+' loaded.','ok');
+    orderPanel.scrollIntoView({behavior:'smooth',block:'start'});
+  }catch(e){
+    setMessage(operationMessage,e.message,'error');
+  }
+}
+function todayLocal(){
+  var d=new Date();
+  var y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
+  return y+'-'+m+'-'+day;
+}
+async function confirmPayment(){
+  if(!currentOrder)return;
+  var att=document.getElementById('bankCreditAttestation');
+  var amount=Number(document.getElementById('confirmAmount').value||0);
+  var paymentDate=String(document.getElementById('paymentDate').value||'');
+  if(!att.checked){
+    setMessage(operationMessage,'You must personally verify the cleared bank credit before confirmation.','error');
+    return;
+  }
+  if(Math.abs(amount-Number(currentOrder.amount||0))>0.005){
+    setMessage(operationMessage,'The amount entered must exactly match '+money(currentOrder.amount)+'.','error');
+    return;
+  }
+  if(!paymentDate){
+    setMessage(operationMessage,'Select the bank payment date.','error');
+    return;
+  }
+  var ref=currentOrder.paymentReference;
+  var ok=window.confirm(
+    'FINAL PAYMENT CONFIRMATION\\n\\n'+ref+'\\nExact amount: '+money(amount)+'\\nPayment date: '+paymentDate+
+    '\\n\\nContinue only if this credit is visibly cleared in the bank account. This action creates/recovers the Zoho invoice and customer payment.'
+  );
+  if(!ok)return;
+
+  var btn=document.getElementById('confirmPayment');
+  btn.disabled=true;
+  setMessage(operationMessage,'Confirming '+ref+' and synchronising Zoho…');
+  try{
+    var result=await api({
+      action:'admin_confirm_bank_payment',
+      paymentReference:ref,
+      actualAmount:amount,
+      paymentDate:paymentDate,
+      bankCreditConfirmed:true
+    });
+    setMessage(operationMessage,(result.message||'Payment confirmed and Zoho synchronized.')+(result.invoiceEmailSent?' Customer paid invoice emailed by Zoho.':' WARNING: customer invoice email was not confirmed; review Activity Log.'),'ok');
+    att.checked=false;
+    await lookup(ref);
+    await refreshDashboard();
+  }catch(e){
+    setMessage(operationMessage,e.message,'error');
+    try{
+      operationMessage.scrollIntoView({behavior:'smooth',block:'center'});
+      operationMessage.setAttribute('tabindex','-1');
+      operationMessage.focus({preventScroll:true});
+    }catch(_){}
+    btn.disabled=false;
+  }
+}
+async function sendTestAlert(){
+  var btn=document.getElementById('sendTestAlert');
+  btn.disabled=true;
+  setMessage(operationMessage,'Sending a live owner notification test…');
+  try{
+    var result=await api({action:'admin_notification_test'});
+    setMessage(operationMessage,result.message||'Test owner notification sent.','ok');
+  }catch(e){
+    setMessage(operationMessage,e.message,'error');
+  }finally{
+    btn.disabled=false;
+  }
+}
+async function cancelUnpaid(){
+  if(!currentOrder)return;
+  var ref=currentOrder.paymentReference;
+  var ok=window.confirm(
+    'VOID UNPAID ORDER '+ref+'?\\n\\nUse this only when no bank payment was received. The website reservation will be released immediately.'
+  );
+  if(!ok)return;
+  var typed=window.prompt('Type '+ref+' to confirm the unpaid cancellation:','');
+  if(String(typed||'').trim().toUpperCase()!==ref){
+    setMessage(operationMessage,'Cancellation stopped. Reference confirmation did not match.','error');
+    return;
+  }
+  var btn=document.getElementById('cancelUnpaid');
+  btn.disabled=true;
+  setMessage(operationMessage,'Voiding '+ref+' and releasing stock…');
+  try{
+    var result=await api({action:'admin_cancel_unpaid_bank_order',paymentReference:ref});
+    setMessage(operationMessage,result.message||'Unpaid order cancelled.','ok');
+    await lookup(ref);
+    await refreshDashboard();
+  }catch(e){
+    setMessage(operationMessage,e.message,'error');
+    btn.disabled=false;
+  }
+}
+
+unlockButton.addEventListener('click',unlock);
+keyInput.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();unlock();}});
+lockButton.addEventListener('click',lockConsole);
+document.getElementById('sendTestAlert').addEventListener('click',sendTestAlert);
+document.getElementById('refreshDashboard').addEventListener('click',refreshDashboard);
+document.getElementById('lookupOrder').addEventListener('click',function(){lookup();});
+refInput.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();lookup();}});
+document.getElementById('confirmPayment').addEventListener('click',confirmPayment);
+document.getElementById('cancelUnpaid').addEventListener('click',cancelUnpaid);
+document.getElementById('recentOrders').addEventListener('click',function(e){
+  var button=e.target.closest('[data-open-ref]');
+  if(button)lookup(button.getAttribute('data-open-ref'));
+});
+
+document.getElementById('paymentDate').value=todayLocal();
+
+
+document.querySelectorAll('[data-order-filter]').forEach(function(button){
+  button.addEventListener('click',function(){
+    activeOrderFilter=button.getAttribute('data-order-filter')||'all';
+    document.querySelectorAll('[data-order-filter]').forEach(function(b){b.classList.remove('active');});
+    button.classList.add('active');
+    renderRecent(recentOrdersCache);
+  });
+});
+document.getElementById('autoRefresh').addEventListener('change',scheduleAutoRefresh);
+document.getElementById('recentOrders').addEventListener('click',function(e){
+  var copy=e.target.closest('[data-copy-ref]');
+  if(copy){
+    copyText(copy.getAttribute('data-copy-ref'),copy);
+    return;
+  }
+});
+
+
+document.getElementById('refreshAudit').addEventListener('click',function(){refreshAudit(false);});
+document.querySelectorAll('[data-audit-filter]').forEach(function(button){
+  button.addEventListener('click',function(){
+    activeAuditFilter=button.getAttribute('data-audit-filter')||'all';
+    document.querySelectorAll('[data-audit-filter]').forEach(function(b){b.classList.remove('active');});
+    button.classList.add('active');
+    renderAudit(auditEventsCache);
+  });
+});
+
+document.getElementById('refreshExceptions').addEventListener('click',function(){refreshExceptions(false);});
+
+var stored=getStoredKey();
+if(stored){
+  adminKey=stored;
+  keyInput.value=stored;
+  unlock();
+}
+})();

@@ -265,6 +265,6 @@
 <section class="information" id="information"><div class="container info-grid"><div><p class="eyebrow gold-text">VESTIGE VAPES</p><h2>Product information, clearly presented.</h2><p>Vestige Vapes is the vaping business of Vestige Ltd. The brand presentation uses the supplied Vestige Ltd identity while the website itself remains dedicated exclusively to the vape range.</p></div><div class="info-card"><h3>Connect with Vestige</h3><p>Instagram</p><a class="social" href="https://www.instagram.com/vestigeltdmp/" rel="noopener" target="_blank">@vestigeltdmp</a><a class="btn btn-gold" href="/contact">Contact Vestige</a></div></div></section>
 </main>
 <footer class="footer"><div class="container footer-inner"><div>© 2026 Vestige Ltd · Vestige Vapes</div><div><a href="/contact">Contact</a> · <a href="https://www.instagram.com/vestigeltdmp/" rel="noopener" target="_blank">@vestigeltdmp</a></div></div><div class="footer-warning">Adult nicotine users only. Nicotine is addictive. Check applicable local requirements.</div></footer>
-<script src="script.js?v=35.11.5"></script>
+<script src="script.js?v=35.10.0"></script>
 <!-- V35_11_3_FLAVOUR_LINK_FALLBACKS -->
 </body></html>

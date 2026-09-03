@@ -610,7 +610,7 @@
 })();
 
 
-
+/* V35_11_3_FLAVOUR_PRESELECT superseded by V35_11_3B */
 
 
 /* V35_11_3B_INDIVIDUAL_CARDS_AND_PRESELECT
@@ -810,8 +810,9 @@
 
   function init() {
     wireIndividualFlavourCards();
-  /* v35.11.5: preselection handled by final value-based handoff below */
-// Re-run card discovery after late-rendered content without duplicating listeners.
+    preselectFromLandingPage();
+
+    // Re-run card discovery after late-rendered content without duplicating listeners.
     setTimeout(wireIndividualFlavourCards, 500);
     setTimeout(wireIndividualFlavourCards, 1500);
   }
@@ -820,109 +821,5 @@
     document.addEventListener('DOMContentLoaded', init, {once:true});
   } else {
     init();
-  }
-})();
-
-
-
-
-/* V35_11_5_FINAL_FLAVOUR_PRESELECTION
-   Final flavour-page -> Shop handoff.
-   IMPORTANT: loadAvailability() changes option.textContent to:
-   "Blueberry Mint — 3 in stock"
-   but leaves option.value as "Blueberry Mint".
-   Therefore preselection MUST match option.value, never display text. */
-(function () {
-  const requestedSlug = (new URLSearchParams(window.location.search).get('flavour') || '').trim().toLowerCase();
-  if (!requestedSlug) return;
-
-  const flavourBySlug = {
-    'blueberry-mint': 'Blueberry Mint',
-    'miami-mint': 'Miami Mint',
-    'blue-razz-ice': 'Blue Razz Ice',
-    'strawberry-kiwi-ice': 'Strawberry Kiwi Ice',
-    'watermelon-ice': 'Watermelon Ice'
-  };
-
-  const requestedValue = flavourBySlug[requestedSlug];
-  if (!requestedValue) return;
-
-  function applyRequestedFlavour() {
-    const select = document.getElementById('flavourSelect');
-    if (!select || select.disabled) return false;
-
-    const option = Array.from(select.options || []).find(
-      o => String(o.value || '').trim() === requestedValue
-    );
-
-    // Existing live-stock logic remains authoritative.
-    if (!option || option.disabled) return false;
-
-    const quantity = document.getElementById('quantity');
-    if (quantity) {
-      const blank = Array.from(quantity.options || []).find(o => String(o.value || '') === '');
-      if (blank) quantity.value = '';
-    }
-
-    if (select.value !== requestedValue) {
-      select.value = requestedValue;
-      select.dispatchEvent(new Event('change', { bubbles: true }));
-    }
-
-    select.classList.add('preselected-flavour-control');
-    setTimeout(() => select.classList.remove('preselected-flavour-control'), 1400);
-
-    const target = document.getElementById('buy-now') || select.closest('section') || select;
-    requestAnimationFrame(() => {
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-
-    // Consume the marketing parameter after successful application so later
-    // stock/UI mutations cannot repeatedly re-run the handoff.
-    const cleanUrl = new URL(window.location.href);
-    cleanUrl.searchParams.delete('flavour');
-    history.replaceState(null, '', cleanUrl.pathname + cleanUrl.search + cleanUrl.hash);
-
-    return true;
-  }
-
-  function start() {
-    const select = document.getElementById('flavourSelect');
-    if (!select) {
-      setTimeout(start, 100);
-      return;
-    }
-
-    if (applyRequestedFlavour()) return;
-
-    // loadAvailability() asynchronously enables/disables options and rewrites
-    // their visible labels. Observe those mutations, then apply by VALUE.
-    const observer = new MutationObserver(() => {
-      if (applyRequestedFlavour()) observer.disconnect();
-    });
-
-    observer.observe(select, {
-      attributes: true,
-      childList: true,
-      subtree: true,
-      attributeFilter: ['disabled']
-    });
-
-    // Defensive polling covers browsers where option.disabled mutations are not
-    // consistently surfaced through MutationObserver.
-    let attempts = 0;
-    const timer = setInterval(() => {
-      attempts++;
-      if (applyRequestedFlavour() || attempts >= 60) {
-        clearInterval(timer);
-        observer.disconnect();
-      }
-    }, 150);
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', start, { once: true });
-  } else {
-    start();
   }
 })();

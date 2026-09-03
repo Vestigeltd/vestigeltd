@@ -5,66 +5,18 @@
 <meta charset="utf-8"/>
 <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>ELFBAR BC10000 South Africa | Vestige Vapes</title>
-<meta content="Explore the ELFBAR BC10000 range from Vestige Vapes in South Africa, including technical specifications, available flavours, pricing, delivery and secure ordering." name="description"/>
+<title>Vestige Vapes | ELFBAR BC10000</title>
+<meta content="Vestige Vapes presents ELFBAR BC10000 product information, technical specifications and flavour range. Adult nicotine information only." name="description"/>
 <meta content="index,follow,max-image-preview:large" name="robots"/>
 <meta content="#061321" name="theme-color"/>
-<link href="https://vestigeltd.co.za/" rel="canonical"/>
-<link href="assets/vestige-logo-optimized.png" rel="icon" type="image/png"/>
-<meta property="og:type" content="website"/>
-<meta property="og:site_name" content="Vestige Vapes"/>
-<meta property="og:title" content="ELFBAR BC10000 South Africa | Vestige Vapes"/>
-<meta property="og:description" content="Explore the ELFBAR BC10000 range from Vestige Vapes, including specifications, flavours, pricing, delivery and secure ordering."/>
-<meta property="og:url" content="https://vestigeltd.co.za/"/>
-<meta property="og:image" content="https://vestigeltd.co.za/assets/bc10000-showcase-v3-optimized.jpg"/>
-<meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="ELFBAR BC10000 South Africa | Vestige Vapes"/>
-<meta name="twitter:description" content="Explore the ELFBAR BC10000 range from Vestige Vapes, including specifications, flavours, pricing, delivery and secure ordering."/>
-<meta name="twitter:image" content="https://vestigeltd.co.za/assets/bc10000-showcase-v3-optimized.jpg"/>
-<link href="styles.css?v=35.9.6" rel="stylesheet"/>
-<script type="application/ld+json">
-{
-  "@context":"https://schema.org",
-  "@graph":[
-    {
-      "@type":"Organization",
-      "@id":"https://vestigeltd.co.za/#organization",
-      "name":"Vestige Ltd",
-      "url":"https://vestigeltd.co.za/",
-      "logo":"https://vestigeltd.co.za/assets/vestige-logo-optimized.png",
-      "sameAs":["https://www.instagram.com/vestigeltdmp/"],
-      "contactPoint":{
-        "@type":"ContactPoint",
-        "contactType":"customer support",
-        "email":"orders@vestigeltd.co.za"
-      }
-    },
-    {
-      "@type":"WebSite",
-      "@id":"https://vestigeltd.co.za/#website",
-      "url":"https://vestigeltd.co.za/",
-      "name":"Vestige Vapes",
-      "publisher":{"@id":"https://vestigeltd.co.za/#organization"},
-      "inLanguage":"en-ZA"
-    },
-    {
-      "@type":"WebPage",
-      "@id":"https://vestigeltd.co.za/#webpage",
-      "url":"https://vestigeltd.co.za/",
-      "name":"ELFBAR BC10000 South Africa | Vestige Vapes",
-      "isPartOf":{"@id":"https://vestigeltd.co.za/#website"},
-      "about":{"@id":"https://vestigeltd.co.za/#organization"},
-      "inLanguage":"en-ZA"
-    }
-  ]
-}
-</script>
-<link rel="preload" href="assets/bc10000-showcase-optimized.jpg" as="image" fetchpriority="high"/>
+<link href="https://www.vestigeltdmp.com/" rel="canonical"/>
+<link href="assets/vestige-logo.png" rel="icon" type="image/png"/>
+<link href="styles.css?v=35.7" rel="stylesheet"/>
 </head>
 <body>
 <div aria-labelledby="ageTitle" aria-modal="true" class="age-gate" id="ageGate" role="dialog">
 <div class="age-card">
-<img alt="Vestige Ltd logo" class="age-logo" src="assets/vestige-logo-optimized.png" width="1254" height="1254">
+<img alt="Vestige Ltd logo" class="age-logo" src="assets/vestige-logo.png"/>
 <p class="eyebrow">VESTIGE VAPES</p>
 <h2 id="ageTitle">Adult access only</h2>
 <p>This website contains information about nicotine-containing vaping products. Confirm that you are legally permitted to access this information in your jurisdiction.</p>
@@ -73,10 +25,10 @@
 </div>
 <header class="site-header">
 <div class="container nav-wrap">
-<a aria-label="Vestige Vapes home" class="brand" href="index.html"><img alt="Vestige Ltd logo" class="brand-logo" src="assets/vestige-logo-optimized.png" width="1254" height="1254"><span class="brand-name">VESTIGE <b>VAPES</b></span></a>
+<a aria-label="Vestige Vapes home" class="brand" href="index.html"><img alt="Vestige Ltd logo" class="brand-logo" src="assets/vestige-logo.png"/><span class="brand-name">VESTIGE <b>VAPES</b></span></a>
 <button aria-controls="mainNav" aria-expanded="false" class="nav-toggle" id="navToggle">Menu</button>
 <nav aria-label="Primary navigation" class="main-nav" id="mainNav">
-<a href="#product">BC10000</a><a href="#specifications">Technical Profile</a><a href="#flavours">Flavours</a><a class="nav-buy" href="#buy-now">Shop</a><a href="order-status.html">Order Status</a><a href="#faq">FAQ</a><a href="/contact">Contact</a><a class="nav-owner" href="owner.html">Owner</a>
+<a href="#product">BC10000</a><a href="#specifications">Technical Profile</a><a href="#flavours">Flavours</a><a class="nav-buy" href="#buy-now">Shop</a><a href="order-status.html">Order Status</a><a href="#faq">FAQ</a><a href="contact.html">Contact</a><a class="nav-owner" href="owner.html">Owner</a>
 </nav>
 </div>
 </header>
@@ -88,14 +40,14 @@
 <p class="eyebrow">VESTIGE VAPES</p>
 <h1>ELFBAR <span>BC10000</span></h1>
 <p class="hero-lede">Refined product information. Distinctive presentation. Clear technical detail.</p>
-<p class="hero-text">Explore ELFBAR BC10000 specifications, flavour options, pricing, locker-to-locker delivery and secure ordering from Vestige Vapes in South Africa.</p>
+<p class="hero-text">Explore the BC10000 through its technical profile, device design and listed flavour range.</p>
 <div class="hero-actions"><a class="btn btn-gold" href="#buy-now">Shop</a><a class="btn btn-light" href="#specifications">View technical profile</a><a class="btn btn-light" href="#flavours">Explore flavours</a></div>
 </div>
 </div>
 </section>
 <section class="intro" id="product">
 <div class="container intro-grid">
-<div><p class="eyebrow gold-text">THE BC10000</p><h2>Compact form. High-capacity system.</h2><p>The ELFBAR BC10000 range available through Vestige Vapes combines a rechargeable all-in-one format with multiple flavour options. Review the technical profile, current range, pricing and delivery information before ordering. Exact specifications should always be checked against the physical packaging and applicable market documentation.</p></div>
+<div><p class="eyebrow gold-text">THE BC10000</p><h2>Compact form. High-capacity system.</h2><p>The ELFBAR BC10000 is presented here with its key product characteristics and flavour variants. The exact specification for an individual unit should always be checked against its packaging and applicable market documentation.</p></div>
 <div class="metric-grid"><div class="metric"><strong>R300</strong><span>per BC10000 device</span></div><div class="metric"><strong>10,000</strong><span>stated maximum puff capacity*</span></div><div class="metric"><strong>620</strong><span>mAh rechargeable battery*</span></div><div class="metric"><strong>50 mg/ml</strong><span>nicotine strength*</span></div></div>
 </div><div class="container footnote">*Product information supplied for the Vestige BC10000 range; specifications may vary by SKU or market.</div>
 </section>
@@ -109,7 +61,7 @@
 <tr><th>Model</th><td>BC10000</td><td class="device-cell video-column" rowspan="8">
 <div aria-label="Animated ELFBAR BC10000 device feature visual" class="device-stage" id="deviceStage">
 <div class="orbit orbit-a"></div><div class="orbit orbit-b"></div><div class="orbit orbit-c"></div>
-<div class="device-halo"></div><video aria-label="ELFBAR BC10000 device feature video" class="device-video"  preload="none" data-vestige-deferred-video="true" autoplay loop muted playsinline><source data-src="assets/bc10000.mp4" type="video/mp4"/><span>ELFBAR BC10000 device video.</span></video>
+<div class="device-halo"></div><video aria-label="ELFBAR BC10000 device feature video" autoplay="" class="device-video" loop="" muted="" playsinline="" preload="metadata"><source src="assets/bc10000.mp4" type="video/mp4"/><span>ELFBAR BC10000 device video.</span></video>
 <svg aria-hidden="true" class="callout-lines" preserveaspectratio="none" viewbox="0 0 500 620"><path d="M70 130 L205 250" id="line1"></path><path d="M430 170 L295 265" id="line2"></path><path d="M62 310 L210 320" id="line3"></path></svg>
 <div class="feature-callout callout-left" id="calloutLeft"><span class="dot"></span><span><b>Rechargeable</b><small>620 mAh battery</small></span></div>
 <div class="feature-callout callout-right" id="calloutRight"><span><b>USB-C</b><small>Type-C charging</small></span><span class="dot"></span></div>
@@ -124,7 +76,7 @@
 <tr><th>Operation</th><td>Button-free</td></tr>
 <tr><th>System</th><td>Pre-filled, non-refillable</td></tr>
 <tr><th>Format</th><td>Pocket-sized all-in-one device</td></tr>
-<tr class="mobile-video-row"><td colspan="2"><div class="mobile-video-wrapper"></div></td></tr></tbody>
+<tr class="mobile-video-row"><td colspan="2"><div class="mobile-video-wrapper"><video autoplay="" class="device-video" loop="" muted="" playsinline="" preload="metadata"><source src="assets/bc10000.mp4" type="video/mp4"/></video></div></td></tr></tbody>
 </table>
 </div>
 <p class="table-note">Nicotine is addictive. Product specifications shown here are based on the supplied Vestige product profile; verify the physical packaging for the exact SKU before relying on a specification.</p>
@@ -133,15 +85,15 @@
 <section class="features"><div class="container"><div class="section-heading center"><p class="eyebrow gold-text">DESIGN</p><h2>Designed around simplicity</h2><p>The BC10000 uses a draw-activated, button-free design with a pre-filled system. No refill procedure or coil replacement is required.</p></div><div class="feature-grid"><article><span class="feature-number">01</span><h3>Rechargeable</h3><p>620 mAh rechargeable battery with USB-C charging.</p></article><article><span class="feature-number">02</span><h3>Draw-activated</h3><p>Automatic activation without a physical firing button.</p></article><article><span class="feature-number">03</span><h3>High capacity</h3><p>Manufacturer-style stated capacity of up to 10,000 puffs, usage dependent.</p></article><article><span class="feature-number">04</span><h3>Sealed system</h3><p>Pre-filled and non-refillable all-in-one format.</p></article></div></div></section>
 <section class="flavours" id="flavours"><div class="container">
 <div class="section-heading"><p class="eyebrow gold-text">FLAVOUR RANGE</p><h2>Five BC10000 variants</h2><p>True-to-life flavour presentation, with the ingredient cues and profile notes kept concise.</p></div>
-<div class="flavour-grid five" data-flavour-card="blueberry-mint" tabindex="0" role="link" aria-label="Explore Blueberry Mint" onclick="window.location.href='/flavours/blueberry-mint'" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.location.href='/flavours/blueberry-mint'}" data-flavour-card="miami-mint" tabindex="0" role="link" aria-label="Explore Miami Mint" onclick="window.location.href='/flavours/miami-mint'" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.location.href='/flavours/miami-mint'}" data-flavour-card="blue-razz-ice" tabindex="0" role="link" aria-label="Explore Blue Razz Ice" onclick="window.location.href='/flavours/blue-razz-ice'" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.location.href='/flavours/blue-razz-ice'}" data-flavour-card="strawberry-kiwi-ice" tabindex="0" role="link" aria-label="Explore Strawberry Kiwi Ice" onclick="window.location.href='/flavours/strawberry-kiwi-ice'" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.location.href='/flavours/strawberry-kiwi-ice'}" data-flavour-card="watermelon-ice" tabindex="0" role="link" aria-label="Explore Watermelon Ice" onclick="window.location.href='/flavours/watermelon-ice'" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.location.href='/flavours/watermelon-ice'}">
-<article class="flavour f-blue"><div class="ingredient">🫐 <span>🍃</span></div><h3>Blueberry Mint</h3><p>Blueberry fruit notes with a cool mint finish.</p><span class="flavour-card-action" aria-hidden="true">Explore flavour <span>→</span></span></article>
-<article class="flavour f-green"><div class="ingredient">🍃</div><h3>Miami Mint</h3><p>A clean mint profile with a cooling character.</p><span class="flavour-card-action" aria-hidden="true">Explore flavour <span>→</span></span></article>
-<article class="flavour f-purple"><div class="ingredient">🫐 <span>🍓</span> <span>🧊</span></div><h3>Blue Razz Ice</h3><p>Blue raspberry-style berry notes with an icy finish.</p><span class="flavour-card-action" aria-hidden="true">Explore flavour <span>→</span></span></article>
-<article class="flavour f-straw"><div class="ingredient">🍓 <span>🥝</span> <span>🧊</span></div><h3>Strawberry Kiwi Ice</h3><p>Strawberry and kiwi fruit notes paired with a cool finish.</p><span class="flavour-card-action" aria-hidden="true">Explore flavour <span>→</span></span></article>
-<article class="flavour f-water"><div class="ingredient">🍉 <span>🧊</span></div><h3>Watermelon Ice</h3><p>Juicy watermelon character with a chilled finish.</p><span class="flavour-card-action" aria-hidden="true">Explore flavour <span>→</span></span></article>
+<div class="flavour-grid five">
+<article class="flavour f-blue"><div class="ingredient">🫐 <span>🍃</span></div><h3>Blueberry Mint</h3><p>Blueberry fruit notes with a cool mint finish.</p></article>
+<article class="flavour f-green"><div class="ingredient">🍃</div><h3>Miami Mint</h3><p>A clean mint profile with a cooling character.</p></article>
+<article class="flavour f-purple"><div class="ingredient">🫐 <span>🍓</span> <span>🧊</span></div><h3>Blue Razz Ice</h3><p>Blue raspberry-style berry notes with an icy finish.</p></article>
+<article class="flavour f-straw"><div class="ingredient">🍓 <span>🥝</span> <span>🧊</span></div><h3>Strawberry Kiwi Ice</h3><p>Strawberry and kiwi fruit notes paired with a cool finish.</p></article>
+<article class="flavour f-water"><div class="ingredient">🍉 <span>🧊</span></div><h3>Watermelon Ice</h3><p>Juicy watermelon character with a chilled finish.</p></article>
 </div>
 <div class="true-life"><span>TRUE-TO-LIFE FLAVOURS</span><p>The BC10000 range is offered in a broad selection of fruit, mint and ice-inspired profiles. Exact flavour availability can vary by market and SKU.</p></div>
-<img alt="ELFBAR BC10000 five-flavour range with Vestige branding and nicotine warning" class="range-image" src="assets/bc10000-showcase-v3-optimized.jpg" width="1200" height="1213" loading="lazy" decoding="async" fetchpriority="low">
+<img alt="ELFBAR BC10000 five-flavour range with Vestige branding and nicotine warning" class="range-image" src="assets/bc10000-showcase-v3.png"/>
 </div></section>
 <section class="delivery" id="delivery">
 <div class="container delivery-layout">
@@ -245,7 +197,7 @@
 </div>
 <button class="btn btn-gold checkout-submit" id="orderSubmit" type="submit">Reserve basket &amp; continue to payment</button>
 <p class="order-status" id="orderStatus" role="status"></p>
-<p class="checkout-help-link">Need help with an order? <a href="order-status.html">Check Order Status</a> or <a href="/contact">contact Vestige Ltd</a>.</p>
+<p class="checkout-help-link">Need help with an order? <a href="order-status.html">Check Order Status</a> or <a href="contact.html">contact Vestige Ltd</a>.</p>
 <div class="payment-panel" hidden="" id="paymentPanel">
 <h3>Secure payment</h3>
 <p>Your stock has been reserved and your Zoho Books invoice is ready. Complete payment through the secure PayPal-enabled payment page, then return here to verify your payment and confirm the order.</p>
@@ -262,9 +214,8 @@
 </div>
 </section>
 <section class="faq" id="faq"><div class="container narrow"><div class="section-heading center"><p class="eyebrow gold-text">FAQ</p><h2>Frequently asked questions</h2></div><details><summary>What is the ELFBAR BC10000?</summary><p>The BC10000 is a rechargeable, pre-filled, non-refillable all-in-one vaping device in the ELFBAR range.</p></details><details><summary>How many puffs does the BC10000 provide?</summary><p>The stated capacity is up to 10,000 puffs. Actual usage varies according to individual puff duration and usage pattern.</p></details><details><summary>Is the BC10000 rechargeable?</summary><p>Yes. The supplied product profile specifies a 620 mAh rechargeable battery and USB-C charging.</p></details><details><summary>What nicotine strength is shown on this site?</summary><p>The Vestige product profile supplied for this range specifies 50 mg/ml. Always verify the exact product packaging and local requirements.</p></details></div></section>
-<section class="information" id="information"><div class="container info-grid"><div><p class="eyebrow gold-text">VESTIGE VAPES</p><h2>Product information, clearly presented.</h2><p>Vestige Vapes is the vaping business of Vestige Ltd. The brand presentation uses the supplied Vestige Ltd identity while the website itself remains dedicated exclusively to the vape range.</p></div><div class="info-card"><h3>Connect with Vestige</h3><p>Instagram</p><a class="social" href="https://www.instagram.com/vestigeltdmp/" rel="noopener" target="_blank">@vestigeltdmp</a><a class="btn btn-gold" href="/contact">Contact Vestige</a></div></div></section>
+<section class="information" id="information"><div class="container info-grid"><div><p class="eyebrow gold-text">VESTIGE VAPES</p><h2>Product information, clearly presented.</h2><p>Vestige Vapes is the vaping business of Vestige Ltd. The brand presentation uses the supplied Vestige Ltd identity while the website itself remains dedicated exclusively to the vape range.</p></div><div class="info-card"><h3>Connect with Vestige</h3><p>Instagram</p><a class="social" href="https://www.instagram.com/vestigeltdmp/" rel="noopener" target="_blank">@vestigeltdmp</a><a class="btn btn-gold" href="contact.html">Contact Vestige</a></div></div></section>
 </main>
-<footer class="footer"><div class="container footer-inner"><div>© 2026 Vestige Ltd · Vestige Vapes</div><div><a href="/contact">Contact</a> · <a href="https://www.instagram.com/vestigeltdmp/" rel="noopener" target="_blank">@vestigeltdmp</a></div></div><div class="footer-warning">Adult nicotine users only. Nicotine is addictive. Check applicable local requirements.</div></footer>
-<script src="script.js?v=35.11.5"></script>
-<!-- V35_11_3_FLAVOUR_LINK_FALLBACKS -->
+<footer class="footer"><div class="container footer-inner"><div>© 2026 Vestige Ltd · Vestige Vapes</div><div><a href="contact.html">Contact</a> · <a href="https://www.instagram.com/vestigeltdmp/" rel="noopener" target="_blank">@vestigeltdmp</a></div></div><div class="footer-warning">Adult nicotine users only. Nicotine is addictive. Check applicable local requirements.</div></footer>
+<script src="script.js?v=35.8"></script>
 </body></html>

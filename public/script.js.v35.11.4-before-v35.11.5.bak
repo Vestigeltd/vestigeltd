@@ -610,7 +610,7 @@
 })();
 
 
-
+/* V35_11_3_FLAVOUR_PRESELECT superseded by V35_11_3B */
 
 
 /* V35_11_3B_INDIVIDUAL_CARDS_AND_PRESELECT
@@ -810,8 +810,9 @@
 
   function init() {
     wireIndividualFlavourCards();
-  /* v35.11.5: preselection handled by final value-based handoff below */
-// Re-run card discovery after late-rendered content without duplicating listeners.
+    preselectFromLandingPage();
+
+    // Re-run card discovery after late-rendered content without duplicating listeners.
     setTimeout(wireIndividualFlavourCards, 500);
     setTimeout(wireIndividualFlavourCards, 1500);
   }
@@ -824,104 +825,152 @@
 })();
 
 
-
-
-/* V35_11_5_FINAL_FLAVOUR_PRESELECTION
-   Final flavour-page -> Shop handoff.
-   IMPORTANT: loadAvailability() changes option.textContent to:
-   "Blueberry Mint — 3 in stock"
-   but leaves option.value as "Blueberry Mint".
-   Therefore preselection MUST match option.value, never display text. */
+/* V35_11_3C_PRESELECT_AFTER_STOCK_SETTLES
+   Marketing deep-link must never lock the Shop.
+   Wait for the existing stock UI to finish, then select only a genuinely
+   enabled option. If requested flavour is unavailable, leave the dropdown
+   usable so the customer can choose another available flavour. */
 (function () {
-  const requestedSlug = (new URLSearchParams(window.location.search).get('flavour') || '').trim().toLowerCase();
+  const params = new URLSearchParams(window.location.search);
+  const requestedSlug = (params.get('flavour') || '').trim().toLowerCase();
   if (!requestedSlug) return;
 
-  const flavourBySlug = {
-    'blueberry-mint': 'Blueberry Mint',
-    'miami-mint': 'Miami Mint',
-    'blue-razz-ice': 'Blue Razz Ice',
-    'strawberry-kiwi-ice': 'Strawberry Kiwi Ice',
-    'watermelon-ice': 'Watermelon Ice'
+  const map = {
+    'blueberry-mint':'Blueberry Mint',
+    'miami-mint':'Miami Mint',
+    'blue-razz-ice':'Blue Razz Ice',
+    'strawberry-kiwi-ice':'Strawberry Kiwi Ice',
+    'watermelon-ice':'Watermelon Ice'
   };
+  const requestedName = map[requestedSlug];
+  if (!requestedName) return;
 
-  const requestedValue = flavourBySlug[requestedSlug];
-  if (!requestedValue) return;
+  function flavourSelect() {
+    return Array.from(document.querySelectorAll('select')).find(s =>
+      Object.values(map).some(name =>
+        Array.from(s.options || []).some(o =>
+          (o.textContent || '').trim().toLowerCase() === name.toLowerCase()
+        )
+      )
+    );
+  }
 
-  function applyRequestedFlavour() {
-    const select = document.getElementById('flavourSelect');
-    if (!select || select.disabled) return false;
+  function quantitySelect(flavour) {
+    return Array.from(document.querySelectorAll('select')).find(s => {
+      if (s === flavour) return false;
+      const vals = Array.from(s.options || []).map(o => (o.textContent || '').trim());
+      return vals.includes('1') && vals.includes('2');
+    });
+  }
 
-    const option = Array.from(select.options || []).find(
-      o => String(o.value || '').trim() === requestedValue
+  function normalizeShop(flavour) {
+    // The dropdown itself must remain usable whenever at least one flavour
+    // option is genuinely enabled by the existing stock UI.
+    const flavourOptions = Array.from(flavour.options || []).filter(o =>
+      Object.values(map).some(name =>
+        (o.textContent || '').trim().toLowerCase() === name.toLowerCase()
+      )
     );
 
-    // Existing live-stock logic remains authoritative.
-    if (!option || option.disabled) return false;
+    const hasAvailable = flavourOptions.some(o => !o.disabled);
+    if (hasAvailable) flavour.disabled = false;
 
-    const quantity = document.getElementById('quantity');
-    if (quantity) {
-      const blank = Array.from(quantity.options || []).find(o => String(o.value || '') === '');
-      if (blank) quantity.value = '';
+    const qty = quantitySelect(flavour);
+    if (qty) {
+      const blank = Array.from(qty.options || []).find(o =>
+        (o.value || '') === '' || (o.textContent || '').trim() === ''
+      );
+      if (blank) qty.value = blank.value;
+    }
+  }
+
+  function applyWhenReady() {
+    const flavour = flavourSelect();
+    if (!flavour) return false;
+
+    normalizeShop(flavour);
+
+    const requested = Array.from(flavour.options || []).find(o =>
+      (o.textContent || '').trim().toLowerCase() === requestedName.toLowerCase()
+    );
+
+    if (!requested) return false;
+
+    // Do not bypass the website's live-stock decision.
+    // Preselect only if that specific option is enabled.
+    if (!requested.disabled) {
+      flavour.disabled = false;
+      flavour.value = requested.value;
+      flavour.dispatchEvent(new Event('change',{bubbles:true}));
+      flavour.classList.add('preselected-flavour-control');
+      setTimeout(() => flavour.classList.remove('preselected-flavour-control'),1400);
+
+      const target = document.getElementById('buy-now') || flavour.closest('section') || flavour;
+      setTimeout(() => target.scrollIntoView({behavior:'smooth',block:'start'}),100);
+      return true;
     }
 
-    if (select.value !== requestedValue) {
-      select.value = requestedValue;
-      select.dispatchEvent(new Event('change', { bubbles: true }));
+    // Requested flavour unavailable: keep the selector usable rather than
+    // trapping the customer. Existing UI may show its normal availability note.
+    const hasAlternative = Array.from(flavour.options || []).some(o =>
+      !o.disabled &&
+      Object.values(map).some(name =>
+        (o.textContent || '').trim().toLowerCase() === name.toLowerCase()
+      )
+    );
+
+    if (hasAlternative) {
+      flavour.disabled = false;
+      const placeholder = Array.from(flavour.options || []).find(o =>
+        !Object.values(map).some(name =>
+          (o.textContent || '').trim().toLowerCase() === name.toLowerCase()
+        )
+      );
+      if (placeholder) flavour.value = placeholder.value;
     }
-
-    select.classList.add('preselected-flavour-control');
-    setTimeout(() => select.classList.remove('preselected-flavour-control'), 1400);
-
-    const target = document.getElementById('buy-now') || select.closest('section') || select;
-    requestAnimationFrame(() => {
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-
-    // Consume the marketing parameter after successful application so later
-    // stock/UI mutations cannot repeatedly re-run the handoff.
-    const cleanUrl = new URL(window.location.href);
-    cleanUrl.searchParams.delete('flavour');
-    history.replaceState(null, '', cleanUrl.pathname + cleanUrl.search + cleanUrl.hash);
-
-    return true;
+    return hasAlternative;
   }
 
   function start() {
-    const select = document.getElementById('flavourSelect');
-    if (!select) {
-      setTimeout(start, 100);
+    const flavour = flavourSelect();
+    if (!flavour) {
+      setTimeout(start,150);
       return;
     }
 
-    if (applyRequestedFlavour()) return;
-
-    // loadAvailability() asynchronously enables/disables options and rewrites
-    // their visible labels. Observe those mutations, then apply by VALUE.
+    // Observe the exact select because the existing stock routine changes
+    // option.disabled and select.disabled asynchronously.
+    let settledTimer = null;
     const observer = new MutationObserver(() => {
-      if (applyRequestedFlavour()) observer.disconnect();
+      clearTimeout(settledTimer);
+      settledTimer = setTimeout(() => {
+        normalizeShop(flavour);
+        applyWhenReady();
+      },250);
     });
 
-    observer.observe(select, {
-      attributes: true,
-      childList: true,
-      subtree: true,
-      attributeFilter: ['disabled']
+    observer.observe(flavour,{
+      attributes:true,
+      childList:true,
+      subtree:true,
+      attributeFilter:['disabled']
     });
 
-    // Defensive polling covers browsers where option.disabled mutations are not
-    // consistently surfaced through MutationObserver.
-    let attempts = 0;
-    const timer = setInterval(() => {
-      attempts++;
-      if (applyRequestedFlavour() || attempts >= 60) {
-        clearInterval(timer);
-        observer.disconnect();
-      }
-    }, 150);
+    // Give the normal stock check priority. Then reconcile the marketing link.
+    setTimeout(() => {
+      normalizeShop(flavour);
+      applyWhenReady();
+    },1200);
+
+    setTimeout(() => {
+      normalizeShop(flavour);
+      applyWhenReady();
+      observer.disconnect();
+    },5000);
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', start, { once: true });
+    document.addEventListener('DOMContentLoaded', start, {once:true});
   } else {
     start();
   }

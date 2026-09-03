@@ -1,3 +1,4 @@
 User-agent: *
 Allow: /
-Sitemap: https://www.vestigeltdmp.com/sitemap.xml
+
+Sitemap: https://vestigeltd.co.za/sitemap.xml

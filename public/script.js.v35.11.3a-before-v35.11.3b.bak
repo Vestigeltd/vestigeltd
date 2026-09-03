@@ -610,319 +610,66 @@
 })();
 
 
-
-
-
-/* V35_11_3B_INDIVIDUAL_CARDS_AND_PRESELECT
-   Fixes two issues:
-   1) the whole flavour tray was being treated as one card;
-   2) flavour deep-link preselection could fire before the live stock UI settled. */
+/* V35_11_3_FLAVOUR_PRESELECT
+   Reads ?flavour=<slug> and preselects the matching product in the existing Shop UI.
+   Safe no-op if the expected flavour control is not present. */
 (function () {
-  const FLAVOURS = [
-    ['blueberry-mint','Blueberry Mint'],
-    ['miami-mint','Miami Mint'],
-    ['blue-razz-ice','Blue Razz Ice'],
-    ['strawberry-kiwi-ice','Strawberry Kiwi Ice'],
-    ['watermelon-ice','Watermelon Ice']
-  ];
+  const params = new URLSearchParams(window.location.search);
+  const requested = (params.get('flavour') || '').trim().toLowerCase();
+  if (!requested) return;
 
-  const flavourNamesLower = FLAVOURS.map(x => x[1].toLowerCase());
-
-  function flavourCount(el) {
-    const t = (el.textContent || '').toLowerCase();
-    return flavourNamesLower.reduce((n, name) => n + (t.includes(name) ? 1 : 0), 0);
-  }
-
-  function findIndividualCard(labelEl) {
-    let el = labelEl;
-    let best = null;
-
-    while (el && el !== document.body) {
-      const count = flavourCount(el);
-      if (count === 1) best = el;
-      if (count > 1) break;
-      el = el.parentElement;
-    }
-
-    if (!best) return labelEl.parentElement || labelEl;
-
-    // Prefer a visually card-like ancestor if one exists before the multi-card tray.
-    let card = labelEl;
-    while (card && card !== best.parentElement) {
-      const cls = String(card.className || '').toLowerCase();
-      if (
-        flavourCount(card) === 1 &&
-        /(card|tile|flavour|flavor|item|option)/.test(cls)
-      ) {
-        best = card;
-      }
-      card = card.parentElement;
-    }
-    return best;
-  }
-
-  function wireIndividualFlavourCards() {
-    // First remove the old tray-level behaviour from any element containing multiple flavours.
-    document.querySelectorAll('[data-flavour-card]').forEach(el => {
-      if (flavourCount(el) > 1) {
-        el.removeAttribute('data-flavour-card');
-        el.removeAttribute('tabindex');
-        el.removeAttribute('role');
-        el.removeAttribute('aria-label');
-        el.removeAttribute('onclick');
-        el.removeAttribute('onkeydown');
-        el.querySelectorAll(':scope > .flavour-card-action').forEach(n => n.remove());
-      }
-    });
-
-    FLAVOURS.forEach(([slug, name]) => {
-      const candidates = Array.from(document.querySelectorAll('h1,h2,h3,h4,p,span,strong,b,div,a'))
-        .filter(el => (el.textContent || '').trim().toLowerCase() === name.toLowerCase());
-
-      const label = candidates[0];
-      if (!label) return;
-
-      const card = findIndividualCard(label);
-      if (!card) return;
-
-      card.dataset.flavourCard = slug;
-      card.setAttribute('tabindex','0');
-      card.setAttribute('role','link');
-      card.setAttribute('aria-label','Explore ' + name);
-
-      if (!card.querySelector(':scope > .flavour-card-action')) {
-        const cue = document.createElement('span');
-        cue.className = 'flavour-card-action';
-        cue.setAttribute('aria-hidden','true');
-        cue.innerHTML = 'Explore flavour <span>→</span>';
-        card.appendChild(cue);
-      }
-
-      if (!card.dataset.vestigeCardWired) {
-        card.dataset.vestigeCardWired = '1';
-        card.addEventListener('click', function (event) {
-          if (event.target.closest('a,button,input,select,textarea')) return;
-          window.location.href = '/flavours/' + slug;
-        });
-        card.addEventListener('keydown', function (event) {
-          if (event.key === 'Enter' || event.key === ' ') {
-            event.preventDefault();
-            window.location.href = '/flavours/' + slug;
-          }
-        });
-      }
-    });
-  }
-
-  function findFlavourSelect() {
-    return Array.from(document.querySelectorAll('select')).find(s =>
-      FLAVOURS.some(([,name]) =>
-        Array.from(s.options || []).some(o =>
-          (o.textContent || '').trim().toLowerCase() === name.toLowerCase()
-        )
-      )
-    );
-  }
-
-  function findQuantitySelect(flavourSelect) {
-    return Array.from(document.querySelectorAll('select')).find(s => {
-      if (s === flavourSelect) return false;
-      const txt = Array.from(s.options || []).map(o => (o.textContent || '').trim());
-      return txt.some(v => /^1$/.test(v)) && txt.some(v => /^2$/.test(v));
-    });
-  }
-
-  function clearStaleUnavailableMessageNear(select) {
-    const scope = select.closest('section,fieldset,form,.card,.panel') || select.parentElement;
-    if (!scope) return;
-    Array.from(scope.querySelectorAll('p,div,span,small')).forEach(el => {
-      const t = (el.textContent || '').trim().toLowerCase();
-      if (t === 'this flavour is not currently available.' && !select.disabled) {
-        // Only hide a stale message before quantity is deliberately chosen.
-        el.dataset.vestigeStaleAvailability = '1';
-        el.style.display = 'none';
-      }
-    });
-  }
-
-  function preselectFromLandingPage() {
-    const params = new URLSearchParams(window.location.search);
-    const slug = (params.get('flavour') || '').trim().toLowerCase();
-    if (!slug) return;
-
-    const entry = FLAVOURS.find(x => x[0] === slug);
-    if (!entry) return;
-    const desiredName = entry[1];
-
-    let attempts = 0;
-    const maxAttempts = 60; // up to ~9 seconds for initial live stock hydration
-
-    const timer = setInterval(() => {
-      attempts++;
-
-      const flavourSelect = findFlavourSelect();
-      if (!flavourSelect) {
-        if (attempts >= maxAttempts) clearInterval(timer);
-        return;
-      }
-
-      // Wait until existing stock initialization has finished touching the control.
-      if (flavourSelect.disabled) {
-        if (attempts >= maxAttempts) {
-          flavourSelect.disabled = false; // never strand the customer with no alternative
-          clearInterval(timer);
-        }
-        return;
-      }
-
-      const option = Array.from(flavourSelect.options).find(o =>
-        (o.textContent || '').trim().toLowerCase() === desiredName.toLowerCase()
-      );
-      if (!option) {
-        if (attempts >= maxAttempts) clearInterval(timer);
-        return;
-      }
-
-      // Keep choice flexible even if the selected landing flavour is unavailable.
-      // Backend/normal stock logic still decides whether an order can proceed.
-      const quantitySelect = findQuantitySelect(flavourSelect);
-      if (quantitySelect) {
-        const blank = Array.from(quantitySelect.options).find(o =>
-          (o.value || '') === '' || (o.textContent || '').trim() === ''
-        );
-        if (blank) quantitySelect.value = blank.value;
-      }
-
-      flavourSelect.value = option.value;
-      flavourSelect.dispatchEvent(new Event('change', {bubbles:true}));
-      flavourSelect.disabled = false;
-      flavourSelect.classList.add('preselected-flavour-control');
-      setTimeout(() => flavourSelect.classList.remove('preselected-flavour-control'), 1600);
-
-      clearStaleUnavailableMessageNear(flavourSelect);
-
-      const target = document.getElementById('buy-now') || flavourSelect.closest('section') || flavourSelect;
-      setTimeout(() => target.scrollIntoView({behavior:'smooth',block:'start'}),120);
-
-      clearInterval(timer);
-    },150);
-  }
-
-  function init() {
-    wireIndividualFlavourCards();
-  /* v35.11.5: preselection handled by final value-based handoff below */
-// Re-run card discovery after late-rendered content without duplicating listeners.
-    setTimeout(wireIndividualFlavourCards, 500);
-    setTimeout(wireIndividualFlavourCards, 1500);
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init, {once:true});
-  } else {
-    init();
-  }
-})();
-
-
-
-
-/* V35_11_5_FINAL_FLAVOUR_PRESELECTION
-   Final flavour-page -> Shop handoff.
-   IMPORTANT: loadAvailability() changes option.textContent to:
-   "Blueberry Mint — 3 in stock"
-   but leaves option.value as "Blueberry Mint".
-   Therefore preselection MUST match option.value, never display text. */
-(function () {
-  const requestedSlug = (new URLSearchParams(window.location.search).get('flavour') || '').trim().toLowerCase();
-  if (!requestedSlug) return;
-
-  const flavourBySlug = {
+  const map = {
     'blueberry-mint': 'Blueberry Mint',
     'miami-mint': 'Miami Mint',
     'blue-razz-ice': 'Blue Razz Ice',
     'strawberry-kiwi-ice': 'Strawberry Kiwi Ice',
     'watermelon-ice': 'Watermelon Ice'
   };
+  const desired = map[requested];
+  if (!desired) return;
 
-  const requestedValue = flavourBySlug[requestedSlug];
-  if (!requestedValue) return;
-
-  function applyRequestedFlavour() {
-    const select = document.getElementById('flavourSelect');
-    if (!select || select.disabled) return false;
-
-    const option = Array.from(select.options || []).find(
-      o => String(o.value || '').trim() === requestedValue
+  function tryPreselect() {
+    const selects = Array.from(document.querySelectorAll('select'));
+    const select = selects.find(s =>
+      Array.from(s.options || []).some(o => (o.textContent || '').trim().toLowerCase() === desired.toLowerCase())
     );
 
-    // Existing live-stock logic remains authoritative.
-    if (!option || option.disabled) return false;
+    if (select) {
+      const option = Array.from(select.options).find(o =>
+        (o.textContent || '').trim().toLowerCase() === desired.toLowerCase()
+      );
+      if (option) {
+        select.value = option.value;
+        select.dispatchEvent(new Event('change', {bubbles:true}));
+        select.classList.add('preselected-flavour-control');
+        setTimeout(() => select.classList.remove('preselected-flavour-control'), 1800);
 
-    const quantity = document.getElementById('quantity');
-    if (quantity) {
-      const blank = Array.from(quantity.options || []).find(o => String(o.value || '') === '');
-      if (blank) quantity.value = '';
-    }
-
-    if (select.value !== requestedValue) {
-      select.value = requestedValue;
-      select.dispatchEvent(new Event('change', { bubbles: true }));
-    }
-
-    select.classList.add('preselected-flavour-control');
-    setTimeout(() => select.classList.remove('preselected-flavour-control'), 1400);
-
-    const target = document.getElementById('buy-now') || select.closest('section') || select;
-    requestAnimationFrame(() => {
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-
-    // Consume the marketing parameter after successful application so later
-    // stock/UI mutations cannot repeatedly re-run the handoff.
-    const cleanUrl = new URL(window.location.href);
-    cleanUrl.searchParams.delete('flavour');
-    history.replaceState(null, '', cleanUrl.pathname + cleanUrl.search + cleanUrl.hash);
-
-    return true;
-  }
-
-  function start() {
-    const select = document.getElementById('flavourSelect');
-    if (!select) {
-      setTimeout(start, 100);
-      return;
-    }
-
-    if (applyRequestedFlavour()) return;
-
-    // loadAvailability() asynchronously enables/disables options and rewrites
-    // their visible labels. Observe those mutations, then apply by VALUE.
-    const observer = new MutationObserver(() => {
-      if (applyRequestedFlavour()) observer.disconnect();
-    });
-
-    observer.observe(select, {
-      attributes: true,
-      childList: true,
-      subtree: true,
-      attributeFilter: ['disabled']
-    });
-
-    // Defensive polling covers browsers where option.disabled mutations are not
-    // consistently surfaced through MutationObserver.
-    let attempts = 0;
-    const timer = setInterval(() => {
-      attempts++;
-      if (applyRequestedFlavour() || attempts >= 60) {
-        clearInterval(timer);
-        observer.disconnect();
+        const target = document.getElementById('buy-now') || select.closest('section') || select;
+        setTimeout(() => target.scrollIntoView({behavior:'smooth', block:'start'}), 150);
+        return true;
       }
-    }, 150);
+    }
+
+    const clickable = Array.from(document.querySelectorAll('[data-flavour],button,[role="button"]')).find(el => {
+      const txt=(el.textContent||'').trim().toLowerCase();
+      const data=(el.getAttribute('data-flavour')||'').trim().toLowerCase();
+      return txt===desired.toLowerCase() || data===requested;
+    });
+    if (clickable) {
+      clickable.click();
+      clickable.classList.add('preselected-flavour-control');
+      setTimeout(() => clickable.classList.remove('preselected-flavour-control'), 1800);
+      const target = document.getElementById('buy-now') || clickable.closest('section') || clickable;
+      setTimeout(() => target.scrollIntoView({behavior:'smooth', block:'start'}), 150);
+      return true;
+    }
+
+    return false;
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', start, { once: true });
-  } else {
-    start();
-  }
+  let attempts = 0;
+  const timer = setInterval(() => {
+    attempts++;
+    if (tryPreselect() || attempts >= 20) clearInterval(timer);
+  }, 150);
 })();

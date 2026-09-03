@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"/><meta content="IE=edge" http-equiv="X-UA-Compatible"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><title>Contact | Vestige Vapes</title><meta content="Contact Vestige Vapes for product, order, delivery and general enquiries." name="description"/><meta content="index,follow" name="robots"/><link href="https://vestigeltd.co.za/contact.html" rel="canonical"/><link href="assets/vestige-logo.png" rel="icon" type="image/png"/><link href="styles.css" rel="stylesheet"/>
+</head><body>
+<header class="site-header"><div class="container nav-wrap"><a class="brand" href="index.html"><img alt="Vestige Ltd logo" class="brand-logo" src="assets/vestige-logo.png"/><span class="brand-name">VESTIGE <b>VAPES</b></span></a><nav class="main-nav contact-nav"><a href="index.html#product">BC10000</a><a href="index.html#specifications">Technical Profile</a><a href="index.html#flavours">Flavours</a><a href="index.html#faq">FAQ</a><a href="contact.html">Contact</a></nav></div></header>
+<main><section class="contact-hero">
+  <div class="container contact-hero-classic">
+    <div class="contact-hero-copy">
+      <p class="eyebrow gold-text">CONTACT</p>
+      <h1>Contact</h1>
+      <p class="contact-hero-message">
+        Questions? Product enquiries or need help with an order?<br>
+        Effortless communication and personalised service...just for you.<br>
+        <span>Connect with Vestige.</span>
+      </p>
+    </div>
+
+    <div class="contact-hero-watermark" aria-hidden="true">
+      <img src="assets/vestige-logo.png" alt="">
+    </div>
+  </div>
+</section><section class="contact-section"><div class="container contact-grid"><div class="contact-card"><span class="feature-number">01</span><h2>Instagram</h2><p>Follow or message Vestige Vapes through the official Instagram account.</p><a class="btn btn-gold" href="https://www.instagram.com/vestigeltdmp/" rel="noopener" target="_blank">Open Instagram</a></div><div class="contact-card"><span class="feature-number">02</span><h2>General enquiries</h2><p>For product, order, delivery or general enquiries, contact Vestige Vapes by e-mail or Instagram.</p><p class="contact-detail">E-mail: <strong><a href="mailto:orders@vestigeltd.co.za">orders@vestigeltd.co.za</a></strong></p><p class="contact-detail">Instagram: <strong>@vestigeltdmp</strong></p></div></div></section></main><footer class="footer"><div class="container footer-inner"><div>© 2026 Vestige Ltd · Vestige Vapes</div><div><a href="index.html">Home</a> · <a href="https://www.instagram.com/vestigeltdmp/" rel="noopener" target="_blank">@vestigeltdmp</a></div></div></footer></body></html>

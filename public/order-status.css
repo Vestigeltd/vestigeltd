@@ -1,0 +1,17 @@
+
+.status-body{margin:0;background:#f5f3ee;color:#172231;font-family:Arial,Helvetica,sans-serif}.status-header{background:#fff;border-bottom:1px solid #dde1e5}.status-header-inner{min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:16px}.status-brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:#0b1727;font-weight:800;letter-spacing:2px}.status-brand img{width:46px;height:46px;object-fit:contain}.status-brand small{display:block;color:#b68a36;font-size:9px;letter-spacing:2px;margin-top:3px}.status-main{padding-top:50px;padding-bottom:80px;max-width:900px}.status-intro{max-width:680px;margin-bottom:24px}.status-intro h1{font-size:42px;margin:5px 0 10px;color:#0b1727}.status-intro p:last-child{color:#65717d;line-height:1.6}.status-card,.status-result{background:#fff;border:1px solid #dde1e5;border-radius:8px;padding:26px;box-shadow:0 10px 30px rgba(11,23,39,.045)}.status-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}.status-form-grid label{display:flex;flex-direction:column;gap:7px;font-size:12px;font-weight:700;color:#344252}.status-form-grid input{min-height:46px;border:1px solid #ccd3da;border-radius:5px;padding:10px 12px;font-size:15px}#statusReference{text-transform:uppercase;font-weight:800;letter-spacing:1.4px}.status-message{min-height:20px;color:#6d7884;font-size:12px;margin:10px 0 0}.status-message.error{color:#a5433d}.status-result{margin-top:18px}.status-result-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px}.status-result-head span:first-child{font-size:11px;color:#b68a36;font-weight:900;letter-spacing:1px}.status-result h2{margin:4px 0 5px;color:#0b1727}.status-result>p{color:#65717d;line-height:1.55}.status-pill{padding:7px 10px;border-radius:999px;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.7px;background:#eef1f3}.status-pill.confirmed{background:#e8f4ee;color:#2e6f50}.status-pill.pending{background:#fff4db;color:#8c6520}.status-pill.cancelled,.status-pill.expired{background:#f0f0f0;color:#6d7884}.status-result dl{margin:20px 0;border:1px solid #e2e5e8}.status-result dl div{display:grid;grid-template-columns:140px 1fr;gap:14px;padding:11px 12px;border-bottom:1px solid #e2e5e8}.status-result dl div:last-child{border-bottom:0}.status-result dt{font-size:11px;color:#6d7884}.status-result dd{margin:0;font-size:12px;font-weight:800}.status-help{font-size:11px!important;color:#7b8690!important}@media(max-width:640px){.status-form-grid{grid-template-columns:1fr}.status-intro h1{font-size:32px}.status-card,.status-result{padding:19px}.status-result dl div{grid-template-columns:1fr;gap:4px}}
+
+
+/* V35.7 — customer order-status communication/mobile polish */
+.status-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:20px}
+.status-actions .btn{margin:0;text-align:center}
+.status-result[hidden]{display:none!important}
+.status-result:focus{outline:none}
+@media(max-width:640px){
+ .status-header-inner{align-items:flex-start;padding-top:12px;padding-bottom:12px}
+ .status-brand img{width:40px;height:40px}
+ .status-header-inner>.btn{font-size:10px;padding:9px 10px}
+ .status-actions{display:grid;grid-template-columns:1fr}
+ .status-actions .btn{width:100%}
+ .status-main{padding-top:32px}
+}

@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="referrer" content="no-referrer">
+<title>Vestige Owner Console</title>
+<link rel="stylesheet" href="styles.css?v=35.0">
+<link rel="stylesheet" href="owner.css?v=35.8">
+</head>
+<body class="owner-body">
+<header class="owner-header">
+  <div class="container owner-header-inner">
+    <a class="owner-brand" href="index.html" aria-label="Return to Vestige Vapes">
+      <img src="assets/vestige-logo-optimized.png" alt="Vestige Ltd">
+      <span><b>VESTIGE</b><small>OWNER CONSOLE</small></span>
+    </a>
+    <div class="owner-header-actions">
+      <span class="owner-security-status" id="securityStatus">Locked</span>
+      <button class="btn btn-outline owner-lock-button" id="lockConsole" type="button" hidden>Lock console</button>
+      <a class="btn btn-outline" href="index.html">Return to shop</a>
+    </div>
+  </div>
+</header>
+
+<main class="container owner-main">
+  <section class="owner-hero">
+    <p class="eyebrow gold-text">PRIVATE OWNER OPERATIONS</p>
+    <h1>Vestige shop control centre</h1>
+    <p>Confirm cleared bank payments, void unpaid orders, inspect reservations and review live stock without using CMD.</p>
+  </section>
+
+  <section class="owner-login owner-card" id="loginPanel">
+    <div>
+      <p class="owner-kicker">SECURE ACCESS</p>
+      <h2>Unlock owner controls</h2>
+      <p>Your payment-admin key is sent only to the Vestige Worker in the protected request header. It is never displayed back by the server.</p>
+    </div>
+    <div class="owner-login-form">
+      <label>Payment admin key
+        <input id="adminKey" type="password" autocomplete="off" spellcheck="false">
+      </label>
+      <label class="owner-check">
+        <input id="rememberTab" type="checkbox" checked>
+        <span>Remember only until this browser tab is closed</span>
+      </label>
+      <button class="btn btn-gold" id="unlockConsole" type="button">Unlock owner console</button>
+      <p class="owner-message" id="loginMessage" role="status"></p>
+    </div>
+  </section>
+
+  <div id="consolePanel" hidden>
+    <section class="owner-grid owner-overview owner-overview-expanded">
+      <article class="owner-card owner-stat">
+        <span>System</span><strong id="healthState">—</strong><small id="healthDetail">Protected admin API</small>
+      </article>
+      <article class="owner-card owner-stat owner-action-required-stat">
+        <span>Payment action</span><strong id="paymentActionCount">—</strong><small>Customers reporting payment sent</small>
+      </article>
+      <article class="owner-card owner-stat">
+        <span>Pending payment</span><strong id="pendingCount">—</strong><small>Orders still awaiting owner action</small>
+      </article>
+      <article class="owner-card owner-stat">
+        <span>Confirmed</span><strong id="confirmedCount">—</strong><small>Recently confirmed orders</small>
+      </article>
+      <article class="owner-card owner-stat">
+        <span>Closed / voided</span><strong id="closedCount">—</strong><small>Cancelled or expired orders</small>
+      </article>
+      <article class="owner-card owner-stat">
+        <span>Recent orders</span><strong id="recentCount">—</strong><small>Latest bank checkouts</small>
+      </article>
+      <article class="owner-card owner-stat">
+        <span>Live stock</span><strong id="stockState">—</strong><small>Zoho + reservations</small>
+      </article>
+    </section>
+
+    <section class="owner-card owner-lookup-card">
+      <div class="owner-section-head">
+        <div><p class="owner-kicker">ORDER OPERATIONS</p><h2>Find an order</h2></div>
+        <div class="owner-inline-actions">
+          <button class="btn btn-outline" id="sendTestAlert" type="button">Send test alert</button>
+          <button class="btn btn-outline" id="refreshDashboard" type="button">Refresh dashboard</button>
+        </div>
+      </div>
+      <div class="owner-ref-search">
+        <label>Vestige payment reference
+          <input id="paymentReference" type="text" inputmode="text" maxlength="12" placeholder="V0001" autocomplete="off">
+        </label>
+        <button class="btn btn-gold" id="lookupOrder" type="button">Find order</button>
+      </div>
+      <p class="owner-message" id="operationMessage" role="status"></p>
+    </section>
+
+    <section class="owner-card" id="orderPanel" hidden>
+      <div class="owner-section-head">
+        <div><p class="owner-kicker">ORDER RECORD</p><h2 id="orderTitle">—</h2></div>
+        <span class="owner-state-pill" id="orderState">—</span>
+      </div>
+
+      <div class="owner-order-facts">
+        <div><span>Total</span><strong id="orderAmount">—</strong></div>
+        <div><span>Items</span><strong id="orderQuantity">—</strong></div>
+        <div><span>Customer</span><strong id="orderCustomer">—</strong></div>
+        <div><span>Fulfilment</span><strong id="orderLocker">—</strong></div>
+      </div>
+
+      <div class="owner-two-col">
+        <div>
+          <h3>Basket & reservations</h3>
+          <div id="orderItems" class="owner-table-wrap"></div>
+        </div>
+        <div>
+          <h3>Accounting status</h3>
+          <dl class="owner-definition">
+            <div><dt>Zoho invoice</dt><dd id="invoiceId">Not created</dd></div>
+            <div><dt>Zoho payment</dt><dd id="paymentId">Not created</dd></div>
+            <div><dt>Payment date</dt><dd id="storedPaymentDate">—</dd></div>
+          </dl>
+        </div>
+      </div>
+
+      <div class="owner-action-zone">
+        <article class="owner-action-card owner-confirm-card">
+          <h3>Confirm cleared bank payment</h3>
+          <p>Use this only after the exact payment is visibly cleared in the bank account. The website cannot independently see the bank transaction.</p>
+          <div class="owner-action-fields">
+            <label>Exact amount received
+              <input id="confirmAmount" type="number" step="0.01" min="0">
+            </label>
+            <label>Payment date
+              <input id="paymentDate" type="date">
+            </label>
+          </div>
+          <label class="owner-check owner-attestation">
+            <input id="bankCreditAttestation" type="checkbox">
+            <span>I have personally verified the exact cleared bank credit and matching V000x reference.</span>
+          </label>
+          <button class="btn btn-gold" id="confirmPayment" type="button">Confirm payment & sync Zoho</button>
+        </article>
+
+        <article class="owner-action-card owner-cancel-card">
+          <h3>Void unpaid order</h3>
+          <p>Use when no payment was received. This closes the pending checkout and immediately releases its website stock reservations.</p>
+          <button class="btn owner-danger-button" id="cancelUnpaid" type="button">Void unpaid order & release stock</button>
+        </article>
+      </div>
+    </section>
+
+    <section class="owner-card owner-exception-card">
+      <div class="owner-section-head owner-section-head-wrap">
+        <div>
+          <p class="owner-kicker">ATTENTION REQUIRED</p>
+          <h2>Exceptions & recovery</h2>
+        </div>
+        <button class="btn btn-outline" id="refreshExceptions" type="button">Scan for issues</button>
+      </div>
+      <div class="owner-exception-summary">
+        <div><span>Critical</span><strong id="criticalExceptionCount">0</strong></div>
+        <div><span>Warnings</span><strong id="warningExceptionCount">0</strong></div>
+        <div><span>Total</span><strong id="totalExceptionCount">0</strong></div>
+      </div>
+      <p class="owner-audit-help">This panel is read-only. It flags orders that may need attention without automatically changing stock, payment, or Zoho records.</p>
+      <div id="exceptionList" class="owner-exception-list"></div>
+        <p class="owner-ops-note">Tip: open any flagged order first, review its state and reservation details, then use the existing safe owner action rather than repeating an operation blindly.</p>
+    </section>
+
+    <section class="owner-card owner-audit-card">
+      <div class="owner-section-head owner-section-head-wrap">
+        <div><p class="owner-kicker">ACTIVITY / AUDIT LOG</p><h2>System & owner activity</h2></div>
+        <button class="btn btn-outline" id="refreshAudit" type="button">Refresh activity</button>
+      </div>
+      <p class="owner-audit-help">Read-only operational history. Secrets and full payment credentials are never stored here.</p>
+      <div class="owner-filter-row owner-audit-filters" aria-label="Audit filters">
+        <button class="owner-filter active" type="button" data-audit-filter="all">All</button>
+        <button class="owner-filter" type="button" data-audit-filter="owner">Owner</button>
+        <button class="owner-filter" type="button" data-audit-filter="customer">Customer</button>
+        <button class="owner-filter" type="button" data-audit-filter="failed">Failures</button>
+      </div>
+      <div id="auditLog" class="owner-table-wrap"></div>
+    </section>
+
+    <section class="owner-grid owner-lists">
+      <article class="owner-card">
+        <div class="owner-section-head owner-section-head-wrap">
+          <div><p class="owner-kicker">RECENT ORDERS</p><h2>Bank checkout activity</h2></div>
+          <div class="owner-filter-row" aria-label="Order filters">
+            <button class="owner-filter active" type="button" data-order-filter="all">All</button>
+            <button class="owner-filter" type="button" data-order-filter="pending">Pending</button>
+            <button class="owner-filter" type="button" data-order-filter="confirmed">Confirmed</button>
+            <button class="owner-filter" type="button" data-order-filter="closed">Closed</button>
+          </div>
+        </div>
+        <div class="owner-auto-refresh">
+          <label class="owner-check">
+            <input id="autoRefresh" type="checkbox" checked>
+            <span>Auto-refresh dashboard every 60 seconds</span>
+          </label>
+          <small id="lastRefresh">Not refreshed yet</small>
+        </div>
+        <div id="recentOrders" class="owner-table-wrap"></div>
+      </article>
+      <article class="owner-card">
+        <div class="owner-section-head owner-section-head-wrap">
+          <div><p class="owner-kicker">INVENTORY</p><h2>Live sellable stock</h2></div>
+          <div class="owner-stock-legend">
+            <span class="stock-dot healthy"></span>Healthy
+            <span class="stock-dot low"></span>Low
+            <span class="stock-dot critical"></span>Critical
+            <span class="stock-dot out"></span>Out
+          </div>
+        </div>
+        <div class="owner-stock-alerts" id="stockAlerts"></div>
+        <div id="stockTable" class="owner-table-wrap"></div>
+      </article>
+    </section>
+  </div>
+</main>
+
+<script src="owner.js?v=35.8"></script>
+</body>
+</html>

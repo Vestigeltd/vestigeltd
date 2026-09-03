@@ -598,22 +598,3 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
     box-shadow:none !important;
   }
 }
-
-
-/* V35_11_3B_CARD_SCOPE_FIX
-   Prevent the full flavour tray from animating. Only runtime-identified
-   individual cards receive the interaction. */
-[data-flavour-card]{
-  isolation:isolate;
-}
-
-[data-flavour-card] .flavour-card-action{
-  pointer-events:none;
-}
-
-/* If an old wrapper accidentally retains nested flavour cards, neutralise it. */
-[data-flavour-card]:has([data-flavour-card]){
-  transform:none !important;
-  box-shadow:none !important;
-  border-color:inherit !important;
-}
