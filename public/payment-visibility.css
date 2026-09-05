@@ -1,0 +1,139 @@
+/* V35.21: responsive safeguards around the vetted V35.16 banking design. */
+.vestige-bank-panel,
+.bank-checkout-grid,
+.bank-main,
+.bank-side,
+.bank-side-card {
+  min-width: 0;
+}
+
+.bank-main,
+.bank-side-card {
+  overflow-wrap: anywhere;
+}
+
+.bank-method {
+  min-width: 0;
+  min-height: 52px;
+}
+
+.bank-qr-shell {
+  width: 100%;
+  max-width: 410px;
+}
+
+.bank-qr {
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+}
+
+.reference-copy,
+.eft-copy,
+.bank-status-actions .btn {
+  min-height: 44px;
+}
+
+@media (max-width: 900px) {
+  .bank-checkout-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bank-side {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .order-summary-card {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 640px) {
+  .bank-side {
+    grid-template-columns: 1fr;
+  }
+
+  .order-summary-card {
+    grid-column: auto;
+  }
+
+  .bank-method {
+    min-height: 50px;
+  }
+
+  .reference-copy strong {
+    font-size: clamp(1.65rem, 10vw, 2.25rem);
+  }
+}
+
+/* Keep payment in a stable viewport layer so the completed Shop form does not
+   collapse underneath it and cause a disorienting page jump. */
+html.vestige-payment-open,
+html.vestige-payment-open body {
+  overflow: hidden;
+}
+
+.order-form.is-payment-mode #paymentPanel {
+  position: fixed;
+  inset: var(--payment-header-height, 82px) 0 0;
+  z-index: 49;
+  margin: 0 !important;
+  padding: clamp(18px, 3vw, 34px) max(18px, calc((100vw - 940px) / 2)) 40px !important;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: #f4f1ea !important;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity .18s ease-out, transform .18s ease-out;
+}
+
+.order-form.is-payment-mode #paymentPanel.is-payment-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.order-form.is-payment-mode #paymentPanel > .bank-panel-title,
+.order-form.is-payment-mode #paymentPanel > .bank-checkout-grid {
+  width: 100%;
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* V35.23.2 payment-view correction: the desktop checkout journey guide is
+   intentionally removed once payment is active. Its pinned side-rail must
+   never remain visible above or beside the secure payment surface. */
+.order-form.is-payment-mode #vestigeCheckoutJourney,
+.order-form.is-payment-mode #vestigeCheckoutGuidance {
+  display: none !important;
+}
+
+.order-form.is-payment-mode .bank-panel-title h3 {
+  color: #0b1727;
+}
+
+.bank-return-shop {
+  border: 1px solid #d9aa43;
+  background: #d9aa43;
+  color: #07101b;
+}
+
+.bank-return-shop:hover,
+.bank-return-shop:focus-visible {
+  background: #e4bb62;
+  border-color: #e4bb62;
+}
+
+.bank-live-status {
+  min-height: 22px;
+  margin: 16px 0 0 !important;
+  color: #f1dfb1 !important;
+  font-size: .9rem !important;
+  line-height: 1.45;
+}
+
+@media (max-width: 640px) {
+  .order-form.is-payment-mode #paymentPanel {
+    padding: 16px 14px 28px !important;
+  }
+}

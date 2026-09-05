@@ -1,0 +1,10 @@
+node_modules/
+.netlify/
+.wrangler/
+.env
+.env.*
+!.env.example
+*.sql
+!migrations/*.sql
+.DS_Store
+npm-debug.log*

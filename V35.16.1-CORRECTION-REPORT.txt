@@ -1,0 +1,49 @@
+VESTIGE V35.16.1 — PREVIEW CORRECTION REPORT
+================================================
+
+Purpose
+-------
+Correct the two presentation issues identified in the V35.16.0 Cloudflare
+preview without changing checkout, payment, stock, invoice, retention, owner,
+or order-processing business logic.
+
+Shop correction
+---------------
+- Keeps the approved compact dark-blue checkout journey design.
+- Restores the complete reactive selection information from the earlier
+  selection panel inside that compact bar:
+    Flavour, Quantity, Products, Delivery, Total, stock/selection note,
+    live-stock assurance, payment-confirmation assurance, and paid-invoice
+    assurance.
+- Retains the 1–5 quantity/product-price reference and basket reminder.
+- Reuses the established V35.14.2a updateSummary calculations and listeners.
+- Removes no customer-facing selection information; only its presentation
+  location and styling have changed.
+
+Contact correction
+------------------
+- E-mail address and Instagram handle now use the same strong dark text colour
+  and 700 weight for clear visibility against the white card.
+- Contact layout, links, wording, and responsive behaviour are unchanged.
+
+Cache/version isolation
+-----------------------
+- Changed storefront asset query strings to v35.16.1 so a preview cannot mix
+  old V35.16.0 CSS or JavaScript with corrected files.
+- This is a separate preview candidate. It does not alter the already uploaded
+  V35.16.0 Worker version ffcf6782-a8d6-4eef-a007-bb42885af376.
+
+Validation performed before packaging
+-------------------------------------
+- Node syntax check: public/script.js — PASS
+- Node syntax check: public/checkout-journey-safe.js — PASS
+- Focused V35.16.1 regression checks — PASS
+- Cloudflare deployment preflight — PASS
+- Reactive field/event wiring and unique ID checks — PASS
+- Review against immutable live baseline updateSummary logic — PASS
+
+Required preview review
+-----------------------
+Upload as a new Cloudflare Worker version, review its Version Preview URL on
+desktop and mobile, and do not deploy it to production until the visible values
+follow flavour, quantity, and delivery/collection choices correctly.

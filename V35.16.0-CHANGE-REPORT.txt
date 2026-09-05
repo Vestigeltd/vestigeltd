@@ -1,0 +1,72 @@
+VESTIGE V35.16.0 — VETTED SHOP, CONTACT, INVOICE EMAIL AND DATA RETENTION UPDATE
+
+SOURCE BASELINE
+---------------
+User-supplied archive: Vestige-current-live-working-baseline.zip
+SHA-256: 3e5fdd02caf7c6236de060e73ffe48262011daf69eef07d27e7a22dac1a37b2e
+
+IMPLEMENTED
+-----------
+1. Removed the large dynamic "Your Selection" panel from the Shop form.
+2. Preserved the compact hardened Order Process journey.
+3. Added product subtotals for quantities 1–5:
+   1 = R300, 2 = R600, 3 = R900, 4 = R1 200, 5 = R1 500.
+4. Clarified that delivery or authorised collection is calculated separately.
+5. Added a reminder to add each selected flavour to the basket.
+6. Preserved the existing mobile journey structure and added a compact mobile price row.
+7. Matched the Contact email address to the gold "Connect with Vestige" colour.
+8. Explicitly kept the Instagram handle aligned to the Instagram label colour.
+9. Personalised paid-invoice emails using the customer's safely escaped first name.
+10. Preserved Zoho's paid invoice attachment request.
+11. Added scheduled D1 data retention:
+    - expired, failed and cancelled checkout records deleted after 30 days;
+    - confirmed checkout personal data removed after 90 days;
+    - non-personal order/payment linkage retained;
+    - V0001, V0002 and V0004 explicitly protected;
+    - Zoho Books records are not modified by this retention routine.
+
+PRODUCTION FILES CHANGED
+------------------------
+public/index.html
+public/script.js
+public/checkout-journey-safe.js
+public/styles.css
+public/contact.html
+src/zoho-integration.cjs
+src/cleanup-expired-checkouts.cjs
+
+TEST ADDED
+----------
+tests/v35.16-regression.test.cjs
+
+VALIDATION PASSED
+-----------------
+- Original ZIP compressed-data integrity
+- Unsafe archive-path check
+- Active JavaScript syntax checks
+- Cloudflare project preflight
+- Focused V35.16 regression tests
+- Duplicate HTML ID check
+- Local HTML asset/reference check
+- Active-source hard-coded credential pattern scan
+- Baseline-to-release changed-file scope review
+
+ENVIRONMENT LIMITATION
+----------------------
+The supplied node_modules contains Windows-native workerd packages. The Cloudflare
+Worker dry run and supervised visual preview cannot execute in the Linux validation
+environment. Run these final Windows checks before uploading a Worker version:
+
+  node tests\v35.16-regression.test.cjs
+  npx wrangler deploy --dry-run
+
+Do not deploy if either command reports an error.
+
+DEFERRED / NOT IMPLEMENTED
+--------------------------
+- No blanket privacy/compliance statement was added; its wording and complete privacy
+  notice still require agreement.
+- No changes were made to stock validation, payment verification, Zoho financial
+  records, Owner Console authentication, collection access or D1 schema.
+- Existing public historical .bak files were preserved to avoid an unrelated baseline
+  change. Their public exposure should be handled as a separate security recommendation.

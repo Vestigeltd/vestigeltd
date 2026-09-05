@@ -1,0 +1,42 @@
+VESTIGE ZOHO BOOKS TEST-RECORD CLEANUP — V35.22
+
+PROTECT — DO NOT DELETE OR VOID
+  V0001
+  V0004
+
+APPROVED TEST REFERENCES
+  V0002
+  V0003
+  V0005
+  V0006
+  V0007
+  V0008
+  V0009
+  V0010
+  V0011
+  V0012
+  V0013
+  V0014
+  V0015
+
+WHY THIS IS A SEPARATE STEP
+The D1 audit proves that these references have no stored Zoho invoice or payment
+IDs, but it cannot prove what currently exists inside Zoho Books. D1 cleanup
+therefore must not make an unauthenticated assumption about Zoho accounting data.
+
+SAFE ZOHO BOOKS PROCEDURE
+1. Search each approved test reference exactly in Zoho Books.
+2. Confirm the reference is not V0001 or V0004.
+3. If a customer payment exists, remove or reverse that test payment first.
+4. Void or delete the associated test invoice using Zoho's allowed action.
+5. Do not alter any record whose reference/customer/amount is uncertain.
+6. Run the searches for V0001 and V0004 last and confirm both genuine sales remain.
+
+EXPECTED D1 RESULT
+  Remaining checkout references: V0001, V0004
+  Sequence value: 4
+  Next newly allocated payment reference: V0005
+
+IMPORTANT
+V0005 may be reused only after the old V0005 test invoice/payment has been removed
+from Zoho Books. Complete this Zoho cleanup before accepting a new customer order.

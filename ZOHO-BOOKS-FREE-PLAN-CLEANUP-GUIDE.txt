@@ -1,0 +1,35 @@
+VESTIGE — VERIFIED SHOP AND ZOHO CLEANUP RECORD
+
+STATUS — COMPLETED 5 SEPTEMBER 2026
+------------------------------------
+Cloudflare D1 was backed up, cleaned and independently verified.
+
+Verified D1 state:
+  Remaining checkout references: V0001, V0004
+  Sequence value: 4
+  Next reference: V0005
+  Linked test reservation rows: 0
+
+Verified Zoho Books state:
+  Invoices: V0001 and V0004 only; both paid
+  Payments Received: V0001 and V0004 only
+  Sales Receipts: none
+  Credit Notes: none
+  Customers: the two customers attached to the genuine sales only
+
+PROTECT
+-------
+Do not delete or void V0001 or V0004.
+Do not remove their paid invoices, payments or customer records.
+
+DO NOT RERUN
+------------
+The V35.22 shop-record cleanup was a one-time operation and is complete.
+The historical cleanup launcher is deliberately disabled.
+
+ONGOING DISCIPLINE
+------------------
+- Do not create routine test invoices in the production Zoho organisation.
+- Use preview and non-financial test tooling where possible.
+- Reconcile real bank credits before confirming a customer payment.
+- Back up and audit D1 before any future record cleanup.

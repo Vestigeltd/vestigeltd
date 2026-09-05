@@ -1,0 +1,30 @@
+VESTIGE V35.16.2 — LIVE PREVIEW CORRECTION REPORT
+==================================================
+
+V35.16.1 preview verdict
+------------------------
+DO NOT DEPLOY Worker Version 73d65c81-0340-42f1-a692-68e687e84d0e.
+
+Live checks passed
+------------------
+- V35.16.1 assets were served with the correct cache identifiers.
+- No website JavaScript console errors were detected.
+- Reactive flavour, quantity, product subtotal, delivery and total values
+  updated correctly during live interaction.
+- Progress changed from Choose to Details when selection became complete.
+
+Defects identified and corrected in V35.16.2
+--------------------------------------------
+1. The existing `.contact-card .contact-detail a` rule had greater selector
+   specificity than the V35.16.1 e-mail rule, so the live e-mail remained gold.
+   V35.16.2 uses a narrowly scoped higher-specificity rule for both contact
+   values. Both resolve to #172231 at 700 weight.
+2. The inherited journey initializer stopped retrying after approximately 30
+   seconds while the age gate remained open. V35.16.2 listens to the existing
+   legal-age entry button and restarts initialization immediately after entry.
+
+Scope protection
+----------------
+- No checkout calculations, stock rules, Zoho integration, payment flow,
+  invoices, D1 data, retention logic, order processing, or Owner logic changed.
+- Asset cache references advanced to v35.16.2 to prevent mixed old/new files.
