@@ -1,4 +1,4 @@
-# Vestige V35.23.2 — Cloudflare Release Checklist
+# Vestige V35.24.1 — Cloudflare Release Checklist
 
 ## 1. Local verification
 
@@ -39,6 +39,8 @@ Validate:
 - `/order-status`
 - `/contact`
 - `/owner`
+
+On the Owner Console, run the test-order cleanup preview without applying it. Confirm that it lists only known tests, protects every financially evidenced genuine website order, and calculates the next reference as the highest protected reference plus one.
 
 ## 4. Shop state validation
 

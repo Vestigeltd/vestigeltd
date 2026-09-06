@@ -1,4 +1,4 @@
-# Vestige Ltd — V35.23.2 Cloudflare Operational Project
+# Vestige Ltd — V35.24.1 Cloudflare Operational Project
 
 This is the clean operational project for the Vestige Ltd website and checkout system.
 
@@ -38,6 +38,7 @@ Validate:
 5. Owner Console authentication and operational actions.
 6. Zoho Books inventory, invoice and payment integrity.
 7. Mobile and desktop presentation.
+8. Owner test-order preview calculates the next website reference from the highest financially evidenced genuine order plus one.
 
 ## Security
 

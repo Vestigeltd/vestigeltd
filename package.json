@@ -1,6 +1,6 @@
 {
   "name": "vestige-vapes-cloudflare-checkout",
-  "version": "35.23.2",
+  "version": "35.24.1",
   "private": true,
   "engines": {
     "node": ">=22"
