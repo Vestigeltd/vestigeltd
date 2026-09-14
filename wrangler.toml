@@ -8,6 +8,7 @@ preview_urls = true
 [assets]
 directory = "./public"
 binding = "ASSETS"
+run_worker_first = ["/", "/index.html", "/bc10000", "/bc10000/*", "/flavours/*", "/contact", "/contact.html", "/privacy-policy", "/privacy-policy.html", "/terms-and-conditions", "/terms-and-conditions.html", "/returns-refunds", "/returns-refunds.html", "/vape-durbanville", "/vape-durbanville.html", "/owner", "/owner.html", "/order-status", "/order-status.html"]
 
 [[d1_databases]]
 binding = "CHECKOUT_DB"

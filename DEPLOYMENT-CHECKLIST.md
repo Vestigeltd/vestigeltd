@@ -1,80 +1,17 @@
-# Vestige V35.24.1 — Cloudflare Release Checklist
+# V35.28.1 Deployment Checklist
 
-## 1. Local verification
-
-From the project root:
-
-```text
-npm ci
-npm run verify
-```
-
-`npm run verify` must report:
-
-```text
-Vestige Cloudflare deployment preflight passed.
-```
-
-## 2. Cloudflare dry-run
-
-Run on the owner's Windows machine:
-
-```text
-npx wrangler deploy --dry-run
-```
-
-Do not proceed if Wrangler reports a configuration, packaging or syntax error.
-
-## 3. Preview validation
-
-Deploy/upload a preview only after the dry-run succeeds.
-
-Validate:
-
-- `/`
-- `/flavours/blueberry-mint`
-- `/flavours/miami-mint`
-- `/flavours/blue-razz-ice`
-- `/flavours/strawberry-kiwi-ice`
-- `/order-status`
-- `/contact`
-- `/owner`
-
-On the Owner Console, run the test-order cleanup preview without applying it. Confirm that it lists only known tests, protects every financially evidenced genuine website order, and calculates the next reference as the highest protected reference plus one.
-
-## 4. Shop state validation
-
-Verify both states:
-
-- Normal in-stock Shop remains selectable and checkout-capable.
-- When all five configured flavours report numeric stock `<= 0`, the Shop displays `Sold out` / `Will have stock soon`.
-- Partial, missing or failed stock responses must never falsely report the entire Shop as sold out.
-- An active/pending payment recovery journey must remain accessible.
-
-## 5. Zoho and payment validation
-
-Run the protected Owner Console health checks and audit Zoho Books separately.
-
-For any controlled purchase, verify the complete chain:
-
-1. Correct customer.
-2. Correct product and quantity.
-3. Correct pricing.
-4. Correct delivery/collection treatment.
-5. Correct Sales Order/invoice.
-6. Payment verified by Zoho.
-7. Website confirmation only after verification.
-8. Correct reservation release/bridge behaviour.
-
-## 6. Production approval
-
-Production deployment requires:
-
-- successful local verification;
-- successful Windows Wrangler dry-run;
-- successful preview;
-- successful browser validation;
-- successful Zoho audit;
-- explicit owner approval.
-
-**Never use a new Worker or new D1 database as a shortcut around a release problem.**
+- [ ] V35.27.9 rollback sibling remains untouched.
+- [ ] Run `VALIDATE-V35.28.1.cmd` and confirm **V35.28.1 VALIDATION PASSED**.
+- [ ] Run `UPLOAD-V35.28.1-PREVIEW.cmd`.
+- [ ] Record Worker Version ID and Version Preview URL.
+- [ ] Confirm the Owner tab remains in its existing public navigation position.
+- [ ] Confirm `/owner` returns `X-Robots-Tag: noindex, nofollow, noarchive, nosnippet`.
+- [ ] Unlock the Owner Console with the existing payment-admin key; no new password is required.
+- [ ] Confirm Business Intelligence switches correctly between Today, 7 days and 30 days.
+- [ ] Confirm the poll appears only when every current shop flavour has verified zero stock.
+- [ ] Select multiple poll checkboxes and submit once; confirm no name, e-mail or mobile field exists.
+- [ ] Refresh Customer Restock Demand in the Owner Console and verify the aggregate ranking.
+- [ ] Confirm normal in-stock checkout, payment and stock behaviour remains unchanged.
+- [ ] Verify `/bc10000` and `/bc10000/index.html` redirect to `/bc10000/`.
+- [ ] Verify preview `X-Robots-Tag` remains `noindex, nofollow, noarchive, nosnippet`.
+- [ ] Promote only the verified Version ID to 100% production.

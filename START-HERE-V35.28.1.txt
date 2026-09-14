@@ -1,0 +1,11 @@
+VESTIGE V35.28.1 — OWNER LOCK VISIBILITY CORRECTION
+
+DO THIS
+-------
+1. Keep V35.27.9 untouched as the immediate rollback sibling.
+2. Extract this V35.28.1 folder as a separate sibling.
+3. Double-click VALIDATE-V35.28.1.cmd.
+4. Continue only if it reports V35.28.1 VALIDATION PASSED.
+5. Double-click UPLOAD-V35.28.1-PREVIEW.cmd.
+6. Send Robbie the Worker Version ID and Version Preview URL.
+7. Do NOT promote until the poll, Owner Console and normal checkout have been tested on the exact preview.
