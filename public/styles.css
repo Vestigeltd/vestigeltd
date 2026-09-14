@@ -981,6 +981,12 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
 .restock-poll-submit{display:block;margin:18px auto 0}
 .restock-poll-status{min-height:20px;margin:11px 0 0!important;color:#aeb9c7!important;font:400 11px/1.45 Arial,Helvetica,sans-serif!important;text-align:center}
 .restock-poll-status.error{color:#ffb7ae!important}.restock-poll-status.ok{color:#aee2c4!important}
+/* Poll-only accessibility and narrow-screen safeguards. */
+.restock-poll fieldset{min-width:0}
+.restock-poll-options label{min-height:44px;min-width:0;overflow-wrap:anywhere}
+.restock-poll-options input:focus-visible,.restock-poll-submit:focus-visible{outline:3px solid #fff;outline-offset:4px}
+.restock-poll-submit{min-height:44px;max-width:100%;white-space:normal}
+.restock-poll-submit[aria-disabled="true"]{opacity:.65;cursor:default}
 .sold-out-check{display:block;margin:10px auto 0;background:transparent;color:#d4aa58}
 @media(max-width:600px){.sold-out-message{width:calc(100% - 32px);padding:28px 18px;max-height:calc(100vh - 104px)}.restock-poll-options{grid-template-columns:1fr}.restock-poll legend{font-size:19px}}
 

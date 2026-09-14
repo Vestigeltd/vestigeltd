@@ -147,9 +147,9 @@
 <div aria-label="Shop unavailable" class="sold-out-overlay" hidden id="soldOutOverlay">
 <div class="sold-out-message"><span>VESTIGE VAPES</span><h3>Sold out</h3><p>New stock is coming soon.</p>
 <form class="restock-poll" id="restockPoll" novalidate>
-<fieldset>
+<fieldset aria-describedby="restockPollHelp restockPollStatus">
 <legend>Which ELFBAR BC10000 flavours should Vestige stock next?</legend>
-<p class="restock-poll-help">Select every flavour you would consider buying.</p>
+<p class="restock-poll-help" id="restockPollHelp">Select every flavour you would consider buying.</p>
 <div class="restock-poll-options">
 <label><input type="checkbox" value="blueberry-mint"> <span>Blueberry Mint</span></label>
 <label><input type="checkbox" value="miami-mint"> <span>Miami Mint</span></label>
@@ -165,8 +165,8 @@
 <label><input type="checkbox" value="strawberry-ice"> <span>Strawberry Ice</span></label>
 <label><input type="checkbox" value="blueberry-ice"> <span>Blueberry Ice</span></label>
 </div>
-<button class="sold-out-retry restock-poll-submit" id="restockPollSubmit" type="submit">Submit selections</button>
-<p class="restock-poll-status" id="restockPollStatus" role="status">Anonymous poll — no name, e-mail or mobile number required.</p>
+<button class="sold-out-retry restock-poll-submit" id="restockPollSubmit" type="submit" aria-describedby="restockPollStatus">Submit selections</button>
+<p class="restock-poll-status" id="restockPollStatus" role="status" aria-atomic="true">Anonymous poll — no name, e-mail or mobile number required.</p>
 </fieldset>
 </form>
 <button class="sold-out-retry sold-out-check" id="soldOutRetry" type="button">Check stock again</button></div>

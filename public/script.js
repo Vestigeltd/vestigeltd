@@ -790,14 +790,17 @@
   const status=document.getElementById('restockPollStatus');
   if(!form||!button||!status)return;
   const submittedKey='vestigeRestockPollV35_28_0';
+  let pending=false;
+  let submitted=false;
 
   function setStatus(message,type){
     status.textContent=message;
     status.className='restock-poll-status'+(type?' '+type:'');
   }
   function markSubmitted(){
+    submitted=true;
     form.querySelectorAll('input[type="checkbox"]').forEach(input=>{input.disabled=true;});
-    button.disabled=true;
+    button.setAttribute('aria-disabled','true');
     button.textContent='Selections recorded';
     setStatus('Thank you. Your flavour preferences have been recorded.','ok');
   }
@@ -805,26 +808,45 @@
 
   form.addEventListener('submit',async event=>{
     event.preventDefault();
+    if(pending||submitted)return;
     const selections=Array.from(form.querySelectorAll('input[type="checkbox"]:checked')).map(input=>input.value);
-    if(!selections.length){setStatus('Select at least one flavour before submitting.','error');return;}
-    button.disabled=true;
+    if(!selections.length){
+      setStatus('Select at least one flavour before submitting.','error');
+      form.querySelector('input[type="checkbox"]').focus();
+      return;
+    }
+    pending=true;
+    button.setAttribute('aria-disabled','true');
+    form.querySelectorAll('input[type="checkbox"]').forEach(input=>{input.disabled=true;});
     button.textContent='Submitting…';
     setStatus('Recording your anonymous selections…');
+    const controller=new AbortController();
+    const timeout=setTimeout(()=>controller.abort(),15000);
     try{
       const response=await fetch('/api/restock-poll',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        credentials:'same-origin',
+        credentials:'omit',
+        referrerPolicy:'no-referrer',
+        signal:controller.signal,
         body:JSON.stringify({action:'vote',selections})
       });
       const data=await response.json().catch(()=>({}));
-      if(!response.ok)throw new Error(data.message||'The poll could not be submitted.');
+      if(!response.ok||!data||data.success!==true)throw new Error('The poll could not be confirmed. Please try again.');
       try{localStorage.setItem(submittedKey,'1');}catch(_){}
       markSubmitted();
     }catch(error){
-      button.disabled=false;
       button.textContent='Submit selections';
-      setStatus(error&&error.message?error.message:'The poll could not be submitted. Please try again.','error');
+      setStatus(error&&error.name==='AbortError'
+        ? 'The request timed out. Your selections are still selected, but we could not confirm whether they were recorded. Please try again later.'
+        : 'The poll could not be confirmed. Your selections are still selected. Please try again later.','error');
+    }finally{
+      clearTimeout(timeout);
+      pending=false;
+      if(!submitted){
+        button.setAttribute('aria-disabled','false');
+        form.querySelectorAll('input[type="checkbox"]').forEach(input=>{input.disabled=false;});
+      }
     }
   });
 })();
