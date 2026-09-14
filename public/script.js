@@ -6,8 +6,8 @@
   if (enter) enter.onclick = function () { try { sessionStorage.setItem('vestigeAgeAccepted', '1'); } catch (e) {} if (gate) gate.classList.add('hidden'); };
   if (leave) leave.onclick = function () { window.location.href = 'https://www.google.com/'; };
 
-  var bankCss = document.createElement('link'); bankCss.rel='stylesheet'; bankCss.href='bank-payments.css?v=35.22.0'; document.head.appendChild(bankCss);
-  var paymentVisibilityCss = document.createElement('link'); paymentVisibilityCss.rel='stylesheet'; paymentVisibilityCss.href='payment-visibility.css?v=35.22.0'; document.head.appendChild(paymentVisibilityCss);
+  var bankCss = document.createElement('link'); bankCss.rel='stylesheet'; bankCss.href='/bank-payments.css?v=35.22.0&release=35.27.9'; document.head.appendChild(bankCss);
+  var paymentVisibilityCss = document.createElement('link'); paymentVisibilityCss.rel='stylesheet'; paymentVisibilityCss.href='/payment-visibility.css?v=35.22.0&release=35.26.1&ui=35.27.9'; document.head.appendChild(paymentVisibilityCss);
   var toggle=document.getElementById('navToggle'), nav=document.getElementById('mainNav');
   if(toggle&&nav) toggle.onclick=function(){var open=nav.classList.toggle('open');toggle.setAttribute('aria-expanded',open?'true':'false');};
 
@@ -422,8 +422,11 @@
     if(!cartBox)return;
     if(!cart.length){cartBox.hidden=true;cartBox.innerHTML='';updateTotals();saveBasketSession();publishCartSummary();return;}
     cartBox.hidden=false;
-    var rows=cart.map(function(item,index){return '<div class="cart-row"><div><strong>'+esc(item.flavour)+'</strong><small>'+money(PRODUCT_PRICE)+' each</small></div><span>Qty '+item.quantity+'</span><strong>'+money(item.quantity*PRODUCT_PRICE)+'</strong><button type="button" class="cart-remove" data-cart-index="'+index+'" aria-label="Remove '+esc(item.flavour)+'">Remove</button></div>';}).join('');
-    cartBox.innerHTML='<div class="cart-head"><strong>YOUR BASKET</strong><span>'+cartQuantity()+' item'+(cartQuantity()===1?'':'s')+'</span></div>'+rows+'<div class="cart-foot"><span>Products '+money(cartProductsTotal())+' + '+(selectedDeliveryMethod()==='collection'?'collection ':'delivery ')+money(currentDeliveryPrice())+'</span><strong>'+money(cartGrandTotal())+'</strong></div>';
+    var rows=cart.map(function(item,index){return '<div class="cart-row"><div class="cart-product"><span class="cart-mobile-label">Flavour</span><strong>'+esc(item.flavour)+'</strong><small>ELFBAR BC10000</small></div><div class="cart-cell cart-qty"><span class="cart-mobile-label">Qty</span><strong>'+item.quantity+'</strong></div><div class="cart-cell cart-unit"><span class="cart-mobile-label">Unit price</span><strong>'+money(PRODUCT_PRICE)+'</strong></div><div class="cart-cell cart-line-total"><span class="cart-mobile-label">Line total</span><strong>'+money(item.quantity*PRODUCT_PRICE)+'</strong></div><button type="button" class="cart-remove" data-cart-index="'+index+'" aria-label="Remove '+esc(item.flavour)+'">Remove</button></div>';}).join('');
+    var collection=selectedDeliveryMethod()==='collection';
+    var fulfilmentLabel=collection?'Collection':'Delivery';
+    var fulfilmentDetail=collection?'Vestige Ltd — arranged collection':'The Courier Guy — Locker to Locker';
+    cartBox.innerHTML='<div class="cart-head"><div><span>YOUR BASKET</span><strong>'+cartQuantity()+' item'+(cartQuantity()===1?'':'s')+'</strong></div><div class="cart-head-total"><span>Basket total</span><strong>'+money(cartGrandTotal())+'</strong></div></div><div class="cart-columns" aria-hidden="true"><span>Flavour</span><span>Qty</span><span>Unit price</span><span>Line total</span><span></span></div><div class="cart-items">'+rows+'</div><div class="cart-totals"><div class="cart-total-line"><span>Products</span><strong>'+money(cartProductsTotal())+'</strong></div><div class="cart-total-line cart-fulfilment-line"><span><b>'+fulfilmentLabel+'</b><small>'+fulfilmentDetail+'</small></span><strong>'+money(currentDeliveryPrice())+'</strong></div><div class="cart-total-line cart-grand-total"><span>BASKET TOTAL</span><strong>'+money(cartGrandTotal())+'</strong></div></div>';
     updateTotals();
     saveBasketSession();
     publishCartSummary();
@@ -494,7 +497,7 @@
       return success();
     }catch(_){return failure();}
   }
-  function renderEft(eft){var grid=document.getElementById('eftGrid');if(!grid)return;grid.innerHTML='';if(!eft||!eft.available){grid.innerHTML='<p class="bank-note">EFT bank details have not yet been configured on this preview Worker.</p>';return;}[['Bank',eft.bankName],['Account holder',eft.accountHolder],['Account number',eft.accountNumber],['Account type',eft.accountType],['Branch code',eft.branchCode],['SWIFT code',eft.swiftCode],['Reference',activeCheckout&&activeCheckout.paymentReference]].forEach(function(row){if(!row[1])return;var wrap=document.createElement('div');wrap.className='eft-row';var label=document.createElement('span');label.textContent=row[0];var value=document.createElement('strong');value.textContent=String(row[1]);var btn=document.createElement('button');btn.type='button';btn.className='eft-copy';btn.textContent='Copy';btn.setAttribute('aria-label','Copy '+row[0]);btn.addEventListener('click',function(){copyText('',btn);});wrap.append(label,value,btn);grid.appendChild(wrap);});}
+  function renderEft(eft){var grid=document.getElementById('eftGrid');if(!grid)return;grid.innerHTML='';if(!eft||!eft.available){grid.innerHTML='<p class="bank-note">EFT bank details have not yet been configured on this preview Worker.</p>';return;}[['Bank',eft.bankName],['Account holder',eft.accountHolder],['Account number',eft.accountNumber],['Account type',eft.accountType],['Branch code',eft.branchCode],['SWIFT code',eft.swiftCode],['Reference',activeCheckout&&activeCheckout.paymentReference]].forEach(function(row){if(!row[1])return;var wrap=document.createElement('div');wrap.className='eft-row';var label=document.createElement('span');label.className='eft-label';label.textContent=row[0];var value=document.createElement('strong');value.className='eft-value';value.textContent=String(row[1]);var btn=document.createElement('button');btn.type='button';btn.className='eft-copy';btn.textContent='Copy';btn.setAttribute('aria-label','Copy '+row[0]);btn.addEventListener('click',function(){copyText('',btn);});wrap.append(label,value,btn);grid.appendChild(wrap);});}
   function showBankPayment(result,restored){
     activeCheckout=result;checkoutToken=result.checkoutToken||'';setShopSoldOut(false);var o=result.order||{},items=Array.isArray(o.items)?o.items:[];
     if(!restored)savePendingCheckoutRecovery(result);
@@ -585,7 +588,7 @@
       await loadAvailability();
       validateSelectedStock();
       if(!preserveBasket){
-        window.location.replace('/#top');
+        window.location.replace('/bc10000/#top');
         return;
       }
       window.setTimeout(function(){var shopHeading=document.getElementById('productSelectionHeading');if(shopHeading){shopHeading.setAttribute('tabindex','-1');shopHeading.focus({preventScroll:true});}},210);
@@ -765,11 +768,65 @@
       sent=true;
       const amountNode=document.getElementById('orderTotal');
       const amount=amountNode?Number(String(amountNode.textContent||'').replace(/[^0-9.]/g,'')):null;
-      track('payment_confirmed',{amount});
+      let basketItems=null;
+      try{
+        const summary=JSON.parse((document.getElementById('orderForm')||{}).dataset.basketSummary||'{}');
+        basketItems=Number(summary.totalQuantity)||null;
+      }catch(_){}
+      track('payment_confirmed',{amount,basketItems});
     };
     new MutationObserver(send).observe(receipt,{attributes:true,attributeFilter:['hidden','style','class']});
     send();
   }
+})();
+
+
+/* VESTIGE_RESTOCK_POLL_V35_28_0
+   Multi-select, aggregate-only poll. A local browser flag discourages accidental
+   duplicate submissions without sending a customer identifier to the Worker. */
+(() => {
+  const form=document.getElementById('restockPoll');
+  const button=document.getElementById('restockPollSubmit');
+  const status=document.getElementById('restockPollStatus');
+  if(!form||!button||!status)return;
+  const submittedKey='vestigeRestockPollV35_28_0';
+
+  function setStatus(message,type){
+    status.textContent=message;
+    status.className='restock-poll-status'+(type?' '+type:'');
+  }
+  function markSubmitted(){
+    form.querySelectorAll('input[type="checkbox"]').forEach(input=>{input.disabled=true;});
+    button.disabled=true;
+    button.textContent='Selections recorded';
+    setStatus('Thank you. Your flavour preferences have been recorded.','ok');
+  }
+  try{if(localStorage.getItem(submittedKey)==='1')markSubmitted();}catch(_){}
+
+  form.addEventListener('submit',async event=>{
+    event.preventDefault();
+    const selections=Array.from(form.querySelectorAll('input[type="checkbox"]:checked')).map(input=>input.value);
+    if(!selections.length){setStatus('Select at least one flavour before submitting.','error');return;}
+    button.disabled=true;
+    button.textContent='Submitting…';
+    setStatus('Recording your anonymous selections…');
+    try{
+      const response=await fetch('/api/restock-poll',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        credentials:'same-origin',
+        body:JSON.stringify({action:'vote',selections})
+      });
+      const data=await response.json().catch(()=>({}));
+      if(!response.ok)throw new Error(data.message||'The poll could not be submitted.');
+      try{localStorage.setItem(submittedKey,'1');}catch(_){}
+      markSubmitted();
+    }catch(error){
+      button.disabled=false;
+      button.textContent='Submit selections';
+      setStatus(error&&error.message?error.message:'The poll could not be submitted. Please try again.','error');
+    }
+  });
 })();
 
 
@@ -849,9 +906,16 @@
       if (!card) return;
 
       card.dataset.flavourCard = slug;
-      card.setAttribute('tabindex','0');
-      card.setAttribute('role','link');
-      card.setAttribute('aria-label','Explore ' + name);
+      const detailLink = card.querySelector(':scope > a.flavour-card-action[href]');
+      if (detailLink) {
+        card.removeAttribute('tabindex');
+        card.removeAttribute('role');
+        card.removeAttribute('aria-label');
+      } else {
+        card.setAttribute('tabindex','0');
+        card.setAttribute('role','link');
+        card.setAttribute('aria-label','Explore ' + name);
+      }
 
       if (!card.querySelector(':scope > .flavour-card-action')) {
         const cue = document.createElement('span');
@@ -1200,19 +1264,13 @@
       if (!f || !q || key === lastTracked) return;
       lastTracked = key;
       try {
-        fetch('/api/analytics', {
-          method:'POST',
-          headers:{'Content-Type':'application/json'},
-          keepalive:true,
-          body:JSON.stringify({
-            action:'track',
-            event:'product_selection_completed',
+        if (typeof window.vestigeTrackConversion === 'function') {
+          window.vestigeTrackConversion('product_selection_completed', {
             flavour:f,
             quantity:q,
-            amount:(PRODUCT_PRICE*q)+DELIVERY_PRICE,
-            path:location.pathname
-          })
-        }).catch(()=>{});
+            amount:(PRODUCT_PRICE*q)+DELIVERY_PRICE
+          });
+        }
       } catch (_) {}
     }
 

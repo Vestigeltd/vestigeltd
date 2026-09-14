@@ -1,45 +1,75 @@
-<?xml version="1.0" encoding="utf-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<url>
-<loc>https://vestigeltd.co.za/</loc>
-<lastmod>2026-09-05</lastmod>
-<changefreq>weekly</changefreq>
-<priority>1.0</priority>
-</url>
-<url>
-<loc>https://vestigeltd.co.za/contact</loc>
-<lastmod>2026-09-05</lastmod>
-<changefreq>monthly</changefreq>
-<priority>0.6</priority>
-</url>
-<url>
-<loc>https://vestigeltd.co.za/flavours/blueberry-mint</loc>
-<lastmod>2026-09-05</lastmod>
-<changefreq>monthly</changefreq>
-<priority>0.8</priority>
-</url>
-<url>
-<loc>https://vestigeltd.co.za/flavours/miami-mint</loc>
-<lastmod>2026-09-05</lastmod>
-<changefreq>monthly</changefreq>
-<priority>0.8</priority>
-</url>
-<url>
-<loc>https://vestigeltd.co.za/flavours/blue-razz-ice</loc>
-<lastmod>2026-09-05</lastmod>
-<changefreq>monthly</changefreq>
-<priority>0.8</priority>
-</url>
-<url>
-<loc>https://vestigeltd.co.za/flavours/strawberry-kiwi-ice</loc>
-<lastmod>2026-09-05</lastmod>
-<changefreq>monthly</changefreq>
-<priority>0.8</priority>
-</url>
-<url>
-<loc>https://vestigeltd.co.za/flavours/watermelon-ice</loc>
-<lastmod>2026-09-05</lastmod>
-<changefreq>monthly</changefreq>
-<priority>0.8</priority>
-</url>
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://vestigeltd.co.za/</loc>
+    <lastmod>2026-09-11</lastmod>
+    <image:image>
+      <image:loc>https://vestigeltd.co.za/assets/vestige-logo-optimized.png</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://vestigeltd.co.za/contact</loc>
+    <lastmod>2026-09-09</lastmod>
+  </url>
+  <url>
+    <loc>https://vestigeltd.co.za/flavours/blueberry-mint</loc>
+    <lastmod>2026-09-11</lastmod>
+    <image:image>
+      <image:loc>https://vestigeltd.co.za/assets/bc10000-blueberry-mint-campaign.webp</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://vestigeltd.co.za/flavours/miami-mint</loc>
+    <lastmod>2026-09-11</lastmod>
+    <image:image>
+      <image:loc>https://vestigeltd.co.za/assets/bc10000-miami-mint-campaign.webp</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://vestigeltd.co.za/flavours/blue-razz-ice</loc>
+    <lastmod>2026-09-11</lastmod>
+    <image:image>
+      <image:loc>https://vestigeltd.co.za/assets/bc10000-blue-razz-ice-campaign.webp</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://vestigeltd.co.za/flavours/strawberry-kiwi-ice</loc>
+    <lastmod>2026-09-11</lastmod>
+    <image:image>
+      <image:loc>https://vestigeltd.co.za/assets/bc10000-strawberry-kiwi-ice-campaign.webp</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://vestigeltd.co.za/flavours/watermelon-ice</loc>
+    <lastmod>2026-09-11</lastmod>
+    <image:image>
+      <image:loc>https://vestigeltd.co.za/assets/bc10000-watermelon-ice-campaign.webp</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://vestigeltd.co.za/privacy-policy</loc>
+    <lastmod>2026-09-09</lastmod>
+  </url>
+  <url>
+    <loc>https://vestigeltd.co.za/terms-and-conditions</loc>
+    <lastmod>2026-09-09</lastmod>
+  </url>
+  <url>
+    <loc>https://vestigeltd.co.za/returns-refunds</loc>
+    <lastmod>2026-09-09</lastmod>
+  </url>
+  <url>
+    <loc>https://vestigeltd.co.za/vape-durbanville</loc>
+    <lastmod>2026-09-11</lastmod>
+    <image:image>
+      <image:loc>https://vestigeltd.co.za/assets/bc10000-showcase-v3-optimized.jpg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://vestigeltd.co.za/bc10000/</loc>
+    <lastmod>2026-09-14</lastmod>
+    <image:image>
+      <image:loc>https://vestigeltd.co.za/assets/bc10000-showcase-v3-optimized.jpg</image:loc>
+    </image:image>
+  </url>
 </urlset>

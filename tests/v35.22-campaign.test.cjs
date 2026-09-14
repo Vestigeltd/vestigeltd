@@ -3,7 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const root = path.resolve(__dirname, '..');
-const html = fs.readFileSync(path.join(root, 'public', 'index.html'), 'utf8');
+const html = fs.readFileSync(path.join(root, 'public', 'bc10000', 'index.html'), 'utf8');
 const contactHtml = fs.readFileSync(path.join(root, 'public', 'contact.html'), 'utf8');
 const css = fs.readFileSync(path.join(root, 'public', 'styles.css'), 'utf8');
 const script = fs.readFileSync(path.join(root, 'public', 'script.js'), 'utf8');
@@ -23,8 +23,8 @@ const jsonLdMatch = html.match(/<script type="application\/ld\+json">([\s\S]*?)<
 assert(jsonLdMatch, 'Homepage JSON-LD is missing.');
 const graph = JSON.parse(jsonLdMatch[1])['@graph'];
 const product = graph.find(item => item['@type'] === 'Product');
-const organization = graph.find(item => item['@type'] === 'Organization');
-assert(organization, 'Organization structured data is missing.');
+const organization = graph.find(item => item['@type'] === 'Organization' || item['@type'] === 'OnlineStore');
+assert(organization, 'Organization/OnlineStore structured data is missing.');
 assert.equal(organization.contactPoint?.email, 'contact@vestigeltd.co.za');
 for (const file of projectTextFiles(root)) {
   const content = fs.readFileSync(file, 'utf8');
@@ -38,9 +38,9 @@ assert.equal(product.brand.name, 'ELFBAR');
 assert.equal(product.offers?.['@type'], 'Offer');
 assert.equal(product.offers?.price, '300.00');
 assert.equal(product.offers?.priceCurrency, 'ZAR');
-assert.equal(product.offers?.url, 'https://vestigeltd.co.za/#buy-now');
+assert.equal(product.offers?.url, 'https://vestigeltd.co.za/bc10000/#buy-now');
 assert.equal(product.offers?.seller?.['@id'], 'https://vestigeltd.co.za/#organization');
-assert.equal(product.offers?.availability, undefined, 'Static structured data must not claim live availability.');
+assert.equal(product.offers?.availability, 'https://schema.org/OutOfStock', 'Static structured data must use the conservative sold-out fallback; Worker enrichment remains authoritative when live stock is available.');
 assert.match(contactHtml, /href="mailto:contact@vestigeltd\.co\.za">contact@vestigeltd\.co\.za<\/a>/);
 assert(!contactHtml.includes(retiredOrdersEmail));
 
@@ -85,11 +85,11 @@ for (const image of [
 }
 
 assert.match(html, /<video[^>]*class="device-video"/);
-assert.match(html, /data-src="assets\/bc10000\.mp4"/);
+assert.match(html, /data-src="\/assets\/bc10000\.mp4"/);
 assert(fs.statSync(path.join(root, 'public', 'assets', 'bc10000.mp4')).size > 500_000, 'Technical visual source was degraded or replaced.');
 assert.match(css, /\.compact-spec-layout \.device-stage\{min-height:470px;max-height:470px\}/);
 assert.match(script, /bank-payments\.css\?v=35\.22\.0/);
-assert.match(html, /styles\.css\?v=35\.23\.2/);
+assert.match(html, /styles\.css\?v=35\.27\.6/);
 assert.match(css, /flavour-icon\{position:absolute;inset:6px 5% auto;width:90%;height:48%/);
 assert.match(html, /script\.js\?v=35\.23\.2/);
 

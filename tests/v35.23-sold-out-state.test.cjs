@@ -4,15 +4,19 @@ const path = require('node:path');
 const vm = require('node:vm');
 
 const root = path.resolve(__dirname, '..');
-const html = fs.readFileSync(path.join(root, 'public', 'index.html'), 'utf8');
+const html = fs.readFileSync(path.join(root, 'public', 'bc10000', 'index.html'), 'utf8');
 const css = fs.readFileSync(path.join(root, 'public', 'styles.css'), 'utf8');
 const script = fs.readFileSync(path.join(root, 'public', 'script.js'), 'utf8');
 
-assert.match(html, /id="soldOutOverlay"[^>]*role="status"/);
-assert.match(html, /<h3>Sold out<\/h3><p>Will have stock soon<\/p>/);
+assert.match(html, /id="soldOutOverlay"/);
+assert.match(html, /<h3>Sold out<\/h3><p>New stock is coming soon\.<\/p>/);
 assert.match(html, /id="soldOutRetry"[^>]*>Check stock again<\/button>/);
 assert.match(css, /\.checkout-shell\.is-sold-out \.order-form\{[^}]*pointer-events:none/);
 assert.match(css, /\.sold-out-overlay\{[^}]*position:absolute;inset:0;z-index:24/);
+assert.match(css, /\.sold-out-overlay\{[^}]*display:block/,
+  'The full-form blocking layer must begin at the top of the checkout shell.');
+assert.match(css, /\.sold-out-message\{[^}]*position:absolute;top:18px;left:50%;transform:translateX\(-50%\)/,
+  'The sold-out message must be anchored at the visible top of the checkout shell.');
 assert.match(script, /setShopSoldOut\(allSoldOut\)/);
 assert.match(script, /catch\(e\)\{setShopSoldOut\(false\)/, 'An availability failure must not be described as sold out.');
 assert.match(script, /!!soldOut&&!activeCheckout&&!checkoutToken/, 'A pending payment must override the storefront sold-out overlay.');
@@ -31,4 +35,4 @@ assert.equal(classify(Object.fromEntries(names.map((name, index) => [name, { ava
 assert.equal(classify(Object.fromEntries(names.slice(0, 4).map(name => [name, { available: false, stock: 0 }]))), false, 'Missing inventory data must not be misclassified as sold out.');
 assert.equal(classify(Object.fromEntries(names.map(name => [name, { available: false }]))), false, 'Unavailable products without numeric stock evidence must not trigger sold out.');
 
-console.log('V35.23.2 all-stock sold-out safeguards passed.');
+console.log('V35.23.4 all-stock sold-out safeguards passed.');

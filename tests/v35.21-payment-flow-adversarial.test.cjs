@@ -8,7 +8,7 @@ const root = path.resolve(__dirname, '..');
 const script = fs.readFileSync(path.join(root, 'public', 'script.js'), 'utf8');
 const paymentCss = fs.readFileSync(path.join(root, 'public', 'payment-visibility.css'), 'utf8');
 const worker = fs.readFileSync(path.join(root, 'src', 'zoho-integration.cjs'), 'utf8');
-const index = fs.readFileSync(path.join(root, 'public', 'index.html'), 'utf8');
+const index = fs.readFileSync(path.join(root, 'public', 'bc10000', 'index.html'), 'utf8');
 
 const checks = [
   [script.includes("BASKET_SESSION_KEY='vestigeBasketV1'"), 'Basket persistence key is missing.'],
@@ -34,7 +34,7 @@ const checks = [
   [script.includes('Your browser could not verify the copy'), 'Clipboard failure is not visible to the customer.'],
   [script.includes("if(preserveBasket){\n      var proceed=window.confirm"), 'Return-to-edit safety warning is missing.'],
   [!script.includes("'Cancel '+ref+' and clear your basket?'"), 'Customer cancellation still asks for confirmation.'],
-  [script.includes("window.location.replace('/#top')"), 'Successful cancellation does not navigate directly to the BC10000 page.'],
+  [script.includes("window.location.replace('/bc10000/#top')"), 'Successful cancellation does not navigate directly to the BC10000 page.'],
   [script.includes("status.paymentClaimedAt&&status.ownerAlertStatus==='sent'"), 'Refresh does not restore the owner-alert state.'],
   [script.includes("paid.textContent='Retry payment notice'"), 'Failed owner alerts are not retryable.'],
   [script.includes("paid.textContent='Payment notice sent'"), 'Successful owner alerts are not visibly final.'],

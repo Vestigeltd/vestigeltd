@@ -100,19 +100,11 @@ function setMessage(el,text,type){
   el.textContent=text||'';
   el.className='owner-message'+(type?' '+type:'');
 }
-function getStoredKey(){
-  try{return sessionStorage.getItem('vestigeOwnerKey')||'';}catch(_){return '';}
+function getStoredKey(){return '';}
+function saveKey(_key){
+  // Owner credentials remain memory-only. They are never persisted in browser storage.
 }
-function saveKey(key){
-  try{
-    if(rememberTab&&rememberTab.checked)sessionStorage.setItem('vestigeOwnerKey',key);
-    else sessionStorage.removeItem('vestigeOwnerKey');
-  }catch(_){}
-}
-function clearKey(){
-  adminKey='';
-  try{sessionStorage.removeItem('vestigeOwnerKey');}catch(_){}
-}
+function clearKey(){adminKey='';}
 async function api(payload){
   if(!adminKey)throw new Error('Owner console is locked.');
   var response=await fetch(API_URL,{
@@ -344,7 +336,7 @@ function renderStock(stock){
     }
   }
 
-  host.innerHTML='<table class="owner-table"><thead><tr><th>Flavour</th><th>Zoho stock</th><th>Reserved</th><th>Sellable now</th><th>Status</th></tr></thead><tbody>'+
+  host.innerHTML='<table class="owner-table"><thead><tr><th>Flavour</th><th>Zoho stock</th><th>Reserved</th><th>Owner excluded</th><th>Sellable now</th><th>Status</th></tr></thead><tbody>'+
     rows.map(function(row){
       var name=row[0],item=row[1]||{};
       var level=String(item.alertLevel||'healthy');
@@ -353,6 +345,7 @@ function renderStock(stock){
         '<td>'+esc(name)+'</td>'+
         '<td class="owner-stock-value">'+Number(item.zohoStock||0)+'</td>'+
         '<td class="owner-stock-reserved">'+Number(item.websiteReserved||0)+'</td>'+
+        '<td class="owner-stock-excluded">'+Number(item.ownerExcluded||0)+'</td>'+
         '<td class="owner-stock-value">'+Number(item.sellableStock||0)+'</td>'+
         '<td class="'+(level==='healthy'?'owner-ok':'owner-warn')+'">'+esc(status)+'</td>'+
       '</tr>';
@@ -735,6 +728,7 @@ if(stored){
 /* VESTIGE_OWNER_ANALYTICS_V35_10_0B
    Runs inside the existing secure owner-console closure, so it reuses
    the same authenticated in-memory adminKey that successfully unlocks /api/zoho. */
+var activeAnalyticsPeriod='30';
 async function refreshConversionAnalytics(){
   if(!adminKey){
     var lockedList=document.getElementById('analyticsFlavourList');
@@ -754,7 +748,7 @@ async function refreshConversionAnalytics(){
       },
       credentials:'same-origin',
       cache:'no-store',
-      body:JSON.stringify({action:'admin_summary',days:30})
+      body:JSON.stringify({action:'admin_summary',period:activeAnalyticsPeriod})
     });
 
     var ct=(response.headers.get('content-type')||'').toLowerCase();
@@ -771,13 +765,21 @@ async function refreshConversionAnalytics(){
       if(el)el.textContent=value;
     }
 
+    put('analyticsVisitors',String(data.uniqueSessions||0));
+    put('analyticsPageViews',String(data.pageViews||0));
+    put('analyticsShopViews',String(data.shopViews||0));
+    put('analyticsProductSelections',String(data.productSelections||0));
+    put('analyticsBaskets',String(data.baskets||0));
     put('analyticsCheckoutStarts',String(data.checkoutStarts||0));
     put('analyticsPaymentClaims',String(data.paymentClaims||0));
     put('analyticsConfirmedOrders',String(data.confirmedOrders||0));
     put('analyticsRevenue','R'+Number(data.confirmedRevenue||0).toFixed(2));
-    put('analyticsClaimRate',Number(data.paymentClaimPercent||0).toFixed(1)+'% claimed');
-    put('analyticsConversionRate',Number(data.checkoutConversionPercent||0).toFixed(1)+'% conversion');
-    put('analyticsAov','AOV R'+Number(data.averageOrderValue||0).toFixed(2));
+    put('analyticsUnitsSold',String(data.unitsSold||0));
+    put('analyticsClaimRate',Number(data.paymentClaimPercent||0).toFixed(1)+'% payment notice rate');
+    put('analyticsConversionRate',Number(data.checkoutConversionPercent||0).toFixed(1)+'%');
+    put('analyticsAbandonmentRate',Number(data.checkoutAbandonmentPercent||0).toFixed(1)+'%');
+    put('analyticsAov','R'+Number(data.averageOrderValue||0).toFixed(2));
+    put('analyticsPeriodLabel',activeAnalyticsPeriod==='today'?'Today':activeAnalyticsPeriod+' days');
 
     var list=document.getElementById('analyticsFlavourList');
     if(list){
@@ -802,10 +804,183 @@ async function refreshConversionAnalytics(){
   }
 }
 
+async function refreshRestockDemand(){
+  if(!adminKey){
+    var locked=document.getElementById('restockDemandList');
+    if(locked)locked.textContent='Unlock the Owner Console to load poll results.';
+    return;
+  }
+  var button=document.getElementById('refreshRestockDemand');
+  if(button)button.disabled=true;
+  try{
+    var response=await fetch('/api/restock-poll',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-Vestige-Payment-Admin-Key':adminKey},
+      credentials:'same-origin',cache:'no-store',
+      body:JSON.stringify({action:'admin_summary'})
+    });
+    var data=await response.json().catch(function(){return {};});
+    if(!response.ok){var error=new Error(data.message||('Poll request failed ('+response.status+').'));error.status=response.status;throw error;}
+    document.getElementById('restockResponses').textContent=String(data.submissions||0);
+    document.getElementById('restockVotes').textContent=String(data.totalVotes||0);
+    var rows=Array.isArray(data.flavours)?data.flavours:[];
+    var leader=rows.find(function(row){return Number(row.count||0)>0;});
+    document.getElementById('restockLeader').textContent=leader?leader.name+' · '+leader.count:'No votes yet';
+    var list=document.getElementById('restockDemandList');
+    if(list){
+      list.innerHTML=rows.map(function(row,index){
+        return '<div><span><i class="owner-demand-rank">'+(index+1)+'</i>'+esc(row.name||'')+'</span><strong>'+Number(row.count||0)+'</strong></div>';
+      }).join('')||'No poll results recorded yet.';
+    }
+  }catch(e){
+    var list=document.getElementById('restockDemandList');
+    if(list)list.textContent=e&&e.status===401?'Poll authentication failed. Lock and unlock the Owner Console, then try again.':'Poll results unavailable: '+(e&&e.message?e.message:'Unknown error.');
+  }finally{if(button)button.disabled=false;}
+}
+
+
+
+var stockAdjustmentPreviewState=null;
+function stockAdjustmentPayload(){
+  return {
+    flavour:String(document.getElementById('stockAdjustmentFlavour').value||''),
+    operation:String(document.getElementById('stockAdjustmentOperation').value||''),
+    quantity:Number(document.getElementById('stockAdjustmentQuantity').value||0),
+    reason:String(document.getElementById('stockAdjustmentReason').value||''),
+    note:String(document.getElementById('stockAdjustmentNote').value||'').trim()
+  };
+}
+function clearStockAdjustmentPreview(){
+  stockAdjustmentPreviewState=null;
+  var panel=document.getElementById('stockAdjustmentPreview');if(panel)panel.hidden=true;
+  var apply=document.getElementById('applyStockAdjustment');if(apply)apply.disabled=true;
+  var confirmInput=document.getElementById('stockAdjustmentConfirmation');if(confirmInput)confirmInput.value='';
+}
+function renderStockAdjustmentPreview(preview){
+  stockAdjustmentPreviewState=preview||null;
+  var panel=document.getElementById('stockAdjustmentPreview');panel.hidden=false;
+  document.getElementById('stockAdjZohoStock').textContent=String(Number(preview.zohoStock||0));
+  document.getElementById('stockAdjReserved').textContent=String(Number(preview.websiteReserved||0));
+  document.getElementById('stockAdjExcluded').textContent=String(Number(preview.ownerExcludedBefore||0));
+  document.getElementById('stockAdjSellableAfter').textContent=String(Number(preview.sellableAfter||0));
+  document.getElementById('stockAdjustmentConfirmationRequired').textContent=preview.confirmationRequired||'—';
+  document.getElementById('stockAdjustmentSummary').textContent=(preview.operation==='remove'?'Remove ':'Return ')+preview.quantity+' unit(s) '+(preview.operation==='remove'?'from':'to')+' sale. Sellable stock '+preview.sellableBefore+' → '+preview.sellableAfter+'. Zoho stock remains '+preview.zohoStock+'.';
+  document.getElementById('stockAdjustmentConfirmation').value='';
+  document.getElementById('applyStockAdjustment').disabled=false;
+}
+async function previewStockAdjustment(){
+  var button=document.getElementById('previewStockAdjustment');button.disabled=true;
+  setMessage(document.getElementById('stockAdjustmentMessage'),'Checking live stock and building preview…');
+  try{
+    var payload=stockAdjustmentPayload();payload.action='admin_preview_stock_adjustment';
+    var result=await api(payload);
+    renderStockAdjustmentPreview(result.preview||{});
+    setMessage(document.getElementById('stockAdjustmentMessage'),'Preview ready. Confirm the exact adjustment below.','ok');
+  }catch(e){clearStockAdjustmentPreview();setMessage(document.getElementById('stockAdjustmentMessage'),e.message,'error');}
+  finally{button.disabled=false;}
+}
+async function applyStockAdjustment(){
+  if(!stockAdjustmentPreviewState)return;
+  var confirmation=String(document.getElementById('stockAdjustmentConfirmation').value||'').trim().toUpperCase();
+  if(confirmation!==String(stockAdjustmentPreviewState.confirmationRequired||'').toUpperCase()){
+    setMessage(document.getElementById('stockAdjustmentMessage'),'Type the exact confirmation phrase shown in the preview.','error');return;
+  }
+  var button=document.getElementById('applyStockAdjustment');button.disabled=true;
+  setMessage(document.getElementById('stockAdjustmentMessage'),'Applying stock adjustment…');
+  try{
+    var payload=stockAdjustmentPayload();
+    payload.action='admin_apply_stock_adjustment';
+    payload.confirmation=confirmation;
+    payload.previewFingerprint=stockAdjustmentPreviewState.previewFingerprint;
+    var result=await api(payload);
+    setMessage(document.getElementById('stockAdjustmentMessage'),result.message||'Stock adjustment applied.','ok');
+    clearStockAdjustmentPreview();
+    await refreshDashboard(true);
+  }catch(e){setMessage(document.getElementById('stockAdjustmentMessage'),e.message,'error');button.disabled=false;}
+}
+var previewStockAdjustmentButton=document.getElementById('previewStockAdjustment');
+if(previewStockAdjustmentButton)previewStockAdjustmentButton.addEventListener('click',previewStockAdjustment);
+var applyStockAdjustmentButton=document.getElementById('applyStockAdjustment');
+if(applyStockAdjustmentButton)applyStockAdjustmentButton.addEventListener('click',applyStockAdjustment);
+['stockAdjustmentFlavour','stockAdjustmentOperation','stockAdjustmentQuantity','stockAdjustmentReason','stockAdjustmentNote'].forEach(function(id){
+  var el=document.getElementById(id);if(el)el.addEventListener('change',clearStockAdjustmentPreview);
+});
+
+var testResetPreviewState=null;
+function renderTestResetPreview(preview){
+  testResetPreviewState=preview||null;
+  var panel=document.getElementById('testResetPreview');
+  if(!panel)return;
+  panel.hidden=false;
+  var protectedRefs=Array.isArray(preview.protectedReferences)?preview.protectedReferences:[];
+  var tests=Array.isArray(preview.testOrders)?preview.testOrders:[];
+  document.getElementById('testResetProtectedCount').textContent=String(protectedRefs.length);
+  document.getElementById('testResetCandidateCount').textContent=String(tests.length);
+  document.getElementById('testResetNextReference').textContent=preview.nextReference||'—';
+  document.getElementById('testResetConfirmationRequired').textContent=preview.confirmationRequired||'—';
+  document.getElementById('testResetDetail').textContent='Protected references: '+(protectedRefs.length?protectedRefs.join(', '):'none')+'. Calculated next website reference: '+(preview.nextReference||'unavailable')+'.';
+  var host=document.getElementById('testResetCandidates');
+  host.innerHTML=tests.length
+    ? '<table class="owner-table"><thead><tr><th>Reference</th><th>State</th><th>Checkout</th></tr></thead><tbody>'+tests.map(function(row){return '<tr><td><strong>'+esc(row.paymentReference)+'</strong></td><td>'+esc(stateLabel(row.state))+'</td><td>'+esc(row.checkoutId)+'</td></tr>';}).join('')+'</tbody></table>'
+    : '<p class="owner-audit-help">No eligible website test orders were detected.</p>';
+  var blockers=Array.isArray(preview.blockers)?preview.blockers:[];
+  var blockerHost=document.getElementById('testResetBlockers');
+  blockerHost.textContent=blockers.join(' ');
+  blockerHost.hidden=!blockers.length;
+  var confirmation=document.getElementById('testResetConfirmation');
+  confirmation.value='';
+  var apply=document.getElementById('applyTestReset');
+  apply.disabled=!preview.canApply;
+}
+async function previewTestOrderReset(){
+  var button=document.getElementById('previewTestReset');
+  button.disabled=true;
+  setMessage(document.getElementById('testResetMessage'),'Building read-only cleanup preview…');
+  try{
+    var result=await api({action:'admin_preview_test_order_reset'});
+    renderTestResetPreview(result.preview||{});
+    setMessage(document.getElementById('testResetMessage'),result.preview&&result.preview.canApply?'Preview ready. Verify every candidate before applying.':'Preview complete. No cleanup can be applied until all safety gates pass.',result.preview&&result.preview.canApply?'ok':'');
+  }catch(e){
+    setMessage(document.getElementById('testResetMessage'),e.message,'error');
+  }finally{button.disabled=false;}
+}
+async function applyTestOrderReset(){
+  if(!testResetPreviewState||!testResetPreviewState.canApply)return;
+  var confirmation=String(document.getElementById('testResetConfirmation').value||'').trim().toUpperCase();
+  if(confirmation!==String(testResetPreviewState.confirmationRequired||'').toUpperCase()){
+    setMessage(document.getElementById('testResetMessage'),'Type the exact confirmation phrase shown by the preview.','error');return;
+  }
+  if(!window.confirm('Permanently delete only the eligible website test records shown in this preview and reset the internal website reference sequence? Zoho Books will not be changed.'))return;
+  var button=document.getElementById('applyTestReset');button.disabled=true;
+  setMessage(document.getElementById('testResetMessage'),'Applying verified website test-order cleanup…');
+  try{
+    var result=await api({action:'admin_apply_test_order_reset',confirmation:confirmation,previewFingerprint:testResetPreviewState.previewFingerprint});
+    setMessage(document.getElementById('testResetMessage'),result.message||('Cleanup complete. Next website reference: '+result.nextReference+'.'),'ok');
+    await previewTestOrderReset();
+    await refreshDashboard(true);
+  }catch(e){setMessage(document.getElementById('testResetMessage'),e.message,'error');}
+  finally{button.disabled=false;}
+}
+var previewResetButton=document.getElementById('previewTestReset');
+if(previewResetButton)previewResetButton.addEventListener('click',previewTestOrderReset);
+var applyResetButton=document.getElementById('applyTestReset');
+if(applyResetButton)applyResetButton.addEventListener('click',applyTestOrderReset);
+
 var analyticsRefreshButton=document.getElementById('refreshAnalytics');
 if(analyticsRefreshButton){
   analyticsRefreshButton.addEventListener('click',refreshConversionAnalytics);
 }
+var restockRefreshButton=document.getElementById('refreshRestockDemand');
+if(restockRefreshButton){
+  restockRefreshButton.addEventListener('click',refreshRestockDemand);
+}
+document.querySelectorAll('[data-analytics-period]').forEach(function(button){
+  button.addEventListener('click',function(){
+    activeAnalyticsPeriod=String(button.getAttribute('data-analytics-period')||'30');
+    document.querySelectorAll('[data-analytics-period]').forEach(function(item){item.classList.toggle('active',item===button);});
+    refreshConversionAnalytics();
+  });
+});
 
 // Load analytics only AFTER the normal owner unlock has succeeded.
 // We watch the existing protected console panel state without storing
@@ -817,6 +992,7 @@ if(consolePanel && 'MutationObserver' in window){
       analyticsPanelWasHidden=consolePanel.hidden;
       if(!consolePanel.hidden && adminKey){
         refreshConversionAnalytics();
+        refreshRestockDemand();
       }
     }
   }).observe(consolePanel,{attributes:true,attributeFilter:['hidden']});

@@ -1,0 +1,10 @@
+const fs = require('fs');
+const assert = require('assert');
+const css = fs.readFileSync('public/payment-visibility.css', 'utf8');
+const script = fs.readFileSync('public/script.js', 'utf8');
+assert(/html\.vestige-payment-open \.site-header/.test(css), 'Payment-mode header rule missing.');
+assert(/border-bottom:\s*4px solid #06101d/.test(css), 'Dark-blue payment header lower edge missing.');
+assert(/box-shadow:\s*none !important/.test(css), 'Payment header shadow reset missing.');
+assert(!/inset\s+0\s+-1px\s+0\s+#d9aa43/i.test(css), 'Gold payment-header inset rule must not return.');
+assert(/payment-visibility\.css\?v=35\.22\.0&release=35\.26\.1/.test(script), 'V35.26.1 payment CSS cache-buster missing.');
+console.log('V35.26.1 payment-header correction safeguards passed.');

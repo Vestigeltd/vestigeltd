@@ -100,14 +100,6 @@ html.vestige-payment-open body {
   margin-right: auto;
 }
 
-/* V35.23.2 payment-view correction: the desktop checkout journey guide is
-   intentionally removed once payment is active. Its pinned side-rail must
-   never remain visible above or beside the secure payment surface. */
-.order-form.is-payment-mode #vestigeCheckoutJourney,
-.order-form.is-payment-mode #vestigeCheckoutGuidance {
-  display: none !important;
-}
-
 .order-form.is-payment-mode .bank-panel-title h3 {
   color: #0b1727;
 }
@@ -135,5 +127,59 @@ html.vestige-payment-open body {
 @media (max-width: 640px) {
   .order-form.is-payment-mode #paymentPanel {
     padding: 16px 14px 28px !important;
+  }
+}
+
+
+/* V35.26.1 — deterministic payment-mode header with clean dark-blue lower edge. */
+html.vestige-payment-open {
+  --payment-header-height: 86px;
+}
+
+html.vestige-payment-open .site-header {
+  position: fixed !important;
+  inset: 0 0 auto 0 !important;
+  z-index: 60 !important;
+  width: 100% !important;
+  height: 86px;
+  min-height: 86px;
+  background: #06101d !important;
+  border-bottom: 4px solid #06101d;
+  box-shadow: none !important;
+}
+
+html.vestige-payment-open .site-header .nav-wrap {
+  min-height: 82px !important;
+  height: 82px !important;
+}
+
+html.vestige-payment-open .site-header .main-nav,
+html.vestige-payment-open .site-header .nav-toggle,
+html.vestige-payment-open .site-header .mobile-nav {
+  display: none !important;
+}
+
+html.vestige-payment-open .site-header .brand-logo {
+  width: 52px;
+  height: 52px;
+}
+
+html.vestige-payment-open #vestigeCheckoutJourney,
+html.vestige-payment-open .checkout-journey-sticky,
+html.vestige-payment-open .checkout-progress-sticky {
+  display: none !important;
+}
+
+html.vestige-payment-open #vestigeCheckoutGuidance {
+  visibility: hidden !important;
+}
+
+@media (max-width: 640px) {
+  html.vestige-payment-open {
+    --payment-header-height: 86px;
+  }
+  html.vestige-payment-open .site-header {
+    height: 86px;
+    min-height: 86px;
   }
 }

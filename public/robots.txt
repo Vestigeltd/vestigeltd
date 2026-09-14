@@ -1,7 +1,4 @@
 User-agent: *
 Allow: /
 
-Disallow: /owner
-Disallow: /order-status
-
 Sitemap: https://vestigeltd.co.za/sitemap.xml

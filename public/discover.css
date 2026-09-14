@@ -1,0 +1,114 @@
+/* Vestige V35.27.6 — Discover Vestige homepage
+   Additive only: extends the established Vestige production design system. */
+
+.discover-page{--discover-accent-size:16px;background:#06101d}
+.visually-hidden{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+
+/* Home header — same site identity, refined brand-page treatment. */
+.discover-page .discover-brand{min-width:350px;gap:13px}
+.discover-brand-copy{display:flex;align-items:center;gap:13px;min-width:0;white-space:nowrap}
+.discover-page .brand-name,.discover-page .brand-name b{color:#d4aa58;font-weight:normal}
+.discover-header-divider{width:1px;height:30px;flex:0 0 1px;background:rgba(200,155,67,.42)}
+.discover-header-title{font-family:Georgia,'Times New Roman',serif;font-size:18px;letter-spacing:.2px;color:#f4f1ea;line-height:1}
+
+/* Brand introduction. */
+.discover-hero{position:relative;overflow:hidden;min-height:690px;display:flex;align-items:center;background:
+radial-gradient(circle at 78% 28%,rgba(200,155,67,.11),transparent 29%),
+linear-gradient(135deg,#06101d 0%,#081827 56%,#0b2034 100%)}
+.discover-hero:after{content:"";position:absolute;left:4%;right:4%;bottom:0;height:1px;background:linear-gradient(90deg,transparent,rgba(200,155,67,.55),transparent)}
+.discover-hero-glow{position:absolute;width:520px;height:520px;right:-120px;top:80px;border:1px solid rgba(200,155,67,.10);border-radius:50%;box-shadow:0 0 0 70px rgba(200,155,67,.025),0 0 0 150px rgba(200,155,67,.018);pointer-events:none}
+.discover-hero-inner{position:relative;z-index:2;width:100%;padding:92px 0 86px}
+.discover-signature{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:clamp(24px,3vw,34px);line-height:1.25;color:#d4aa58;text-align:center;margin:0 auto var(--vestige-space-heading-content,54px)}
+.discover-body-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(225px,.5fr);gap:82px;align-items:stretch;max-width:1080px;margin:0 auto}
+.discover-narrative{max-width:760px}
+.discover-narrative p{color:#adb9c8;margin:0 0 20px;font-size:16px;line-height:1.72}
+.discover-narrative .discover-origin{font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.72;color:#eef2f7}
+.discover-narrative strong{color:#f4f1ea}
+.discover-impression{font-family:Georgia,'Times New Roman',serif!important;color:#f4f1ea!important;font-size:19px!important;line-height:1.55!important;margin-top:27px!important}
+.discover-triad{font-size:var(--discover-accent-size);font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:#d4aa58;text-align:center;margin:46px auto 0}
+.discover-hero-action{text-align:center;margin:30px auto 0}
+.discover-hero-action .btn{display:inline-flex;align-items:center;justify-content:center}
+.discover-mark{align-self:center;border-left:1px solid rgba(200,155,67,.42);padding:20px 0 20px 30px;display:flex;flex-direction:column;gap:24px}
+.discover-mark span{font-family:Georgia,'Times New Roman',serif;font-size:20px;letter-spacing:2px;color:#f4f1ea}
+.discover-mark span:before{content:"—";color:#c89b43;margin-right:12px}
+
+/* Standard. */
+.discover-standard{padding-top:110px;padding-bottom:105px}
+.discover-standard-heading{max-width:none}
+.discover-single-line{white-space:nowrap}
+.discover-standard-title{font-size:clamp(21px,4.4vw,62px)!important;letter-spacing:-.6px}
+.discover-standard-grid article{min-height:275px}
+.discover-standard-grid .feature-number{font-size:var(--discover-accent-size);font-weight:700;letter-spacing:1.6px}
+.discover-standard-grid h3{font-size:27px}
+.discover-standard-line{text-align:center;margin:42px auto 0;color:#f4f1ea;font-weight:700;letter-spacing:2px;font-size:13px}
+.discover-standard-line i{font-style:normal;color:#c89b43;padding:0 5px}
+.discover-standard-close{text-align:center;color:#8390a0;margin-top:8px}
+
+/* Mission and vision. */
+.discover-purpose{padding:105px 0;background:#f4f1ea;color:#101a26}
+.discover-purpose-heading{max-width:none}
+.discover-purpose-title{font-size:clamp(18px,4.2vw,62px)!important;letter-spacing:-.75px}
+.discover-purpose-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.discover-purpose-card{background:#fff;border:1px solid #dededb;border-top:3px solid #c89b43;padding:42px;box-shadow:0 15px 40px rgba(23,37,56,.08)}
+.discover-purpose-card h3{font-size:clamp(30px,3.4vw,46px);margin:18px 0 20px}
+.discover-purpose-card p{color:#667181;margin-bottom:0}
+
+/* Provenance and commercial bridge. */
+.discover-experience{padding:105px 0}
+.discover-experience-grid{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:80px;align-items:stretch}
+.discover-experience h2{font-size:clamp(38px,5vw,62px);margin:0}
+.discover-experience-copy{align-self:stretch;display:flex;flex-direction:column;justify-content:center}
+.discover-experience-copy>p:first-child{margin-top:0}
+.discover-experience-copy>p:last-child{margin-bottom:0!important}
+.discover-experience-copy p{color:#aeb9c7}
+.discover-experience-copy .discover-impression{color:#f4f1ea!important;border-left:3px solid #c89b43;padding-left:22px;margin-top:32px!important}
+.discover-vapes{padding:105px 0}
+.discover-vapes h2{font-size:clamp(38px,5vw,62px);margin-top:0}
+.discover-vapes-card h3{font-size:38px;margin:10px 0 15px}
+.discover-vapes-card .btn{margin-top:18px}
+.discover-age-note{font-size:11px!important;color:#8390a0!important;margin-top:20px!important;margin-bottom:0!important}
+
+@media(max-width:1120px) and (min-width:761px){
+  .discover-page .discover-brand{min-width:305px}
+  .discover-header-title{font-size:16px}
+  .discover-page .main-nav{gap:12px;font-size:11px}
+}
+@media(max-width:980px){
+  .discover-body-grid{grid-template-columns:1fr;gap:42px;max-width:780px}
+  .discover-mark{justify-self:stretch;display:grid;grid-template-columns:repeat(2,1fr);border-left:0;border-top:1px solid rgba(200,155,67,.35);padding:28px 0 0}
+  .discover-purpose-grid{grid-template-columns:1fr}
+  .discover-experience-grid{grid-template-columns:1fr;gap:36px}
+}
+@media(max-width:760px){
+  .discover-page .discover-brand{min-width:0;gap:9px}
+  .discover-brand-copy{gap:8px}
+  .discover-page .brand-name{font-size:12px;letter-spacing:1.5px}
+  .discover-header-divider{height:24px}
+  .discover-header-title{font-size:14px}
+  .discover-hero{min-height:auto}
+  .discover-hero-inner{padding:72px 0 68px}
+  .discover-signature{font-size:24px;margin-bottom:var(--vestige-space-heading-content,36px)}
+  .discover-hero-glow{width:340px;height:340px;right:-180px}
+  .discover-body-grid{gap:36px}
+  .discover-mark{grid-template-columns:1fr 1fr;gap:14px 22px}
+  .discover-mark span{font-size:16px;letter-spacing:1.5px}
+  .discover-triad{margin-top:38px}
+  .discover-hero-action{margin-top:24px}
+  .discover-standard,.discover-purpose,.discover-experience,.discover-vapes{padding-top:75px;padding-bottom:75px}
+  .discover-purpose-card{padding:30px}
+  .discover-standard-grid article{min-height:auto}
+}
+@media(max-width:480px){
+  .discover-page .brand-name{font-size:11px;letter-spacing:1px}
+  .discover-header-title{font-size:13px}
+  .discover-standard-title{font-size:clamp(18px,5.4vw,24px)!important}
+  .discover-purpose-title{font-size:clamp(15px,4.45vw,20px)!important}
+  .discover-mark{grid-template-columns:1fr}
+  .discover-purpose-card h3{font-size:32px}
+}
+@media(prefers-reduced-motion:no-preference){
+  .discover-signature,.discover-body-grid,.discover-triad{animation:vestigeReveal .65s ease both}
+  .discover-body-grid{animation-delay:.08s}
+  .discover-triad{animation-delay:.15s}
+}
+@keyframes vestigeReveal{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}

@@ -200,6 +200,7 @@ async function getStockLockStore() { return getD1Store('vestige-stock-locks'); }
 async function getCheckoutStore() { return getD1Store('vestige-checkouts'); }
 async function getReservationStore() { return getD1Store('vestige-stock-reservations'); }
 async function getNotificationStore() { return getD1Store('vestige-notifications'); }
+async function getOwnerStockAdjustmentStore() { return getD1Store('vestige-owner-stock-adjustments'); }
 
 function ownerConsoleUrl() {
   return cleanText(runtimeEnv('OWNER_CONSOLE_URL'), 240)
@@ -507,6 +508,222 @@ async function adminRecentAuditEvents(limit = 50) {
     } catch (_) {}
   }
   return events;
+}
+
+
+const OWNER_RESET_NAMESPACES = Object.freeze([
+  'vestige-checkouts',
+  'vestige-order-sequence',
+  'vestige-bank-payment-reference-index',
+  'vestige-notifications',
+  'vestige-stock-reservations'
+]);
+function ownerResetReference(value) {
+  const ref = cleanText(value, 24).toUpperCase();
+  return /^V\d{4,8}$/.test(ref) ? ref : null;
+}
+function ownerResetReferenceNumber(ref) {
+  return ref ? Number(String(ref).slice(1)) : NaN;
+}
+function ownerResetCheckoutId(row) {
+  return String(row?.key || '').replace(/^checkout-/, '');
+}
+function ownerResetHasFinancialEvidence(data) {
+  const p = data?.progress || {};
+  const verified = p?.verifiedBankPayment || {};
+  return Boolean(
+    cleanText(p.bankInvoiceId || p.invoiceId || verified.invoiceId, 100) ||
+    cleanText(p.bankPaymentId || p.paymentId || verified.paymentId, 100) ||
+    cleanText(p.zohoInvoiceId || p.zohoPaymentId, 100)
+  );
+}
+function ownerResetProtectedState(state) {
+  return ['confirmed','paid','completed','fulfilled','processing_fulfilment','shipped'].includes(String(state || '').toLowerCase());
+}
+function ownerResetParseRows(rows) {
+  return (Array.isArray(rows) ? rows : []).map(row => {
+    let value = null;
+    try { value = JSON.parse(row.value_json); } catch (_) {}
+    return { ...row, value };
+  });
+}
+function buildOwnerTestResetPlan(rawRows) {
+  const rows = ownerResetParseRows(rawRows);
+  const blockers = [];
+  const checkoutRows = rows.filter(r => r.namespace === 'vestige-checkouts');
+  const candidates = [];
+  const protectedOrders = [];
+  const seenRefs = new Map();
+
+  for (const row of checkoutRows) {
+    const data = row.value;
+    if (!data || typeof data !== 'object') {
+      blockers.push(`Checkout ${row.key} contains unreadable data.`);
+      continue;
+    }
+    const p = data.progress || {};
+    const response = data.response || {};
+    const ref = ownerResetReference(p.paymentReference || response.paymentReference);
+    if (!ref) {
+      blockers.push(`Checkout ${row.key} has a missing or invalid payment reference.`);
+      continue;
+    }
+    if (seenRefs.has(ref)) blockers.push(`Payment reference ${ref} is used by more than one checkout.`);
+    seenRefs.set(ref, row.key);
+    const state = String(data.state || '').toLowerCase();
+    const financial = ownerResetHasFinancialEvidence(data);
+    const protectedOrder = financial || ownerResetProtectedState(state);
+    const item = { row, data, paymentReference: ref, checkoutId: ownerResetCheckoutId(row), state, financial };
+    if (state === 'confirming_payment' && !financial) {
+      blockers.push(`${ref} is currently confirming payment and requires manual review.`);
+      protectedOrders.push(item);
+    } else if (protectedOrder) protectedOrders.push(item);
+    else candidates.push(item);
+  }
+
+  const protectedReferences = protectedOrders.map(x => x.paymentReference).sort((a,b)=>ownerResetReferenceNumber(a)-ownerResetReferenceNumber(b));
+  const deleteReferences = candidates.map(x => x.paymentReference).sort((a,b)=>ownerResetReferenceNumber(a)-ownerResetReferenceNumber(b));
+  const highestProtected = protectedReferences.reduce((m,r)=>Math.max(m, ownerResetReferenceNumber(r)), 0);
+  const targetSequence = highestProtected;
+  const nextNumber = targetSequence + 1;
+  let nextReference = null;
+  if (nextNumber > 99999999) blockers.push('The website order reference range is exhausted. Cleanup cannot continue.');
+  else nextReference = `V${String(nextNumber).padStart(4,'0')}`;
+
+  const sequenceRow = rows.find(r => r.namespace === 'vestige-order-sequence' && r.key === 'bank-order');
+  const currentSequence = Number(sequenceRow?.value?.value || 0);
+  const currentNextReference = currentSequence >= 0 && currentSequence < 99999999
+    ? `V${String(currentSequence + 1).padStart(4,'0')}` : null;
+
+  const candidateIds = new Set(candidates.map(x => x.checkoutId));
+  const candidateRefs = new Set(deleteReferences);
+  const operations = [];
+  for (const item of candidates) operations.push({ type:'delete', row:item.row });
+
+  for (const row of rows) {
+    if (!row.value || typeof row.value !== 'object') continue;
+    if (row.namespace === 'vestige-bank-payment-reference-index') {
+      const ref = ownerResetReference(row.key || row.value.paymentReference);
+      const linkedId = cleanText(row.value.checkoutId, 120);
+      if (ref === nextReference && !candidateRefs.has(ref) && !candidateIds.has(linkedId)) {
+        blockers.push(`The calculated next reference ${nextReference} is still reserved by a payment-reference index.`);
+      }
+      if ((ref && candidateRefs.has(ref)) || (linkedId && candidateIds.has(linkedId))) operations.push({ type:'delete', row });
+    } else if (row.namespace === 'vestige-notifications') {
+      const serialized = JSON.stringify(row.value);
+      if ([...candidateRefs].some(ref => String(row.key).includes(ref) || serialized.includes(ref)) ||
+          [...candidateIds].some(id => String(row.key).includes(id) || serialized.includes(id))) operations.push({ type:'delete', row });
+    } else if (row.namespace === 'vestige-stock-reservations' && Array.isArray(row.value.reservations)) {
+      const kept = row.value.reservations.filter(r => !candidateIds.has(String(r?.checkoutId || '')));
+      if (kept.length !== row.value.reservations.length) operations.push({ type:'update', row, value:{ ...row.value, reservations:kept, updatedAt:Date.now() } });
+    }
+  }
+
+  if (sequenceRow && currentSequence !== targetSequence) {
+    operations.push({ type:'update', row:sequenceRow, value:{ value:targetSequence, updatedAt:Date.now() } });
+  } else if (!sequenceRow && (candidates.length || protectedOrders.length)) {
+    operations.push({ type:'insert', row:{ namespace:'vestige-order-sequence', key:'bank-order' }, value:{ value:targetSequence, updatedAt:Date.now() } });
+  }
+
+  // Do not allow a row linked to a protected checkout/reference to be deleted.
+  const protectedIds = new Set(protectedOrders.map(x => x.checkoutId));
+  for (const op of operations.filter(x => x.type === 'delete')) {
+    const text = `${op.row.key} ${op.row.value_json || ''}`;
+    if ([...protectedReferences].some(ref => text.includes(ref)) || [...protectedIds].some(id => text.includes(id))) {
+      blockers.push(`A proposed cleanup row is linked to a protected genuine order (${op.row.key}).`);
+    }
+  }
+
+  const candidateSummaries = candidates
+    .sort((a,b)=>ownerResetReferenceNumber(a.paymentReference)-ownerResetReferenceNumber(b.paymentReference))
+    .map(x => ({ paymentReference:x.paymentReference, checkoutId:x.checkoutId, state:x.state || 'unknown' }));
+  const fingerprintPayload = {
+    candidates:candidateSummaries,
+    protectedReferences,
+    targetSequence,
+    nextReference,
+    operations:operations.map(op=>({type:op.type,namespace:op.row.namespace,key:op.row.key,etag:op.row.etag||null}))
+  };
+  const fingerprint = createHash('sha256').update(JSON.stringify(fingerprintPayload)).digest('hex');
+  const canApply = blockers.length === 0 && candidates.length > 0 && Boolean(nextReference);
+  return {
+    canApply, blockers, currentSequence, currentNextReference, targetSequence, nextReference,
+    confirmationRequired: nextReference ? `RESET TO ${nextReference}` : null,
+    protectedReferences, deleteReferences, testReferences:deleteReferences,
+    candidateSummaries, testOrders:candidateSummaries, operations, fingerprint, previewFingerprint:fingerprint
+  };
+}
+async function readOwnerTestResetRows() {
+  const db = requireDatabase();
+  const placeholders = OWNER_RESET_NAMESPACES.map((_,i)=>`?${i+1}`).join(',');
+  const result = await db.prepare(
+    `SELECT namespace,key,value_json,etag,updated_at FROM kv_store WHERE namespace IN (${placeholders})`
+  ).bind(...OWNER_RESET_NAMESPACES).all();
+  return Array.isArray(result?.results) ? result.results : [];
+}
+function publicOwnerResetPreview(plan) {
+  return {
+    canApply:plan.canApply,
+    blockers:plan.blockers,
+    currentSequence:plan.currentSequence,
+    currentNextReference:plan.currentNextReference,
+    targetSequence:plan.targetSequence,
+    nextReference:plan.nextReference,
+    confirmationRequired:plan.confirmationRequired,
+    protectedReferences:plan.protectedReferences,
+    testReferences:plan.deleteReferences,
+    testOrders:plan.candidateSummaries,
+    previewFingerprint:plan.fingerprint,
+    zohoBooksChanged:false
+  };
+}
+async function adminPreviewTestOrderReset() {
+  return publicOwnerResetPreview(buildOwnerTestResetPlan(await readOwnerTestResetRows()));
+}
+async function adminApplyTestOrderReset(input) {
+  const confirmation = cleanText(input?.confirmation, 80).toUpperCase();
+  const suppliedFingerprint = cleanText(input?.previewFingerprint, 80).toLowerCase();
+  const rows = await readOwnerTestResetRows();
+  const plan = buildOwnerTestResetPlan(rows);
+  if (!plan.canApply) { const e=new Error(plan.blockers[0] || 'There are no eligible test orders to clean up.'); e.statusCode=409; throw e; }
+  if (!/^[a-f0-9]{64}$/.test(suppliedFingerprint) || !safeEqual(suppliedFingerprint, plan.fingerprint)) {
+    const e=new Error('Cleanup preview is stale. Run Preview cleanup again before applying.'); e.statusCode=409; throw e;
+  }
+  if (!safeEqual(confirmation, plan.confirmationRequired)) {
+    const e=new Error(`Type the exact confirmation phrase: ${plan.confirmationRequired}`); e.statusCode=409; throw e;
+  }
+  const db=requireDatabase();
+  const now=Date.now();
+  const statements=[];
+  for (const op of plan.operations) {
+    if (op.type==='delete') {
+      statements.push(db.prepare('DELETE FROM kv_store WHERE namespace = ?1 AND key = ?2 AND etag = ?3').bind(op.row.namespace,op.row.key,String(op.row.etag)));
+    } else if (op.type==='update') {
+      statements.push(db.prepare('UPDATE kv_store SET value_json = ?3, etag = ?4, updated_at = ?5 WHERE namespace = ?1 AND key = ?2 AND etag = ?6')
+        .bind(op.row.namespace,op.row.key,JSON.stringify(op.value),randomUUID(),now,String(op.row.etag)));
+    } else if (op.type==='insert') {
+      statements.push(db.prepare('INSERT INTO kv_store(namespace, key, value_json, etag, updated_at) VALUES (?1, ?2, ?3, ?4, ?5)')
+        .bind(op.row.namespace,op.row.key,JSON.stringify(op.value),randomUUID(),now));
+    }
+  }
+  const auditAt=Date.now();
+  const auditId=`${auditAt}-${randomUUID()}`;
+  const auditValue={ id:auditId, at:auditAt, action:'admin_test_order_reset', actor:'owner', paymentReference:null, outcome:'success', message:`Removed ${plan.deleteReferences.join(', ')}; next website reference ${plan.nextReference}.`, requestId:null, invoiceId:null, paymentId:null, amount:null, reservationsReleased:null };
+  statements.push(db.prepare('INSERT INTO kv_store(namespace, key, value_json, etag, updated_at) VALUES (?1, ?2, ?3, ?4, ?5)')
+    .bind('vestige-owner-audit',auditId,JSON.stringify(auditValue),randomUUID(),auditAt));
+  const results=await db.batch(statements);
+  if (results.some(r=>Number(r?.meta?.changes||0)!==1)) {
+    const e=new Error('Cleanup stopped because D1 changed during the operation. Review the Owner Console before retrying.'); e.statusCode=409; throw e;
+  }
+  const verified=buildOwnerTestResetPlan(await readOwnerTestResetRows());
+  if (verified.deleteReferences.length || verified.currentSequence!==plan.targetSequence) {
+    const e=new Error('Cleanup completed but post-change verification did not match the expected state. Manual review is required.'); e.statusCode=409; throw e;
+  }
+  return {
+    success:true, nextReference:plan.nextReference, targetSequence:plan.targetSequence,
+    protectedReferences:plan.protectedReferences, removedTestReferences:plan.deleteReferences,
+    zohoBooksChanged:false, message:`Eligible website test orders removed. Next website reference: ${plan.nextReference}.`
+  };
 }
 
 async function testAtomicBlobStore(store, label) {
@@ -887,34 +1104,74 @@ async function bridgeConfirmedWebsiteReservation(itemId, checkoutId) {
     console.warn('Unable to shorten confirmed website stock reservation', { itemId: String(itemId), checkoutId: String(checkoutId), message: error.message });
   }
 }
+
+const OWNER_STOCK_ADJUSTMENT_REASONS = new Set(['tester','sample','promotional','damaged','other','correction']);
+function ownerStockAdjustmentKey(itemId) { return `item-${String(itemId)}`; }
+function normaliseOwnerStockAdjustmentState(data) {
+  const excluded = Math.max(0, Math.floor(Number(data?.excluded || 0)));
+  const entries = (Array.isArray(data?.entries) ? data.entries : []).filter(row => row && Number.isFinite(Number(row.delta))).slice(-100);
+  return { excluded, entries, updatedAt: Number(data?.updatedAt || 0) || null };
+}
+async function readOwnerStockAdjustmentState(itemId) {
+  const store = await getOwnerStockAdjustmentStore();
+  const key = ownerStockAdjustmentKey(itemId);
+  const current = await store.getWithMetadata(key, { type:'json', consistency:'strong' });
+  return { store, key, current, state: normaliseOwnerStockAdjustmentState(current?.data) };
+}
+async function mutateOwnerStockAdjustmentState(itemId, mutator) {
+  const store = await getOwnerStockAdjustmentStore();
+  const key = ownerStockAdjustmentKey(itemId);
+  for (let attempt=0; attempt<6; attempt+=1) {
+    const current = await store.getWithMetadata(key, { type:'json', consistency:'strong' });
+    const base = normaliseOwnerStockAdjustmentState(current?.data);
+    const next = normaliseOwnerStockAdjustmentState(mutator(base));
+    next.updatedAt = Date.now();
+    const result = current
+      ? await store.setJSON(key, next, { onlyIfMatch: current.etag })
+      : await store.setJSON(key, next, { onlyIfNew: true });
+    if (result?.modified) return next;
+  }
+  const e = new Error('Unable to update the owner stock-adjustment ledger safely.');
+  e.statusCode = 503; e.service = 'checkout_storage'; e.retryAfter = '2'; throw e;
+}
+
 async function applyWebsiteReservationOverlay(snapshot, itemId, currentCheckoutId = '') {
   if (!snapshot || !itemId || !Number.isFinite(Number(snapshot.stock))) return snapshot;
-  const { reservations } = await readWebsiteReservations(itemId);
+  const [{ reservations }, ownerState] = await Promise.all([
+    readWebsiteReservations(itemId),
+    readOwnerStockAdjustmentState(itemId)
+  ]);
   const locationId = String(snapshot.locationId || '');
   const active = reservations.filter(row =>
     String(row.checkoutId) !== String(currentCheckoutId || '') && String(row.locationId || '') === locationId
   );
   const reserved = active.reduce((sum, row) => sum + Math.max(0, Number(row.quantity) || 0), 0);
-  if (!reserved) return snapshot;
+  const ownerExcluded = Math.max(0, Number(ownerState.state?.excluded || 0));
 
   const reported = Math.max(0, Math.floor(Number(snapshot.stock)));
   const physical = Number.isFinite(Number(snapshot.physicalStock)) ? Math.max(0, Math.floor(Number(snapshot.physicalStock))) : null;
-  // Use the more conservative of Zoho's available quantity and physical stock minus
-  // website reservations. This bridges eventual visibility of Zoho invoice inventory effects
-  // without ever increasing Zoho's reported availability.
-  const reservationBound = physical === null ? Math.max(0, reported - reserved) : Math.max(0, physical - reserved);
-  const effective = Math.max(0, Math.min(reported, reservationBound));
+  const totalUnavailable = reserved + ownerExcluded;
+  const availabilityBound = physical === null
+    ? Math.max(0, reported - totalUnavailable)
+    : Math.max(0, physical - totalUnavailable);
+  const effective = Math.max(0, Math.min(reported, availabilityBound));
   const requested = Math.max(1, Number(snapshot.requestedQuantity) || 1);
+  let reason = snapshot.reason;
+  if (effective < requested) {
+    if (ownerExcluded && reserved) reason = `Only ${effective} unit(s) are currently sellable after website reservations and owner stock adjustments.`;
+    else if (ownerExcluded) reason = `Only ${effective} unit(s) are currently sellable after owner stock adjustments.`;
+    else reason = `Only ${effective} unit(s) are currently available after active website reservations.`;
+  }
   return {
     ...snapshot,
     stock: effective,
     available: snapshot.available === true && effective > 0,
     canFulfil: snapshot.canFulfil === true && effective >= requested,
-    reason: effective >= requested ? snapshot.reason : `Only ${effective} unit(s) are currently available after active website reservations.`,
+    reason,
     websiteReserved: reserved,
+    ownerExcluded,
   };
 }
-
 
 function json(statusCode, payload, extraHeaders = {}) {
   return {
@@ -1171,12 +1428,10 @@ async function zohoRequest(path, { method = 'GET', body } = {}) {
         console.error('Zoho Books API request failed', { status: response.status, code: data.code, method: normalizedMethod });
         const e = new Error('Zoho Books API request failed.');
         e.statusCode = response.status >= 500 ? 503 : 502;
-        // TEMPORARY TEST-BRANCH DIAGNOSTICS: numeric upstream metadata only.
-        // Never attach response bodies, tokens, headers, credentials, or authorization data.
+                // Never attach response bodies, tokens, headers, credentials, or authorization data.
         e.zohoHttpStatus = Number(response.status) || null;
         e.zohoApiCode = (typeof data.code === 'number' || typeof data.code === 'string') ? String(data.code) : null;
-        // TEMPORARY TEST-BRANCH DIAGNOSTICS: Zoho's short validation message only.
-        // Do not attach bodies, headers, tokens, credentials, or authorization data.
+                // Do not attach bodies, headers, tokens, credentials, or authorization data.
         e.zohoApiMessage = typeof data.message === 'string' ? cleanText(data.message, 240) : null;
         throw e;
       }
@@ -1463,8 +1718,10 @@ async function resolveProductItem(flavour, forceDiscovery = false) {
   }
   return item;
 }
-async function getProductAvailability(forceStockRefresh = false, forceCatalogRefresh = false) {
-  if (!forceStockRefresh && cachedAvailability && Date.now() < cachedAvailabilityUntil) return cachedAvailability;
+async function getProductAvailability(forceStockRefresh = false, forceCatalogRefresh = false, includeWebsiteReservations = false) {
+  if (!forceStockRefresh && cachedAvailability && Date.now() < cachedAvailabilityUntil) {
+    return includeWebsiteReservations ? applyAvailabilityReservations(cachedAvailability) : cachedAvailability;
+  }
   if (forceCatalogRefresh) cachedProductCatalogUntil = 0;
   try { await discoverProductCatalog(forceCatalogRefresh); } catch (error) {
     console.error('Zoho BC10000 catalogue discovery failed', { message: error.message });
@@ -1506,6 +1763,7 @@ async function getProductAvailability(forceStockRefresh = false, forceCatalogRef
         locationId: snapshot.locationId,
         locationName: snapshot.locationName,
         stockSource: snapshot.stockSource || null,
+        physicalStock: snapshot.physicalStock,
       };
     } catch (error) {
       result[flavour] = { available: false, stock: 0, reason: error.statusCode === 409 ? error.message : 'Zoho stock lookup failed', itemId: resolvedProductItemIds.get(flavour) || null, itemName: null, price: null };
@@ -1518,7 +1776,39 @@ async function getProductAvailability(forceStockRefresh = false, forceCatalogRef
   }
   cachedAvailability = result;
   cachedAvailabilityUntil = Date.now() + AVAILABILITY_CACHE_MS;
-  return result;
+  return includeWebsiteReservations ? applyAvailabilityReservations(result) : result;
+}
+
+async function applyAvailabilityReservations(availability) {
+  const output = {};
+  for (const [flavour, state] of Object.entries(availability || {})) {
+    const itemId = String(state?.itemId || '');
+    if (!itemId || !Number.isFinite(Number(state?.stock))) {
+      output[flavour] = state;
+      continue;
+    }
+    try {
+      const snapshot = {
+        ...state,
+        requestedQuantity: 1,
+        canFulfil: state.available === true && Number(state.stock) >= 1,
+        physicalStock: state.physicalStock,
+      };
+      const adjusted = await applyWebsiteReservationOverlay(snapshot, itemId);
+      output[flavour] = {
+        ...state,
+        available: adjusted.available,
+        stock: adjusted.stock,
+        reason: adjusted.reason || state.reason,
+        websiteReserved: adjusted.websiteReserved || 0,
+        ownerExcluded: adjusted.ownerExcluded || 0,
+      };
+    } catch (error) {
+      // Availability must fail conservatively if the reservation ledger cannot be read.
+      output[flavour] = { ...state, available: false, stock: 0, reason: 'Website stock reservation state could not be verified.' };
+    }
+  }
+  return output;
 }
 
 function buildStockSnapshot(flavour, item, quantity = 1) {
@@ -2417,21 +2707,25 @@ async function adminStockDashboard() {
   for (const [flavour, item] of Object.entries(availability)) {
     const itemId = cleanText(item.itemId || item.item_id, 80) || null;
     let websiteReserved = 0;
+    let ownerExcluded = 0;
+    let sellableStock = Math.max(0, Number(item.stock || 0));
 
     if (itemId) {
       try {
-        const reservationState = await readWebsiteReservations(itemId);
-        websiteReserved = reservationState.reservations.reduce(
-          (sum, row) => sum + Math.max(0, Number(row.quantity) || 0),
-          0
-        );
+        const adjusted = await applyWebsiteReservationOverlay({
+          ...item,
+          requestedQuantity: 1,
+          canFulfil: Boolean(item.available) && Number(item.stock || 0) >= 1,
+        }, itemId);
+        websiteReserved = Math.max(0, Number(adjusted.websiteReserved || 0));
+        ownerExcluded = Math.max(0, Number(adjusted.ownerExcluded || 0));
+        sellableStock = Math.max(0, Math.floor(Number(adjusted.stock || 0)));
       } catch (_) {
-        websiteReserved = 0;
+        sellableStock = 0;
       }
     }
 
     const zohoStock = Math.max(0, Number(item.stock || 0));
-    const sellableStock = Math.max(0, Math.floor(zohoStock - websiteReserved));
     let alertLevel = 'healthy';
     if (sellableStock <= 0) alertLevel = 'out';
     else if (sellableStock <= 2) alertLevel = 'critical';
@@ -2442,6 +2736,7 @@ async function adminStockDashboard() {
       stock: sellableStock,
       zohoStock,
       websiteReserved,
+      ownerExcluded,
       sellableStock,
       alertLevel,
       itemId,
@@ -2450,6 +2745,83 @@ async function adminStockDashboard() {
   }
 
   return result;
+}
+
+function validateOwnerStockAdjustmentInput(input) {
+  const flavour = cleanText(input?.flavour, 80);
+  if (!ALLOWED_FLAVOURS.has(flavour)) { const e=new TypeError('Select a valid BC10000 flavour.'); e.statusCode=400; throw e; }
+  const operation = cleanText(input?.operation, 20).toLowerCase();
+  if (!['remove','return'].includes(operation)) { const e=new TypeError('Select whether stock is being removed from or returned to sale.'); e.statusCode=400; throw e; }
+  const quantity = Number(input?.quantity);
+  if (!Number.isInteger(quantity) || quantity < 1 || quantity > 100) { const e=new TypeError('Stock adjustment quantity must be a whole number from 1 to 100.'); e.statusCode=400; throw e; }
+  const reason = cleanText(input?.reason, 30).toLowerCase();
+  if (!OWNER_STOCK_ADJUSTMENT_REASONS.has(reason)) { const e=new TypeError('Select a valid stock-adjustment reason.'); e.statusCode=400; throw e; }
+  const note = cleanText(input?.note, 180) || null;
+  return { flavour, operation, quantity, reason, note };
+}
+function ownerStockAdjustmentFingerprint(plan) {
+  return createHash('sha256').update(JSON.stringify({
+    flavour:plan.flavour,itemId:plan.itemId,operation:plan.operation,quantity:plan.quantity,reason:plan.reason,
+    zohoStock:plan.zohoStock,websiteReserved:plan.websiteReserved,ownerExcludedBefore:plan.ownerExcludedBefore,
+    sellableBefore:plan.sellableBefore,sellableAfter:plan.sellableAfter,ledgerEtag:plan.ledgerEtag||null
+  })).digest('hex');
+}
+async function buildOwnerStockAdjustmentPlan(input, forceFresh=true) {
+  const clean = validateOwnerStockAdjustmentInput(input);
+  const item = await resolveSelectedProductItem(clean.flavour, '', forceFresh);
+  const snapshot = buildStockSnapshot(clean.flavour, item, 1);
+  if (!snapshot.itemId || !Number.isFinite(Number(snapshot.stock))) { const e=new Error('Live Zoho stock could not be verified for this flavour.'); e.statusCode=409; throw e; }
+  const [{ reservations }, ledger] = await Promise.all([
+    readWebsiteReservations(snapshot.itemId),
+    readOwnerStockAdjustmentState(snapshot.itemId)
+  ]);
+  const locationId=String(snapshot.locationId||'');
+  const websiteReserved=reservations.filter(row=>String(row.locationId||'')===locationId)
+    .reduce((sum,row)=>sum+Math.max(0,Number(row.quantity)||0),0);
+  const ownerExcludedBefore=Math.max(0,Number(ledger.state.excluded||0));
+  const zohoStock=Math.max(0,Math.floor(Number(snapshot.stock||0)));
+  const physical=Number.isFinite(Number(snapshot.physicalStock))?Math.max(0,Math.floor(Number(snapshot.physicalStock))):null;
+  const baseBound=physical===null?zohoStock:Math.min(zohoStock,physical);
+  const sellableBefore=Math.max(0,baseBound-websiteReserved-ownerExcludedBefore);
+  let ownerExcludedAfter=ownerExcludedBefore;
+  if(clean.operation==='remove') {
+    if(clean.quantity>sellableBefore) { const e=new Error(`Only ${sellableBefore} unit(s) are currently sellable. Reduce the adjustment quantity.`); e.statusCode=409; throw e; }
+    ownerExcludedAfter+=clean.quantity;
+  } else {
+    if(clean.quantity>ownerExcludedBefore) { const e=new Error(`Only ${ownerExcludedBefore} unit(s) are currently excluded by owner stock adjustments.`); e.statusCode=409; throw e; }
+    ownerExcludedAfter-=clean.quantity;
+  }
+  const sellableAfter=Math.max(0,baseBound-websiteReserved-ownerExcludedAfter);
+  const plan={...clean,itemId:String(snapshot.itemId),itemName:snapshot.itemName||PRODUCT_NAMES[clean.flavour],locationId:snapshot.locationId||null,
+    zohoStock,websiteReserved,ownerExcludedBefore,ownerExcludedAfter,sellableBefore,sellableAfter,ledgerEtag:ledger.current?.etag||null};
+  plan.previewFingerprint=ownerStockAdjustmentFingerprint(plan);
+  plan.confirmationRequired=`${clean.operation==='remove'?'REMOVE':'RETURN'} ${clean.quantity} ${clean.flavour}`.toUpperCase();
+  return plan;
+}
+async function adminPreviewStockAdjustment(input) {
+  const plan=await buildOwnerStockAdjustmentPlan(input,true);
+  return {...plan,zohoBooksChanged:false,ledger:'vestige-owner-stock-adjustments'};
+}
+async function adminApplyStockAdjustment(input, requestId) {
+  const suppliedFingerprint=cleanText(input?.previewFingerprint,80).toLowerCase();
+  const confirmation=cleanText(input?.confirmation,100).toUpperCase();
+  const initial=await buildOwnerStockAdjustmentPlan(input,true);
+  if(!/^[a-f0-9]{64}$/.test(suppliedFingerprint)||!safeEqual(suppliedFingerprint,initial.previewFingerprint)) { const e=new Error('Stock-adjustment preview is stale. Preview the adjustment again.'); e.statusCode=409; throw e; }
+  if(!safeEqual(confirmation,initial.confirmationRequired)) { const e=new Error(`Type the exact confirmation phrase: ${initial.confirmationRequired}`); e.statusCode=409; throw e; }
+  const lock=await acquireStockLock(initial.itemId,`owner-stock-${randomUUID()}`);
+  try {
+    const plan=await buildOwnerStockAdjustmentPlan(input,true);
+    if(!safeEqual(suppliedFingerprint,plan.previewFingerprint)) { const e=new Error('Stock changed after the preview. Preview the adjustment again.'); e.statusCode=409; throw e; }
+    const delta=plan.operation==='remove'?plan.quantity:-plan.quantity;
+    const at=Date.now();
+    const entry={id:randomUUID(),at,flavour:plan.flavour,itemId:plan.itemId,delta,operation:plan.operation,quantity:plan.quantity,reason:plan.reason,note:plan.note};
+    const updated=await mutateOwnerStockAdjustmentState(plan.itemId,state=>({excluded:plan.ownerExcludedAfter,entries:[...(state.entries||[]),entry]}));
+    cachedAvailabilityUntil=0;
+    await writeAuditEvent({action:'admin_stock_adjustment',actor:'owner',outcome:'success',message:`${plan.operation==='remove'?'Removed':'Returned'} ${plan.quantity} ${plan.flavour}; reason ${plan.reason}; sellable ${plan.sellableBefore} -> ${plan.sellableAfter}.`,requestId});
+    return {success:true,flavour:plan.flavour,itemId:plan.itemId,operation:plan.operation,quantity:plan.quantity,reason:plan.reason,note:plan.note,
+      zohoStock:plan.zohoStock,websiteReserved:plan.websiteReserved,ownerExcluded:updated.excluded,sellableBefore:plan.sellableBefore,sellableAfter:plan.sellableAfter,
+      zohoBooksChanged:false,message:`${plan.quantity} ${plan.flavour} unit(s) ${plan.operation==='remove'?'removed from':'returned to'} website sellable stock. Sellable now: ${plan.sellableAfter}.`};
+  } finally { await releaseStockLock(lock); }
 }
 
 
@@ -3238,7 +3610,7 @@ async function buildReceiptResponse(token, requestId) {
 
 exports.handler = async function handler(event) {
   const requestId = randomUUID();
-  let diagnosticStage = null; // TEMPORARY test-branch stage marker; contains no credentials.
+  let diagnosticStage = null;
   // Netlify preserves the original incoming path in Lambda-compatible event.path.
   // Accept only the public rewrite so direct function calls cannot bypass its rate limit.
   if (event.path && event.path !== '/api/zoho') return publicError(404, 'Not found.', requestId);
@@ -3251,10 +3623,10 @@ exports.handler = async function handler(event) {
     const body = parseJsonBody(event);
 
     if (body.action === 'availability') {
-      // A page load/reload or explicit Retry request must read current stock rather
-      // than a warm-instance availability cache. Product-to-item_id mappings remain
-      // cached because item identity is stable; only inventory quantities are refreshed.
-      const availability = await getProductAvailability(true, false);
+      // Public availability uses the short-lived Zoho snapshot cache, then applies the
+      // strongly-consistent website reservation overlay. Checkout itself still performs
+      // a forced fresh Zoho read before creating or confirming an order.
+      const availability = await getProductAvailability(false, false, true);
       return json(200, { success: true, availability, verifiedAt: new Date().toISOString(), requestId });
     }
 
@@ -3302,6 +3674,16 @@ exports.handler = async function handler(event) {
       const stock = await adminStockDashboard();
       return json(200, { success: true, stock, verifiedAt: new Date().toISOString(), requestId });
     }
+    if (body.action === 'admin_preview_stock_adjustment') {
+      requirePaymentAdmin(event);
+      const preview = await adminPreviewStockAdjustment(body);
+      return json(200, { success: true, preview, requestId });
+    }
+    if (body.action === 'admin_apply_stock_adjustment') {
+      requirePaymentAdmin(event);
+      const result = await adminApplyStockAdjustment(body, requestId);
+      return json(200, { ...result, requestId });
+    }
     if (body.action === 'admin_cancel_unpaid_bank_order') {
       requirePaymentAdmin(event);
       const ref = validatePaymentReference(body.paymentReference);
@@ -3329,6 +3711,16 @@ exports.handler = async function handler(event) {
         });
         throw error;
       }
+    }
+    if (body.action === 'admin_preview_test_order_reset') {
+      requirePaymentAdmin(event);
+      const preview = await adminPreviewTestOrderReset();
+      return json(200, { success: true, preview, requestId });
+    }
+    if (body.action === 'admin_apply_test_order_reset') {
+      requirePaymentAdmin(event);
+      const result = await adminApplyTestOrderReset(body);
+      return json(200, { ...result, requestId });
     }
     if (body.action === 'admin_order_exceptions') {
       requirePaymentAdmin(event);
@@ -3643,8 +4035,7 @@ exports.handler = async function handler(event) {
       }, retryHeaders);
     }
     if (statusCode === 503) {
-      // TEMPORARY TEST-BRANCH DIAGNOSTICS: return only a sanitized category;
-      // never return credentials, tokens, response bodies, or authorization data.
+            // never return credentials, tokens, response bodies, or authorization data.
       const raw = String(error?.message || '');
       let diagnosticCode = 'ZOHO_TEMPORARY_FAILURE';
       let diagnosticMessage = 'A temporary Zoho/Worker failure occurred.';
@@ -3739,4 +4130,9 @@ exports.handler = async function handler(event) {
   }
 };
 
+exports.__test = { buildOwnerTestResetPlan };
 exports.bindCloudflareRuntime = bindCloudflareRuntime;
+exports.getGoogleFacingAvailability = async function getGoogleFacingAvailability(env) {
+  bindCloudflareRuntime(env);
+  return getProductAvailability(false, false, true);
+};

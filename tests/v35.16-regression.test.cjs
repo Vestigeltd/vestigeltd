@@ -11,7 +11,7 @@ const storefront = read('public/script.js');
 const journey = read('public/checkout-journey-safe.js');
 const styles = read('public/styles.css');
 const paymentVisibility = read('public/payment-visibility.css');
-const index = read('public/index.html');
+const index = read('public/bc10000/index.html');
 const contact = read('public/contact.html');
 const integration = read('src/zoho-integration.cjs');
 
@@ -53,7 +53,7 @@ assert(storefront.includes("form.classList.remove('is-payment-mode')"), 'Cancell
 assert(styles.includes('.order-form.is-payment-mode>:not(#paymentPanel):not(#receiptPanel):not(#orderStatus){display:none!important}'), 'Payment-only screen isolation is missing.');
 assert(!storefront.includes("document.documentElement.classList.add('vestige-payment-focus')"), 'Regressed expanded payment viewport mode remains.');
 assert(styles.includes('.order-form.is-payment-mode{background:#fff;border-color:#d9dde2}'), 'Vetted light payment-page surround is missing.');
-assert(storefront.includes("payment-visibility.css?v=35.22.0"), 'Responsive payment safeguards are not loaded.');
+assert(storefront.includes("/payment-visibility.css?v=35.22.0&release=35.26.1&ui=35.27.9"), 'Responsive payment safeguards are not loaded from the canonical root path.');
 assert(paymentVisibility.includes('.bank-qr-shell'), 'Responsive QR visibility safeguard is missing.');
 assert(paymentVisibility.includes('@media (max-width: 640px)'), 'Small-screen payment layout is missing.');
 assert(paymentVisibility.includes('min-height: 44px'), 'Payment control touch targets are not protected.');
@@ -85,10 +85,10 @@ assert(contact.includes('class="contact-email"'), 'Contact email colour hook is 
 assert(contact.includes('class="contact-instagram"'), 'Instagram colour hook is missing.');
 assert(styles.includes('.contact-card .contact-detail .contact-email{color:#806018;font-weight:700}'), 'Dark-gold email styling is missing.');
 assert(styles.includes('.contact-card .contact-detail .contact-instagram{color:#172231;font-weight:700}'), 'Strong contact-value styling is missing.');
-assert(index.includes('styles.css?v=35.23.2'), 'Storefront stylesheet cache version is stale.');
-assert(index.includes('script.js?v=35.23.2'), 'Storefront script cache version is stale.');
+assert(index.includes('styles.css?v=35.27.6&ui=35.28.0'), 'Storefront stylesheet cache version is stale.');
+assert(index.includes('script.js?v=35.23.2&ui=35.28.0'), 'Storefront script cache version is stale.');
 assert(index.includes('checkout-journey-safe.js?v=35.22.0'), 'Journey script cache version is stale.');
-assert(contact.includes('styles.css?v=35.23.2'), 'Contact stylesheet cache version is stale.');
+assert(contact.includes('styles.css?v=35.27.6'), 'Contact stylesheet cache version is stale.');
 
 assert(integration.includes('const safeFirstName = firstName'), 'Safe first-name personalisation is missing.');
 assert(integration.includes(".replace(/</g, '&lt;')"), 'First-name HTML escaping is missing.');
