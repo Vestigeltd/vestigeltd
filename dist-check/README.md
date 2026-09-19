@@ -1,0 +1,1 @@
+This folder contains the built output assets for the worker "vestigeltd" generated at 2026-09-19T15:15:50.907Z.
