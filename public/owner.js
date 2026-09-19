@@ -728,7 +728,6 @@ if(stored){
 /* VESTIGE_OWNER_ANALYTICS_V35_10_0B
    Runs inside the existing secure owner-console closure, so it reuses
    the same authenticated in-memory adminKey that successfully unlocks /api/zoho. */
-var activeAnalyticsPeriod='30';
 async function refreshConversionAnalytics(){
   if(!adminKey){
     var lockedList=document.getElementById('analyticsFlavourList');
@@ -748,7 +747,7 @@ async function refreshConversionAnalytics(){
       },
       credentials:'same-origin',
       cache:'no-store',
-      body:JSON.stringify({action:'admin_summary',period:activeAnalyticsPeriod})
+      body:JSON.stringify({action:'admin_summary',days:30})
     });
 
     var ct=(response.headers.get('content-type')||'').toLowerCase();
@@ -765,21 +764,13 @@ async function refreshConversionAnalytics(){
       if(el)el.textContent=value;
     }
 
-    put('analyticsVisitors',String(data.uniqueSessions||0));
-    put('analyticsPageViews',String(data.pageViews||0));
-    put('analyticsShopViews',String(data.shopViews||0));
-    put('analyticsProductSelections',String(data.productSelections||0));
-    put('analyticsBaskets',String(data.baskets||0));
     put('analyticsCheckoutStarts',String(data.checkoutStarts||0));
     put('analyticsPaymentClaims',String(data.paymentClaims||0));
     put('analyticsConfirmedOrders',String(data.confirmedOrders||0));
     put('analyticsRevenue','R'+Number(data.confirmedRevenue||0).toFixed(2));
-    put('analyticsUnitsSold',String(data.unitsSold||0));
-    put('analyticsClaimRate',Number(data.paymentClaimPercent||0).toFixed(1)+'% payment notice rate');
-    put('analyticsConversionRate',Number(data.checkoutConversionPercent||0).toFixed(1)+'%');
-    put('analyticsAbandonmentRate',Number(data.checkoutAbandonmentPercent||0).toFixed(1)+'%');
-    put('analyticsAov','R'+Number(data.averageOrderValue||0).toFixed(2));
-    put('analyticsPeriodLabel',activeAnalyticsPeriod==='today'?'Today':activeAnalyticsPeriod+' days');
+    put('analyticsClaimRate',Number(data.paymentClaimPercent||0).toFixed(1)+'% claimed');
+    put('analyticsConversionRate',Number(data.checkoutConversionPercent||0).toFixed(1)+'% conversion');
+    put('analyticsAov','AOV R'+Number(data.averageOrderValue||0).toFixed(2));
 
     var list=document.getElementById('analyticsFlavourList');
     if(list){
@@ -802,40 +793,6 @@ async function refreshConversionAnalytics(){
   }finally{
     if(button)button.disabled=false;
   }
-}
-
-async function refreshRestockDemand(){
-  if(!adminKey){
-    var locked=document.getElementById('restockDemandList');
-    if(locked)locked.textContent='Unlock the Owner Console to load poll results.';
-    return;
-  }
-  var button=document.getElementById('refreshRestockDemand');
-  if(button)button.disabled=true;
-  try{
-    var response=await fetch('/api/restock-poll',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','X-Vestige-Payment-Admin-Key':adminKey},
-      credentials:'same-origin',cache:'no-store',
-      body:JSON.stringify({action:'admin_summary'})
-    });
-    var data=await response.json().catch(function(){return {};});
-    if(!response.ok){var error=new Error(data.message||('Poll request failed ('+response.status+').'));error.status=response.status;throw error;}
-    document.getElementById('restockResponses').textContent=String(data.submissions||0);
-    document.getElementById('restockVotes').textContent=String(data.totalVotes||0);
-    var rows=Array.isArray(data.flavours)?data.flavours:[];
-    var leader=rows.find(function(row){return Number(row.count||0)>0;});
-    document.getElementById('restockLeader').textContent=leader?leader.name+' · '+leader.count:'No votes yet';
-    var list=document.getElementById('restockDemandList');
-    if(list){
-      list.innerHTML=rows.map(function(row,index){
-        return '<div><span><i class="owner-demand-rank">'+(index+1)+'</i>'+esc(row.name||'')+'</span><strong>'+Number(row.count||0)+'</strong></div>';
-      }).join('')||'No poll results recorded yet.';
-    }
-  }catch(e){
-    var list=document.getElementById('restockDemandList');
-    if(list)list.textContent=e&&e.status===401?'Poll authentication failed. Lock and unlock the Owner Console, then try again.':'Poll results unavailable: '+(e&&e.message?e.message:'Unknown error.');
-  }finally{if(button)button.disabled=false;}
 }
 
 
@@ -970,17 +927,6 @@ var analyticsRefreshButton=document.getElementById('refreshAnalytics');
 if(analyticsRefreshButton){
   analyticsRefreshButton.addEventListener('click',refreshConversionAnalytics);
 }
-var restockRefreshButton=document.getElementById('refreshRestockDemand');
-if(restockRefreshButton){
-  restockRefreshButton.addEventListener('click',refreshRestockDemand);
-}
-document.querySelectorAll('[data-analytics-period]').forEach(function(button){
-  button.addEventListener('click',function(){
-    activeAnalyticsPeriod=String(button.getAttribute('data-analytics-period')||'30');
-    document.querySelectorAll('[data-analytics-period]').forEach(function(item){item.classList.toggle('active',item===button);});
-    refreshConversionAnalytics();
-  });
-});
 
 // Load analytics only AFTER the normal owner unlock has succeeded.
 // We watch the existing protected console panel state without storing
@@ -992,7 +938,6 @@ if(consolePanel && 'MutationObserver' in window){
       analyticsPanelWasHidden=consolePanel.hidden;
       if(!consolePanel.hidden && adminKey){
         refreshConversionAnalytics();
-        refreshRestockDemand();
       }
     }
   }).observe(consolePanel,{attributes:true,attributeFilter:['hidden']});

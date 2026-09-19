@@ -6,8 +6,8 @@
 <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
 <meta name="referrer" content="no-referrer">
 <title>Vestige Owner Console</title>
-<link rel="stylesheet" href="styles.css?v=35.28.1">
-<link rel="stylesheet" href="owner.css?v=35.28.1">
+<link rel="stylesheet" href="styles.css?v=35.27.2">
+<link rel="stylesheet" href="owner.css?v=35.26.3">
 </head>
 <body class="owner-body">
 <header class="owner-header">
@@ -349,66 +349,31 @@
         <div id="stockTable" class="owner-table-wrap"></div>
       </article>
     </section>
-
-    <section class="owner-card owner-analytics-card" id="conversionAnalyticsCard">
-      <div class="owner-card-head">
-        <div>
-          <p class="owner-kicker">BUSINESS INTELLIGENCE</p>
-          <h2>Customer journey and sales funnel</h2>
-        </div>
-        <div class="owner-intelligence-actions">
-          <div class="owner-filter-row" aria-label="Analytics period">
-            <button class="owner-filter" type="button" data-analytics-period="today">Today</button>
-            <button class="owner-filter" type="button" data-analytics-period="7">7 days</button>
-            <button class="owner-filter active" type="button" data-analytics-period="30">30 days</button>
-          </div>
-          <button class="btn btn-outline" id="refreshAnalytics" type="button">Refresh analytics</button>
-        </div>
-      </div>
-      <p class="owner-analytics-help">Anonymous first-party funnel data. No customer names, e-mail addresses, mobile numbers or delivery details are stored in analytics.</p>
-      <div class="owner-funnel-grid">
-        <div class="owner-funnel-step"><span>Visitors</span><strong id="analyticsVisitors">—</strong></div>
-        <div class="owner-funnel-step"><span>Page views</span><strong id="analyticsPageViews">—</strong></div>
-        <div class="owner-funnel-step"><span>Shop views</span><strong id="analyticsShopViews">—</strong></div>
-        <div class="owner-funnel-step"><span>Product selections</span><strong id="analyticsProductSelections">—</strong></div>
-        <div class="owner-funnel-step"><span>Basket starts</span><strong id="analyticsBaskets">—</strong></div>
-        <div class="owner-funnel-step"><span>Checkout starts</span><strong id="analyticsCheckoutStarts">—</strong></div>
-        <div class="owner-funnel-step"><span>Payment notices</span><strong id="analyticsPaymentClaims">—</strong></div>
-        <div class="owner-funnel-step confirmed"><span>Confirmed orders</span><strong id="analyticsConfirmedOrders">—</strong></div>
-      </div>
-      <div class="owner-stats owner-analytics-stats">
-        <div class="owner-stat"><span>Revenue</span><strong id="analyticsRevenue">—</strong><small id="analyticsPeriodLabel">30 days</small></div>
-        <div class="owner-stat"><span>Units sold</span><strong id="analyticsUnitsSold">—</strong><small>Confirmed funnel events</small></div>
-        <div class="owner-stat"><span>Average order value</span><strong id="analyticsAov">—</strong><small>Confirmed revenue ÷ orders</small></div>
-        <div class="owner-stat"><span>Checkout conversion</span><strong id="analyticsConversionRate">—</strong><small id="analyticsClaimRate">—</small></div>
-        <div class="owner-stat"><span>Checkout abandonment</span><strong id="analyticsAbandonmentRate">—</strong><small>Starts without confirmation</small></div>
-      </div>
-      <div class="owner-analytics-flavours">
-        <h3>Observed shop flavour selections</h3>
-        <div id="analyticsFlavourList" class="owner-analytics-list">No analytics loaded yet.</div>
-      </div>
-    </section>
-
-    <section class="owner-card owner-demand-card" id="restockDemandCard">
-      <div class="owner-card-head">
-        <div><p class="owner-kicker">CUSTOMER RESTOCK DEMAND</p><h2>Anonymous flavour poll</h2></div>
-        <button class="btn btn-outline" id="refreshRestockDemand" type="button">Refresh poll results</button>
-      </div>
-      <p class="owner-analytics-help">Aggregate checkbox selections only. The poll does not store customer names, contact details, accounts, raw IP addresses or user agents.</p>
-      <div class="owner-demand-summary">
-        <div><span>Poll responses</span><strong id="restockResponses">—</strong></div>
-        <div><span>Total flavour votes</span><strong id="restockVotes">—</strong></div>
-        <div><span>Leading flavour</span><strong id="restockLeader">—</strong></div>
-      </div>
-      <div class="owner-analytics-flavours">
-        <h3>Demand ranking</h3>
-        <div id="restockDemandList" class="owner-analytics-list">No poll results loaded yet.</div>
-      </div>
-      <p class="owner-analytics-help">Results are directional. A browser-local duplicate deterrent is used, but voters are not identity-verified because the poll deliberately collects no personal data.</p>
-    </section>
   </div>
+
+<section class="owner-card owner-analytics-card" id="conversionAnalyticsCard">
+  <div class="owner-card-head">
+    <div>
+      <p class="owner-kicker">CONVERSION ANALYTICS</p>
+      <h2>Sales funnel</h2>
+    </div>
+    <button class="btn btn-outline" id="refreshAnalytics" type="button">Refresh analytics</button>
+  </div>
+  <p class="owner-analytics-help">Anonymous first-party funnel data. No customer names, e-mail addresses, mobile numbers or delivery details are stored here.</p>
+  <div class="owner-stats owner-analytics-stats">
+    <div class="owner-stat"><span>Checkout starts</span><strong id="analyticsCheckoutStarts">—</strong><small>30 days</small></div>
+    <div class="owner-stat"><span>Payment claims</span><strong id="analyticsPaymentClaims">—</strong><small id="analyticsClaimRate">—</small></div>
+    <div class="owner-stat"><span>Confirmed orders</span><strong id="analyticsConfirmedOrders">—</strong><small id="analyticsConversionRate">—</small></div>
+    <div class="owner-stat"><span>Revenue</span><strong id="analyticsRevenue">—</strong><small id="analyticsAov">—</small></div>
+  </div>
+  <div class="owner-analytics-flavours">
+    <h3>Flavour interest</h3>
+    <div id="analyticsFlavourList" class="owner-analytics-list">No analytics loaded yet.</div>
+  </div>
+</section>
 </main>
 
-<script src="owner.js?v=35.28.1"></script>
+<script src="owner.js?v=35.26.3"></script>
+
 </body>
 </html>

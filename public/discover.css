@@ -1,4 +1,4 @@
-/* Vestige V35.27.6 — Discover Vestige homepage
+/* Vestige V35.27.2 — Discover Vestige homepage
    Additive only: extends the established Vestige production design system. */
 
 .discover-page{--discover-accent-size:16px;background:#06101d}
@@ -18,7 +18,7 @@ linear-gradient(135deg,#06101d 0%,#081827 56%,#0b2034 100%)}
 .discover-hero:after{content:"";position:absolute;left:4%;right:4%;bottom:0;height:1px;background:linear-gradient(90deg,transparent,rgba(200,155,67,.55),transparent)}
 .discover-hero-glow{position:absolute;width:520px;height:520px;right:-120px;top:80px;border:1px solid rgba(200,155,67,.10);border-radius:50%;box-shadow:0 0 0 70px rgba(200,155,67,.025),0 0 0 150px rgba(200,155,67,.018);pointer-events:none}
 .discover-hero-inner{position:relative;z-index:2;width:100%;padding:92px 0 86px}
-.discover-signature{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:clamp(24px,3vw,34px);line-height:1.25;color:#d4aa58;text-align:center;margin:0 auto var(--vestige-space-heading-content,54px)}
+.discover-signature{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:clamp(24px,3vw,34px);line-height:1.25;color:#d4aa58;text-align:center;margin:0 auto 54px}
 .discover-body-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(225px,.5fr);gap:82px;align-items:stretch;max-width:1080px;margin:0 auto}
 .discover-narrative{max-width:760px}
 .discover-narrative p{color:#adb9c8;margin:0 0 20px;font-size:16px;line-height:1.72}
@@ -26,8 +26,6 @@ linear-gradient(135deg,#06101d 0%,#081827 56%,#0b2034 100%)}
 .discover-narrative strong{color:#f4f1ea}
 .discover-impression{font-family:Georgia,'Times New Roman',serif!important;color:#f4f1ea!important;font-size:19px!important;line-height:1.55!important;margin-top:27px!important}
 .discover-triad{font-size:var(--discover-accent-size);font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:#d4aa58;text-align:center;margin:46px auto 0}
-.discover-hero-action{text-align:center;margin:30px auto 0}
-.discover-hero-action .btn{display:inline-flex;align-items:center;justify-content:center}
 .discover-mark{align-self:center;border-left:1px solid rgba(200,155,67,.42);padding:20px 0 20px 30px;display:flex;flex-direction:column;gap:24px}
 .discover-mark span{font-family:Georgia,'Times New Roman',serif;font-size:20px;letter-spacing:2px;color:#f4f1ea}
 .discover-mark span:before{content:"—";color:#c89b43;margin-right:12px}
@@ -55,11 +53,8 @@ linear-gradient(135deg,#06101d 0%,#081827 56%,#0b2034 100%)}
 
 /* Provenance and commercial bridge. */
 .discover-experience{padding:105px 0}
-.discover-experience-grid{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:80px;align-items:stretch}
+.discover-experience-grid{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:80px;align-items:start}
 .discover-experience h2{font-size:clamp(38px,5vw,62px);margin:0}
-.discover-experience-copy{align-self:stretch;display:flex;flex-direction:column;justify-content:center}
-.discover-experience-copy>p:first-child{margin-top:0}
-.discover-experience-copy>p:last-child{margin-bottom:0!important}
 .discover-experience-copy p{color:#aeb9c7}
 .discover-experience-copy .discover-impression{color:#f4f1ea!important;border-left:3px solid #c89b43;padding-left:22px;margin-top:32px!important}
 .discover-vapes{padding:105px 0}
@@ -87,13 +82,12 @@ linear-gradient(135deg,#06101d 0%,#081827 56%,#0b2034 100%)}
   .discover-header-title{font-size:14px}
   .discover-hero{min-height:auto}
   .discover-hero-inner{padding:72px 0 68px}
-  .discover-signature{font-size:24px;margin-bottom:var(--vestige-space-heading-content,36px)}
+  .discover-signature{font-size:24px;margin-bottom:42px}
   .discover-hero-glow{width:340px;height:340px;right:-180px}
   .discover-body-grid{gap:36px}
   .discover-mark{grid-template-columns:1fr 1fr;gap:14px 22px}
   .discover-mark span{font-size:16px;letter-spacing:1.5px}
   .discover-triad{margin-top:38px}
-  .discover-hero-action{margin-top:24px}
   .discover-standard,.discover-purpose,.discover-experience,.discover-vapes{padding-top:75px;padding-bottom:75px}
   .discover-purpose-card{padding:30px}
   .discover-standard-grid article{min-height:auto}
