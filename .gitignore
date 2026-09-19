@@ -1,11 +1,11 @@
 node_modules/
 .wrangler/
 .dev.vars
-.dev.vars.*
 .env
 .env.*
-!.env.example
-_vestige_backups/
-*.log
-.DS_Store
-npm-debug.log*
+!/.env.example
+dist-check/
+*.zip
+production-version.json
+production-worker.raw
+deployment-history.txt
