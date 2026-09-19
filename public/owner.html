@@ -7,7 +7,7 @@
 <meta name="referrer" content="no-referrer">
 <title>Vestige Owner Console</title>
 <link rel="stylesheet" href="styles.css?v=35.27.2">
-<link rel="stylesheet" href="owner.css?v=35.26.3">
+<link rel="stylesheet" href="owner.css?v=35.28.5">
 </head>
 <body class="owner-body">
 <header class="owner-header">
@@ -186,6 +186,28 @@
           <button class="btn owner-danger-button" id="cancelUnpaid" type="button">Void unpaid order & release stock</button>
         </article>
       </div>
+
+      <section class="owner-fulfilment-panel" id="fulfilmentPanel" aria-labelledby="fulfilmentTitle">
+        <div class="owner-section-head owner-section-head-wrap">
+          <div>
+            <p class="owner-kicker">FULFILMENT</p>
+            <h3 id="fulfilmentTitle">Order fulfilment</h3>
+            <p class="owner-audit-help">Available only after payment confirmation. Each update is stored against the order and recorded in the audit log.</p>
+          </div>
+          <span class="owner-state-pill" id="fulfilmentState">Payment not confirmed</span>
+        </div>
+        <div class="owner-fulfilment-grid">
+          <div><span>Delivery method</span><strong id="fulfilmentMethod">—</strong></div>
+          <div><span>Last fulfilment update</span><strong id="fulfilmentUpdatedAt">—</strong></div>
+        </div>
+        <label class="owner-fulfilment-tracking" id="fulfilmentTrackingField">Courier tracking reference
+          <input id="fulfilmentTrackingReference" type="text" maxlength="100" autocomplete="off" placeholder="Enter tracking reference before dispatch">
+        </label>
+        <div class="owner-fulfilment-actions">
+          <button class="btn btn-gold" id="fulfilmentNextAction" type="button" disabled>Confirm payment first</button>
+        </div>
+        <p class="owner-message" id="fulfilmentMessage" role="status"></p>
+      </section>
     </section>
 
     <section class="owner-card owner-exception-card">
@@ -373,7 +395,7 @@
 </section>
 </main>
 
-<script src="owner.js?v=35.26.3"></script>
+<script src="owner.js?v=35.28.5"></script>
 
 </body>
 </html>

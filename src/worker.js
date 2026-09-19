@@ -2825,6 +2825,123 @@ If you received this email, Worker owner alerts are operational.`
       return record;
     }
     __name(strictlyConfirmBankCheckout, "strictlyConfirmBankCheckout");
+    var VESTIGE_FULFILMENT_STATES = /* @__PURE__ */ new Set(["confirmed", "preparing", "ready_for_collection", "dispatched", "completed"]);
+    function normaliseFulfilmentRecord(data, deliveryMethod) {
+      const raw = data?.fulfilment && typeof data.fulfilment === "object" ? data.fulfilment : {};
+      const state = VESTIGE_FULFILMENT_STATES.has(String(raw.state || "")) ? String(raw.state) : "confirmed";
+      return {
+        state,
+        deliveryMethod,
+        trackingReference: cleanText(raw.trackingReference, 100) || null,
+        updatedAt: Number(raw.updatedAt || 0) || null,
+        preparingAt: Number(raw.preparingAt || 0) || null,
+        readyForCollectionAt: Number(raw.readyForCollectionAt || 0) || null,
+        dispatchedAt: Number(raw.dispatchedAt || 0) || null,
+        completedAt: Number(raw.completedAt || 0) || null,
+        history: Array.isArray(raw.history) ? raw.history.slice(-20) : []
+      };
+    }
+    __name(normaliseFulfilmentRecord, "normaliseFulfilmentRecord");
+    function fulfilmentLabel(state, deliveryMethod) {
+      const value = String(state || "confirmed");
+      if (value === "preparing") return "Preparing order";
+      if (value === "ready_for_collection") return "Ready for collection";
+      if (value === "dispatched") return "Dispatched";
+      if (value === "completed") return deliveryMethod === DELIVERY_METHOD_COLLECTION ? "Collected / completed" : "Delivered / completed";
+      return "Payment confirmed";
+    }
+    __name(fulfilmentLabel, "fulfilmentLabel");
+    function validateFulfilmentTransition(currentState, nextState, deliveryMethod) {
+      const current = VESTIGE_FULFILMENT_STATES.has(String(currentState || "")) ? String(currentState) : "confirmed";
+      const next = cleanText(nextState, 40);
+      if (!VESTIGE_FULFILMENT_STATES.has(next) || next === "confirmed") {
+        const e = new TypeError("Select a valid fulfilment action.");
+        e.statusCode = 400;
+        throw e;
+      }
+      if (next === current) return { current, next, replayed: true };
+      const allowed = deliveryMethod === DELIVERY_METHOD_COLLECTION ? {
+        confirmed: "preparing",
+        preparing: "ready_for_collection",
+        ready_for_collection: "completed"
+      } : {
+        confirmed: "preparing",
+        preparing: "dispatched",
+        dispatched: "completed"
+      };
+      if (allowed[current] !== next) {
+        const e = new Error(`Fulfilment cannot move from ${fulfilmentLabel(current, deliveryMethod)} to ${fulfilmentLabel(next, deliveryMethod)}.`);
+        e.statusCode = 409;
+        throw e;
+      }
+      return { current, next, replayed: false };
+    }
+    __name(validateFulfilmentTransition, "validateFulfilmentTransition");
+    async function adminUpdateFulfilment(input, requestId) {
+      const ref = validatePaymentReference(input?.paymentReference);
+      const located = await locateBankCheckoutByReference(ref);
+      const current = await located.store.getWithMetadata(located.key, { type: "json", consistency: "strong" });
+      if (!current) {
+        const e = new Error("Checkout could not be found.");
+        e.statusCode = 404;
+        throw e;
+      }
+      const data = current.data || {};
+      if (String(data.state || "") !== "confirmed") {
+        const e = new Error("Fulfilment can start only after payment has been confirmed.");
+        e.statusCode = 409;
+        throw e;
+      }
+      const progress = data.progress || {};
+      const response = data.response || {};
+      const deliveryMethod = validateDeliveryMethod(progress.deliveryMethod || response?.order?.deliveryMethod || DELIVERY_METHOD_COURIER);
+      const existing = normaliseFulfilmentRecord(data, deliveryMethod);
+      const transition = validateFulfilmentTransition(existing.state, input?.fulfilmentState, deliveryMethod);
+      const trackingReference = cleanText(input?.trackingReference, 100);
+      if (transition.next === "dispatched" && !trackingReference && !existing.trackingReference) {
+        const e = new TypeError("Enter the courier tracking reference before marking the order dispatched.");
+        e.statusCode = 400;
+        throw e;
+      }
+      if (deliveryMethod === DELIVERY_METHOD_COLLECTION && trackingReference) {
+        const e = new TypeError("Courier tracking is not applicable to collection orders.");
+        e.statusCode = 400;
+        throw e;
+      }
+      if (transition.replayed) {
+        return { success: true, replayed: true, order: await adminLookupBankOrder(ref), message: `Fulfilment is already ${fulfilmentLabel(existing.state, deliveryMethod).toLowerCase()}.` };
+      }
+      const now = Date.now();
+      const next = {
+        ...existing,
+        state: transition.next,
+        deliveryMethod,
+        trackingReference: trackingReference || existing.trackingReference || null,
+        updatedAt: now,
+        history: [...existing.history, { state: transition.next, at: now, trackingReference: transition.next === "dispatched" ? trackingReference || existing.trackingReference || null : null }].slice(-20)
+      };
+      if (transition.next === "preparing") next.preparingAt = now;
+      if (transition.next === "ready_for_collection") next.readyForCollectionAt = now;
+      if (transition.next === "dispatched") next.dispatchedAt = now;
+      if (transition.next === "completed") next.completedAt = now;
+      const record = { ...data, fulfilment: next, updatedAt: now };
+      const written = await located.store.setJSON(located.key, record, { onlyIfMatch: current.etag });
+      if (!written?.modified) {
+        const e = new Error("The order changed while fulfilment was being updated. Reload the order and retry.");
+        e.statusCode = 409;
+        throw e;
+      }
+      await writeAuditEvent({
+        action: "admin_update_fulfilment",
+        actor: "owner",
+        paymentReference: ref,
+        outcome: "success",
+        requestId,
+        message: `${fulfilmentLabel(transition.next, deliveryMethod)}${next.trackingReference && transition.next === "dispatched" ? ` · Tracking ${next.trackingReference}` : ""}.`
+      });
+      return { success: true, replayed: false, order: await adminLookupBankOrder(ref), message: `${fulfilmentLabel(transition.next, deliveryMethod)} recorded.` };
+    }
+    __name(adminUpdateFulfilment, "adminUpdateFulfilment");
     function publicAdminOrderSummary(located, current) {
       const data = current?.data || {};
       const progress = data.progress || {};
@@ -2856,6 +2973,7 @@ If you received this email, Worker owner alerts are operational.`
         paymentClaimedAt: Number(progress.paymentClaimedAt || 0) || null,
         paymentReviewHoldAt: Number(progress.paymentReviewHoldAt || 0) || null,
         paymentReviewHoldStatus: cleanText(progress.paymentReviewHoldStatus, 60) || null,
+        fulfilment: normaliseFulfilmentRecord(data, validateDeliveryMethod(progress.deliveryMethod || response?.order?.deliveryMethod || DELIVERY_METHOD_COURIER)),
         createdAt: Number(data.createdAt || data.created_at || 0) || null,
         updatedAt: Number(data.updatedAt || 0) || null,
         invoiceId: cleanText(progress.bankInvoiceId || progress.invoiceId || verified.invoiceId, 80) || null,
@@ -3558,8 +3676,17 @@ If you received this email, Worker owner alerts are operational.`
       const progress = data.progress || {};
       const response = data.response || {};
       const state = String(data.state || "");
-      const display = customerOrderStatusMessage(state);
       const deliveryMethod = validateDeliveryMethod(progress.deliveryMethod || response?.order?.deliveryMethod || DELIVERY_METHOD_COURIER);
+      const fulfilment = normaliseFulfilmentRecord(data, deliveryMethod);
+      let display = customerOrderStatusMessage(state);
+      if (state === "confirmed") {
+        if (fulfilment.state === "preparing") display = { status: "processing", title: "Order being prepared", message: "Payment is confirmed and your order is being prepared." };
+        else if (fulfilment.state === "ready_for_collection") display = { status: "ready", title: "Ready for collection", message: "Your order is ready for collection from Vestige Ltd." };
+        else if (fulfilment.state === "dispatched") display = { status: "dispatched", title: "Order dispatched", message: "Your order has been handed to The Courier Guy for locker-to-locker delivery." };
+        else if (fulfilment.state === "completed") display = { status: "completed", title: deliveryMethod === DELIVERY_METHOD_COLLECTION ? "Order collected" : "Order completed", message: deliveryMethod === DELIVERY_METHOD_COLLECTION ? "Your order has been collected and is complete." : "Your order has been marked delivered and complete." };
+      }
+      const methodLabel = deliveryMethod === DELIVERY_METHOD_COLLECTION ? "Collection from Vestige Ltd" : "The Courier Guy — Locker to Locker";
+      const fulfilmentLabelText = state === "confirmed" ? `${fulfilmentLabel(fulfilment.state, deliveryMethod)} · ${methodLabel}` : methodLabel;
       return {
         paymentReference: ref,
         status: display.status,
@@ -3567,9 +3694,11 @@ If you received this email, Worker owner alerts are operational.`
         message: display.message,
         amount: Number(progress.amount || response?.order?.amount || 0),
         totalQuantity: Number(progress.totalQuantity || response?.order?.totalQuantity || 0),
-        fulfilment: deliveryMethod === DELIVERY_METHOD_COLLECTION ? "Collection from Vestige Ltd" : "The Courier Guy \u2014 Locker to Locker",
+        fulfilment: fulfilmentLabelText,
+        fulfilmentState: state === "confirmed" ? fulfilment.state : null,
+        trackingReference: deliveryMethod === DELIVERY_METHOD_COURIER ? fulfilment.trackingReference : null,
         paymentExpiresAt: Number(progress.paymentExpiresAt || 0) || null,
-        updatedAt: Number(data.updatedAt || 0) || null
+        updatedAt: Number(fulfilment.updatedAt || data.updatedAt || 0) || null
       };
     }
     __name(publicBankOrderStatus, "publicBankOrderStatus");
@@ -4124,6 +4253,23 @@ ${ownerConsoleUrl()}`
           requirePaymentAdmin(event);
           const order2 = await adminLookupBankOrder(body.paymentReference);
           return json(200, { success: true, order: order2, requestId });
+        }
+        if (body.action === "admin_update_fulfilment") {
+          requirePaymentAdmin(event);
+          try {
+            const result = await adminUpdateFulfilment(body, requestId);
+            return json(200, { ...result, requestId });
+          } catch (error) {
+            await writeAuditEvent({
+              action: "admin_update_fulfilment",
+              actor: "owner",
+              paymentReference: cleanText(body?.paymentReference, 24).toUpperCase() || null,
+              outcome: "failed",
+              requestId,
+              message: error?.message || "Fulfilment update failed."
+            });
+            throw error;
+          }
         }
         if (body.action === "admin_recent_orders") {
           requirePaymentAdmin(event);

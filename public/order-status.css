@@ -15,3 +15,6 @@
  .status-actions .btn{width:100%}
  .status-main{padding-top:32px}
 }
+
+/* V35.28.5 fulfilment states */
+.status-pill.processing{background:#fff4db;color:#8c6520}.status-pill.ready,.status-pill.dispatched{background:#eaf2fb;color:#315f8a}.status-pill.completed{background:#e8f4ee;color:#2e6f50}

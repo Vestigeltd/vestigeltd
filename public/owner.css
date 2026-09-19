@@ -387,3 +387,22 @@ button:disabled{opacity:.5;cursor:not-allowed}
 .owner-stock-adjustment-actions{margin-top:14px}
 .owner-stock-adjustment-card .owner-reset-preview{margin-top:16px}
 .owner-stock-excluded{color:#8b5b17;font-weight:800}
+
+
+/* V35.28.5 — fulfilment automation */
+.owner-fulfilment-panel{margin-top:18px;border-top:1px solid var(--owner-line);padding-top:20px}
+.owner-fulfilment-panel h3{margin:2px 0 0;color:#172231;font-size:17px}
+.owner-fulfilment-grid{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--owner-line);border-radius:6px;overflow:hidden;margin:14px 0}
+.owner-fulfilment-grid>div{padding:12px 14px;background:#faf9f6;border-right:1px solid var(--owner-line)}
+.owner-fulfilment-grid>div:last-child{border-right:0}
+.owner-fulfilment-grid span{display:block;color:#6d7884;font-size:9px;text-transform:uppercase;letter-spacing:.8px}
+.owner-fulfilment-grid strong{display:block;margin-top:4px;color:#172231;font-size:12px}
+.owner-fulfilment-tracking{display:flex;flex-direction:column;gap:7px;font-size:12px;font-weight:700;color:#344252;margin:12px 0}
+.owner-fulfilment-tracking input{min-height:44px;border:1px solid #ccd3da;border-radius:4px;padding:10px 12px;font-size:15px;background:#fff;color:var(--owner-text);width:100%}
+.owner-fulfilment-tracking[hidden]{display:none!important}
+.owner-fulfilment-actions{margin-top:12px}
+.owner-state-pill.preparing{background:#fff4db;color:#8c6520}
+.owner-state-pill.ready_for_collection{background:#eaf2fb;color:#315f8a}
+.owner-state-pill.dispatched{background:#eaf2fb;color:#315f8a}
+.owner-state-pill.completed{background:#e8f4ee;color:#2e6f50}
+@media(max-width:640px){.owner-fulfilment-grid{grid-template-columns:1fr}.owner-fulfilment-grid>div{border-right:0;border-bottom:1px solid var(--owner-line)}.owner-fulfilment-grid>div:last-child{border-bottom:0}.owner-fulfilment-actions .btn{width:100%}}

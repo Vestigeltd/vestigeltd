@@ -251,7 +251,8 @@ function auditActionLabel(action){
     bank_order_created:'Order created',
     customer_cancel_order:'Customer cancelled',
     admin_cancel_unpaid_order:'Owner voided unpaid',
-    admin_confirm_bank_payment:'Payment confirmation'
+    admin_confirm_bank_payment:'Payment confirmation',
+    admin_update_fulfilment:'Fulfilment update'
   };
   return labels[action]||String(action||'Activity').replace(/_/g,' ');
 }
@@ -295,11 +296,11 @@ function renderRecent(orders){
     host.innerHTML='<p class="owner-message">No orders match this filter.</p>';
     return;
   }
-  host.innerHTML='<table class="owner-table"><thead><tr><th>Ref</th><th>State</th><th>Total</th><th>Qty</th><th>Expires</th><th>Updated</th><th></th></tr></thead><tbody>'+
+  host.innerHTML='<table class="owner-table"><thead><tr><th>Ref</th><th>State</th><th>Fulfilment</th><th>Total</th><th>Qty</th><th>Expires</th><th>Updated</th><th></th></tr></thead><tbody>'+
     filtered.map(function(o){
       var ex=expiryText(o);
       var rowClass=orderGroup(o.state)==='pending'?'owner-row-pending':(orderGroup(o.state)==='confirmed'?'owner-row-confirmed':'');
-      return '<tr class="'+rowClass+(Number(o.paymentClaimedAt||0)>0&&o.state==='pending_payment'?' owner-row-payment-claimed':'')+'"><td><strong>'+esc(o.paymentReference)+'</strong> <button class="owner-copy" type="button" data-copy-ref="'+esc(o.paymentReference)+'" aria-label="Copy '+esc(o.paymentReference)+'">Copy</button></td><td>'+esc(stateLabel(o.state))+(Number(o.paymentClaimedAt||0)>0&&o.state==='pending_payment'?'<br><span class="owner-payment-claimed-badge">CUSTOMER SAYS PAID</span>':'')+'</td><td>'+money(o.amount)+'</td><td>'+Number(o.totalQuantity||0)+'</td><td><span class="owner-expiry '+esc(ex.cls)+'">'+esc(ex.text)+'</span></td><td>'+esc(fmtDateTime(o.updatedAt))+'</td><td><button type="button" data-open-ref="'+esc(o.paymentReference)+'">Open</button></td></tr>';
+      return '<tr class="'+rowClass+(Number(o.paymentClaimedAt||0)>0&&o.state==='pending_payment'?' owner-row-payment-claimed':'')+'"><td><strong>'+esc(o.paymentReference)+'</strong> <button class="owner-copy" type="button" data-copy-ref="'+esc(o.paymentReference)+'" aria-label="Copy '+esc(o.paymentReference)+'">Copy</button></td><td>'+esc(stateLabel(o.state))+(Number(o.paymentClaimedAt||0)>0&&o.state==='pending_payment'?'<br><span class="owner-payment-claimed-badge">CUSTOMER SAYS PAID</span>':'')+'</td><td>'+esc(o.state==='confirmed'?stateLabel((o.fulfilment&&o.fulfilment.state)||'confirmed'):'—')+'</td><td>'+money(o.amount)+'</td><td>'+Number(o.totalQuantity||0)+'</td><td><span class="owner-expiry '+esc(ex.cls)+'">'+esc(ex.text)+'</span></td><td>'+esc(fmtDateTime(o.updatedAt))+'</td><td><button type="button" data-open-ref="'+esc(o.paymentReference)+'">Open</button></td></tr>';
     }).join('')+'</tbody></table>';
 }
 function renderStock(stock){
@@ -351,6 +352,68 @@ function renderStock(stock){
       '</tr>';
     }).join('')+'</tbody></table>';
 }
+function fulfilmentUiState(order){
+  var delivery=String(order&&order.deliveryMethod||'');
+  var f=order&&order.fulfilment||{};
+  var state=String(f.state||'confirmed');
+  var labels={confirmed:'Payment confirmed',preparing:'Preparing order',ready_for_collection:'Ready for collection',dispatched:'Dispatched',completed:delivery==='collection'?'Collected / completed':'Delivered / completed'};
+  var next=null,text='Fulfilment complete';
+  if(String(order&&order.state||'')!=='confirmed'){text='Confirm payment first';}
+  else if(state==='confirmed'){next='preparing';text='Start preparing order';}
+  else if(state==='preparing'&&delivery==='collection'){next='ready_for_collection';text='Mark ready for collection';}
+  else if(state==='preparing'){next='dispatched';text='Mark dispatched';}
+  else if(state==='ready_for_collection'){next='completed';text='Mark collected / completed';}
+  else if(state==='dispatched'){next='completed';text='Mark delivered / completed';}
+  return {state:state,label:labels[state]||stateLabel(state),next:next,buttonText:text};
+}
+function renderFulfilment(order){
+  var panel=document.getElementById('fulfilmentPanel');if(!panel)return;
+  var ui=fulfilmentUiState(order);
+  var f=order.fulfilment||{};
+  var collection=order.deliveryMethod==='collection';
+  document.getElementById('fulfilmentState').textContent=String(order.state)==='confirmed'?ui.label:'Payment not confirmed';
+  document.getElementById('fulfilmentState').className='owner-state-pill '+(String(order.state)==='confirmed'?ui.state:'pending_payment');
+  document.getElementById('fulfilmentMethod').textContent=collection?'Collection from Vestige Ltd':'The Courier Guy — Locker to Locker';
+  document.getElementById('fulfilmentUpdatedAt').textContent=fmtDateTime(f.updatedAt);
+  var field=document.getElementById('fulfilmentTrackingField');
+  field.hidden=collection;
+  var tracking=document.getElementById('fulfilmentTrackingReference');
+  tracking.value=collection?'':String(f.trackingReference||'');
+  tracking.disabled=collection||ui.state==='completed'||ui.state==='dispatched';
+  var button=document.getElementById('fulfilmentNextAction');
+  button.textContent=ui.buttonText;
+  button.dataset.nextState=ui.next||'';
+  button.disabled=!ui.next;
+  setMessage(document.getElementById('fulfilmentMessage'),'');
+}
+async function updateFulfilment(){
+  if(!currentOrder)return;
+  var button=document.getElementById('fulfilmentNextAction');
+  var next=String(button.dataset.nextState||'');
+  if(!next)return;
+  var tracking=String(document.getElementById('fulfilmentTrackingReference').value||'').trim();
+  if(next==='dispatched'&&!tracking){
+    setMessage(document.getElementById('fulfilmentMessage'),'Enter the courier tracking reference before marking this order dispatched.','error');
+    return;
+  }
+  var ui=fulfilmentUiState(currentOrder);
+  var ok=window.confirm('UPDATE FULFILMENT\n\n'+currentOrder.paymentReference+'\n'+ui.buttonText+'?\n\nThis update will be visible on the customer Order Status page and recorded in the audit log.');
+  if(!ok)return;
+  button.disabled=true;
+  setMessage(document.getElementById('fulfilmentMessage'),'Updating fulfilment…');
+  try{
+    var result=await api({action:'admin_update_fulfilment',paymentReference:currentOrder.paymentReference,fulfilmentState:next,trackingReference:tracking});
+    currentOrder=result.order||currentOrder;
+    renderOrder(currentOrder);
+    setMessage(document.getElementById('fulfilmentMessage'),result.message||'Fulfilment updated.','ok');
+    await refreshDashboard(true);
+    await refreshAudit(true);
+  }catch(e){
+    setMessage(document.getElementById('fulfilmentMessage'),e.message,'error');
+    button.disabled=false;
+  }
+}
+
 function renderOrder(order){
   currentOrder=order;
   orderPanel.hidden=false;
@@ -377,6 +440,7 @@ function renderOrder(order){
 
   document.getElementById('confirmPayment').disabled=!order.confirmable;
   document.getElementById('cancelUnpaid').disabled=!order.cancellable;
+  renderFulfilment(order);
 }
 async function lookup(refOverride){
   var ref=String(refOverride||refInput.value||'').trim().toUpperCase();
@@ -497,6 +561,7 @@ document.getElementById('lookupOrder').addEventListener('click',function(){looku
 refInput.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();lookup();}});
 document.getElementById('confirmPayment').addEventListener('click',confirmPayment);
 document.getElementById('cancelUnpaid').addEventListener('click',cancelUnpaid);
+document.getElementById('fulfilmentNextAction').addEventListener('click',updateFulfilment);
 document.getElementById('recentOrders').addEventListener('click',function(e){
   var button=e.target.closest('[data-open-ref]');
   if(button)lookup(button.getAttribute('data-open-ref'));

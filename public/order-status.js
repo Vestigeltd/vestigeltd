@@ -39,6 +39,9 @@ async function checkStatus(){
     document.getElementById('resultAmount').textContent=money(o.amount);
     document.getElementById('resultQuantity').textContent=String(o.totalQuantity||0)+' item(s)';
     document.getElementById('resultFulfilment').textContent=o.fulfilment||'—';
+    var trackingRow=document.getElementById('resultTrackingRow');
+    var tracking=document.getElementById('resultTracking');
+    if(o.trackingReference){tracking.textContent=o.trackingReference;trackingRow.hidden=false;}else{tracking.textContent='—';trackingRow.hidden=true;}
     document.getElementById('resultUpdated').textContent=dateTime(o.updatedAt);
     var pill=document.getElementById('resultPill');
     pill.textContent=o.status||'status';
