@@ -252,7 +252,8 @@ function auditActionLabel(action){
     customer_cancel_order:'Customer cancelled',
     admin_cancel_unpaid_order:'Owner voided unpaid',
     admin_confirm_bank_payment:'Payment confirmation',
-    admin_update_fulfilment:'Fulfilment update'
+    admin_update_fulfilment:'Fulfilment update',
+    customer_fulfilment_email:'Customer status email'
   };
   return labels[action]||String(action||'Activity').replace(/_/g,' ');
 }

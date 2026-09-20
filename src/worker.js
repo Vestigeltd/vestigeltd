@@ -417,6 +417,121 @@ var require_zoho_integration = __commonJS({
       }
     }
     __name(notifyOwnerOnce, "notifyOwnerOnce");
+    function orderStatusUrl() {
+      return "https://vestigeltd.co.za/order-status";
+    }
+    __name(orderStatusUrl, "orderStatusUrl");
+    async function sendCustomerEmail(toEmail, subject, text, idempotencyKey = "") {
+      const apiKey = resendApiKey();
+      const from = ownerAlertFromEmail();
+      const to = cleanText(toEmail, 160).toLowerCase();
+      if (!apiKey || !from) {
+        return { sent: false, configured: false, message: "Resend customer notifications are not fully configured." };
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) {
+        return { sent: false, configured: true, message: "Customer email address is not valid for fulfilment notification." };
+      }
+      const headers = {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json"
+      };
+      const safeIdempotencyKey = cleanText(idempotencyKey, 256);
+      if (safeIdempotencyKey) headers["Idempotency-Key"] = safeIdempotencyKey;
+      const response = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          from: `Vestige Vapes <${from}>`,
+          to: [to],
+          reply_to: CONTACT_EMAIL,
+          subject: cleanText(subject, 180),
+          text: String(text || "").slice(0, 12e3)
+        })
+      });
+      let data = null;
+      try {
+        data = await response.json();
+      } catch (_) {
+      }
+      if (!response.ok) {
+        const message = cleanText(data?.message, 240) || cleanText(data?.error?.message, 240) || `Resend email request failed with HTTP ${response.status}.`;
+        return { sent: false, configured: true, message };
+      }
+      return { sent: true, configured: true, messageId: cleanText(data?.id, 200) || null };
+    }
+    __name(sendCustomerEmail, "sendCustomerEmail");
+    function customerFulfilmentEmail(data, paymentReference, fulfilment, deliveryMethod) {
+      const progress = data?.progress || {};
+      const customer = progress.customer || {};
+      const email = cleanText(customer.email, 160).toLowerCase();
+      const customerName = cleanText(customer.customerName || customer.name, 160);
+      const firstName = customerName.split(/\s+/).find(Boolean) || "Customer";
+      const ref = cleanText(paymentReference, 24).toUpperCase();
+      const state = String(fulfilment?.state || "");
+      const trackingReference = cleanText(fulfilment?.trackingReference, 100);
+      let subject = `Vestige order ${ref} update`;
+      let statusText = "Your order status has been updated.";
+      if (state === "preparing") {
+        subject = `Vestige order ${ref} — being prepared`;
+        statusText = "Your payment is confirmed and your order is now being prepared.";
+      } else if (state === "ready_for_collection") {
+        subject = `Vestige order ${ref} — ready for collection`;
+        statusText = "Your order is ready for collection. Collection arrangements remain as agreed with Vestige Ltd.";
+      } else if (state === "dispatched") {
+        subject = `Vestige order ${ref} — dispatched`;
+        statusText = `Your order has been handed to The Courier Guy for locker-to-locker delivery.${trackingReference ? `\n\nTracking reference: ${trackingReference}` : ""}`;
+      } else if (state === "completed") {
+        if (deliveryMethod === DELIVERY_METHOD_COLLECTION) {
+          subject = `Vestige order ${ref} — collected`;
+          statusText = "Your order has been marked collected and complete.";
+        } else {
+          subject = `Vestige order ${ref} — completed`;
+          statusText = "Your order has been marked delivered and complete.";
+        }
+      }
+      const text = `Dear ${firstName},\n\n${statusText}\n\nOrder reference: ${ref}\n\nYou can check the latest status here:\n${orderStatusUrl()}\n\nRegards,\nVestige Ltd`;
+      return { email, subject, text, state };
+    }
+    __name(customerFulfilmentEmail, "customerFulfilmentEmail");
+    async function notifyCustomerFulfilmentOnce(data, paymentReference, fulfilment, deliveryMethod) {
+      const message = customerFulfilmentEmail(data, paymentReference, fulfilment, deliveryMethod);
+      const ref = cleanText(paymentReference, 24).toUpperCase();
+      const safeState = cleanText(message.state, 40).toLowerCase().replace(/[^a-z0-9_-]/g, "-");
+      const key = `customer-fulfilment-${safeState}:${ref}`;
+      const providerIdempotencyKey = `vestige/customer-fulfilment/${safeState}/${ref}`;
+      const store = await getNotificationStore();
+      const existing = await store.getWithMetadata(key, { type: "json", consistency: "strong" });
+      if (existing?.data?.status === "sent") return { sent: true, replayed: true, ...existing.data };
+      const now = Date.now();
+      if (existing?.data?.status === "sending" && Number(existing.data.leaseExpiresAt || 0) > now) {
+        return { sent: false, pending: true, configured: true, replayed: true };
+      }
+      const attemptId = randomUUID();
+      const sending = { status: "sending", kind: "customer_fulfilment", state: safeState, paymentReference: ref, attemptId, startedAt: now, leaseExpiresAt: now + 12e4 };
+      const claimed = existing ? await store.setJSON(key, sending, { onlyIfMatch: existing.etag }) : await store.setJSON(key, sending, { onlyIfNew: true });
+      if (!claimed?.modified) {
+        const concurrent = await store.getWithMetadata(key, { type: "json", consistency: "strong" });
+        if (concurrent?.data?.status === "sent") return { sent: true, replayed: true, ...concurrent.data };
+        return { sent: false, pending: true, configured: true, replayed: true };
+      }
+      try {
+        const sent = await sendCustomerEmail(message.email, message.subject, message.text, providerIdempotencyKey);
+        if (!sent.sent) {
+          await store.setJSON(key, { status: "failed", kind: "customer_fulfilment", state: safeState, paymentReference: ref, failedAt: Date.now(), message: cleanText(sent.message, 240) || "Customer fulfilment email was not sent." }, { onlyIfMatch: claimed.etag });
+          return sent;
+        }
+        const record = { status: "sent", kind: "customer_fulfilment", state: safeState, paymentReference: ref, messageId: sent.messageId || null, sentAt: Date.now() };
+        await store.setJSON(key, record, { onlyIfMatch: claimed.etag });
+        return { sent: true, replayed: false, ...record };
+      } catch (error) {
+        try {
+          await store.setJSON(key, { status: "failed", kind: "customer_fulfilment", state: safeState, paymentReference: ref, failedAt: Date.now(), message: cleanText(error?.message, 240) || "Customer fulfilment email failed." }, { onlyIfMatch: claimed.etag });
+        } catch (_) {
+        }
+        return { sent: false, configured: true, error: cleanText(error?.message, 240) || "Customer fulfilment email failed." };
+      }
+    }
+    __name(notifyCustomerFulfilmentOnce, "notifyCustomerFulfilmentOnce");
     async function sendOwnerTestNotification() {
       return sendOwnerEmail(
         "Vestige owner notifications are working",
@@ -2939,7 +3054,30 @@ If you received this email, Worker owner alerts are operational.`
         requestId,
         message: `${fulfilmentLabel(transition.next, deliveryMethod)}${next.trackingReference && transition.next === "dispatched" ? ` · Tracking ${next.trackingReference}` : ""}.`
       });
-      return { success: true, replayed: false, order: await adminLookupBankOrder(ref), message: `${fulfilmentLabel(transition.next, deliveryMethod)} recorded.` };
+      let customerNotification = { sent: false, configured: false };
+      try {
+        customerNotification = await notifyCustomerFulfilmentOnce(record, ref, next, deliveryMethod);
+        await writeAuditEvent({
+          action: "customer_fulfilment_email",
+          actor: "system",
+          paymentReference: ref,
+          outcome: customerNotification.sent ? customerNotification.replayed ? "replayed" : "success" : "failed",
+          requestId,
+          message: customerNotification.sent ? `Customer ${fulfilmentLabel(transition.next, deliveryMethod).toLowerCase()} notification ${customerNotification.replayed ? "already sent" : "sent"}.` : cleanText(customerNotification.message || customerNotification.error, 240) || "Customer fulfilment notification was not sent."
+        });
+      } catch (notificationError) {
+        await writeAuditEvent({
+          action: "customer_fulfilment_email",
+          actor: "system",
+          paymentReference: ref,
+          outcome: "failed",
+          requestId,
+          message: cleanText(notificationError?.message, 240) || "Customer fulfilment notification failed."
+        });
+        customerNotification = { sent: false, configured: true, error: cleanText(notificationError?.message, 240) || "Customer fulfilment notification failed." };
+      }
+      const notificationNote = customerNotification.sent ? customerNotification.replayed ? " Customer notification was already sent." : " Customer notified." : " Fulfilment saved; customer notification needs review.";
+      return { success: true, replayed: false, order: await adminLookupBankOrder(ref), customerNotification, message: `${fulfilmentLabel(transition.next, deliveryMethod)} recorded.${notificationNote}` };
     }
     __name(adminUpdateFulfilment, "adminUpdateFulfilment");
     function publicAdminOrderSummary(located, current) {

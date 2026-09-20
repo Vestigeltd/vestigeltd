@@ -37,6 +37,15 @@ for(const slug of ['blueberry-mint','miami-mint','blue-razz-ice','strawberry-kiw
  assert.ok(html.includes(`rel="canonical" href="${canonical}"`)||html.includes(`href="${canonical}" rel="canonical"`),`canonical missing ${slug}`);
  assert.ok(sitemap.includes(canonical),`sitemap missing ${slug}`);
 }
+
+const worker=read(path.join(root,'src','worker.js'));
+assert.match(worker,/notifyCustomerFulfilmentOnce/,'customer fulfilment notification helper missing');
+assert.match(worker,/customer-fulfilment-\$\{safeState\}/,'customer notification state idempotency key missing');
+assert.match(worker,/Fulfilment saved; customer notification needs review/,'non-blocking notification failure message missing');
+assert.match(worker,/Tracking reference: \$\{trackingReference\}/,'dispatch tracking email content missing');
+assert.match(ownerJs,/customer_fulfilment_email:'Customer status email'/,'owner audit label for customer status email missing');
+assert.match(ownerHtml,/triggers a customer status email/,'owner fulfilment notification guidance missing');
+
 for(const forbidden of ['production-version.json','production-worker.raw','deployment-history.txt']){
  assert.ok(!files.some(f=>path.basename(f)===forbidden),`recovery artifact leaked: ${forbidden}`);
 }
@@ -50,4 +59,5 @@ console.log('PASS homepage navigation');
 console.log('PASS poll regression guard');
 console.log('PASS Cloudflare beacon sanitation');
 console.log('PASS flavour canonical + sitemap');
+console.log('PASS customer fulfilment notification wiring');
 console.log('PASS CSS structural sanity');
