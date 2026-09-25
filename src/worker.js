@@ -2111,6 +2111,44 @@ If you received this email, Worker owner alerts are operational.`
       return result;
     }
     __name(getOwnerInventoryAvailability, "getOwnerInventoryAvailability");
+    async function getPublicInventoryCatalogue(forceStockRefresh = false, forceCatalogRefresh = false) {
+      const [bcAvailability, elfaAvailability] = await Promise.all([
+        getProductAvailability(forceStockRefresh, forceCatalogRefresh, true),
+        getOwnerInventoryAvailability(forceStockRefresh, forceCatalogRefresh)
+      ]);
+      const catalogue = {};
+      for (const [flavour, state] of Object.entries(bcAvailability || {})) {
+        catalogue[`BC10000 · ${flavour}`] = {
+          productFamily: "BC10000",
+          variant: flavour,
+          displayName: `ELFBAR BC10000 · ${flavour}`,
+          unitPrice: PRODUCT_PRICE_ZAR,
+          available: state?.available === true,
+          stock: Math.max(0, Math.floor(Number(state?.stock || 0))),
+          itemId: cleanText(state?.itemId || state?.item_id, 80) || null,
+          reason: cleanText(state?.reason, 180) || null,
+          checkoutEnabled: true
+        };
+      }
+      for (const [label, state] of Object.entries(elfaAvailability || {})) {
+        const spec = OWNER_INVENTORY_PRODUCTS[label];
+        if (!spec) continue;
+        catalogue[label] = {
+          productFamily: spec.family,
+          variant: spec.variant,
+          displayName: label,
+          unitPrice: Number(spec.expectedRetailPrice),
+          available: state?.available === true,
+          stock: Math.max(0, Math.floor(Number(state?.stock || 0))),
+          itemId: cleanText(state?.itemId || state?.item_id, 80) || null,
+          reason: cleanText(state?.reason, 180) || null,
+          checkoutEnabled: spec.checkoutEnabled === true
+        };
+      }
+      return catalogue;
+    }
+    __name(getPublicInventoryCatalogue, "getPublicInventoryCatalogue");
+
     async function discoverProductCatalog(force = false) {
       const allResolved = Object.keys(PRODUCT_NAMES).every((f) => resolvedProductItemIds.has(f));
       if (!force && allResolved && Date.now() < cachedProductCatalogUntil) return;
@@ -4526,8 +4564,11 @@ ${ownerConsoleUrl()}`
         requireEnv("ZOHO_ORGANIZATION_ID");
         const body = parseJsonBody(event);
         if (body.action === "availability") {
-          const availability = await getProductAvailability(false, false, true);
-          return json(200, { success: true, availability, verifiedAt: (/* @__PURE__ */ new Date()).toISOString(), requestId });
+          const [availability, catalogue] = await Promise.all([
+            getProductAvailability(false, false, true),
+            getPublicInventoryCatalogue(false, false)
+          ]);
+          return json(200, { success: true, availability, catalogue, verifiedAt: (/* @__PURE__ */ new Date()).toISOString(), requestId });
         }
         if (body.action === "connection_test") {
           const expected = requireEnv("ZOHO_ADMIN_TEST_KEY");

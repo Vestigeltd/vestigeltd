@@ -1234,3 +1234,10 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
 @media(max-width:640px){
   .model-grid-v2 .approved-comparison-media{aspect-ratio:1122 / 1402}
 }
+
+
+/* V35.29.1 — white comparison-card fact contrast */
+.model-grid-v2 .model-card .model-facts{border-top:1px solid #e0e3e6}
+.model-grid-v2 .model-card .model-facts div{border-bottom:1px solid #e0e3e6}
+.model-grid-v2 .model-card .model-facts dt{color:#5d6875;font-weight:700}
+.model-grid-v2 .model-card .model-facts dd{color:#172231;font-weight:700}

@@ -1,3 +1,4 @@
+// V35.29.1 forward-compatibility: V35.29.0 regression suite accepts only the intentional MASTER availability/package-state changes.
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
@@ -42,7 +43,7 @@ const elfbar=read(path.join(pub,'elfbar','index.html'));
 const master=read(path.join(pub,'elfa-master','index.html'));
 const bc=read(path.join(pub,'bc10000','index.html'));
 const shopJs=read(path.join(pub,'script.js'));
-assert.match(elfbar,/BC10000/); assert.match(elfbar,/ELFA MASTER/); assert.match(elfbar,/ELFA MASTER coming soon/i);
+assert.match(elfbar,/BC10000/); assert.match(elfbar,/ELFA MASTER/); assert.match(elfbar,/ELFA MASTER (?:coming soon|available)/i);
 assert.match(master,/850 mAh/); assert.match(master,/9–18 W/); assert.match(master,/Charging cable/); assert.match(master,/Not included/); assert.match(master,/R250\.00/);
 assert.match(bc,/id="modelSelect"/); assert.match(bc,/ELFA MASTER — R250\.00 — coming soon/);
 for(const flavour of ['Blueberry Mint','Miami Mint','Blue Razz Ice','Strawberry Kiwi Ice','Watermelon Ice']) assert.ok(bc.includes(`data-stock-flavour="${flavour}"`),`stock badge target missing ${flavour}`);
@@ -110,7 +111,7 @@ console.log('PASS confirmed ELFA retail pricing guards');
   assert(elfbar.includes('ELFBAR · CURATED BY VESTIGE') && elfbar.includes('Two different ownership models.'), 'ELFBAR curated/model wording missing');
   assert(elfbar.includes('/assets/approved-bc10000-comparison.png') && elfbar.includes('/assets/approved-elfa-master-comparison.png'), 'approved comparison artwork missing');
   assert(master.includes('master-table-unified') && master.includes('rowspan="12"'), 'unified 3-column ELFA MASTER table missing');
-  assert(master.includes('Device and pods are sold separately.'), 'sold-separately wording missing');
+  assert(master.includes('Device and pods are sold separately.') || master.includes('Device supplied with 2 prefilled flavour pods.'), 'ELFA MASTER package-clarity wording missing');
   assert(!master.includes("Wicked Imports' product description does not state"), 'internal supplier-analysis copy leaked into public page');
   for (const asset of ['peach-ice','spearmint','miami-mint','grape','watermelon']) {
     assert(pro.includes(`/assets/elfa-pro-${asset}.webp`), `ELFA PRO ${asset} card art missing`);
@@ -162,7 +163,7 @@ console.log('PASS confirmed ELFA retail pricing guards');
   assert(elfbar.includes('/assets/approved-elfa-master-comparison.png'), 'approved ELFA MASTER comparison artwork missing');
   assert(elfbar.includes('width="1122" height="1402"'), 'approved comparison media must preserve 1122x1402 geometry');
   assert(elfbar.includes('aria-label="ELFBAR BC10000 available"'), 'BC10000 comparison accessibility status missing');
-  assert(elfbar.includes('aria-label="ELFA MASTER coming soon"'), 'ELFA MASTER comparison accessibility status missing');
+  assert(elfbar.includes('aria-label="ELFA MASTER coming soon"') || elfbar.includes('aria-label="ELFA MASTER available"'), 'ELFA MASTER comparison accessibility status missing');
   assert(!elfbar.includes('<span class="model-status">AVAILABLE</span>'), 'duplicate HTML AVAILABLE badge must not overlay approved artwork');
   assert(!elfbar.includes('<span class="model-status coming">COMING SOON</span>'), 'duplicate HTML COMING SOON badge must not overlay approved artwork');
   assert(css.includes('V35.29.0 Phase 8 — approved comparison-card artwork lock'), 'Phase 8 approved artwork lock CSS missing');
