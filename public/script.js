@@ -14,7 +14,7 @@
   var left=document.getElementById('calloutLeft'), right=document.getElementById('calloutRight'), bottom=document.getElementById('calloutBottom'), count=document.getElementById('cycleCount');
   if(left&&right&&bottom){var states=[['Rechargeable','620 mAh battery','USB-C','Type-C charging','Draw-activated','Automatic activation'],['50 mg/ml','Nicotine strength','Mesh coil','Flavour/vapour system','Button-free','No firing button'],['Up to 10,000','Usage dependent','Pre-filled','Non-refillable system','Pocket-sized','All-in-one format'],['USB-C','Charging connection','620 mAh','Rechargeable battery','Sealed system','Pre-filled format']];var si=0;function setState(){var s=states[si];left.innerHTML='<span class="dot"></span><span><b>'+s[0]+'</b><small>'+s[1]+'</small></span>';right.innerHTML='<span><b>'+s[2]+'</b><small>'+s[3]+'</small></span><span class="dot"></span>';bottom.innerHTML='<span class="dot"></span><span><b>'+s[4]+'</b><small>'+s[5]+'</small></span>';if(count)count.textContent=('0'+(si+1)).slice(-2);si=(si+1)%states.length;}setState();setInterval(setState,3200);}
 
-  var form=document.getElementById('orderForm'), quantity=document.getElementById('quantity'), flavour=document.getElementById('flavourSelect');
+  var form=document.getElementById('orderForm'), model=document.getElementById('modelSelect'), quantity=document.getElementById('quantity'), flavour=document.getElementById('flavourSelect');
   var checkoutShell=document.querySelector('.checkout-shell'), soldOutOverlay=document.getElementById('soldOutOverlay'), soldOutRetry=document.getElementById('soldOutRetry');
   var productTotal=document.getElementById('productTotal'), orderTotal=document.getElementById('orderTotal'), orderStatus=document.getElementById('orderStatus'), stockStatus=document.getElementById('stockStatus');
   var deliveryMethodInputs=document.querySelectorAll('input[name="deliveryMethod"]'), courierLockerWrap=document.getElementById('courierLockerWrap'), collectionNote=document.getElementById('collectionNote'), courierLockerInput=form&&form.elements?form.elements.courierLocker:null;
@@ -27,9 +27,43 @@
   if(flavour) flavour.required=false;
   if(quantity) quantity.required=false;
 
+  function selectedModel(){return String(model&&model.value||'BC10000');}
+  function bc10000Selected(){return selectedModel()==='BC10000';}
+  function updateFlavourCardStockStates(){
+    Array.prototype.forEach.call(document.querySelectorAll('[data-stock-flavour]'),function(card){
+      var name=String(card.getAttribute('data-stock-flavour')||'');
+      var state=availability[name];
+      var badge=card.querySelector('.flavour-stock-state');
+      if(!badge)return;
+      card.classList.remove('is-out-of-stock','is-in-stock');
+      if(!state){badge.textContent='Stock status unavailable';badge.className='flavour-stock-state unavailable';return;}
+      if(state.available&&Number(state.stock)>0){badge.textContent=Number(state.stock)+' in stock';badge.className='flavour-stock-state in-stock';card.classList.add('is-in-stock');}
+      else{badge.textContent='OUT OF STOCK';badge.className='flavour-stock-state out-of-stock';card.classList.add('is-out-of-stock');}
+    });
+  }
+  function syncModelSelection(){
+    var bc=bc10000Selected();
+    if(!bc){
+      if(flavour){flavour.value='';flavour.disabled=true;}
+      if(quantity){quantity.value='';quantity.disabled=true;}
+      if(addButton)addButton.disabled=true;
+      if(stockStatus){stockStatus.className='stock-status';stockStatus.textContent='ELFA MASTER · R250.00 · coming soon. Ordering will open after physical stock and Zoho sale-item mapping are verified.';}
+      if(orderStatus)orderStatus.textContent='';
+      setShopSoldOut(false);
+    }else{
+      if(quantity)quantity.disabled=false;
+      if(Object.keys(availability).length){
+        var allSoldOut=availabilityConfirmsSoldOut();
+        if(flavour)flavour.disabled=allSoldOut;
+      }
+    }
+    validateSelectedStock();
+  }
+
   function money(n){return 'R'+Number(n||0).toFixed(2);}
   function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
   function availabilityConfirmsSoldOut(){
+    if(!bc10000Selected())return false;
     var names=Array.prototype.map.call(flavour&&flavour.options||[],function(opt){return String(opt.value||'').trim();}).filter(Boolean);
     return names.length>0&&names.every(function(name){
       var item=availability[name];
@@ -353,6 +387,7 @@
   }
 
   function currentSelection(){
+    if(!bc10000Selected())return {name:'',qty:0,item:null,itemId:''};
     var name=String(flavour&&flavour.value||'').trim();
     var qty=Number(quantity&&quantity.value||0);
     var item=availability[name]||null;
@@ -442,9 +477,11 @@
     if(flavour)flavour.value='';if(quantity)quantity.value='';if(orderStatus)orderStatus.textContent=name+' added to your basket.';renderCart();
   }
   async function loadAvailability(){
-    if(!flavour)return;flavour.disabled=true;
-    try{var result=await apiRequest({action:'availability'});availability=result.availability||{};var allSoldOut=availabilityConfirmsSoldOut();Array.prototype.forEach.call(flavour.options,function(opt,index){if(index===0){opt.textContent='Select a flavour';return;}var item=availability[opt.value];opt.disabled=!(item&&item.available);opt.textContent=opt.value+(item&&item.available?' — '+item.stock+' in stock':' — unavailable');});flavour.disabled=allSoldOut;revalidateBasketAgainstAvailability();setShopSoldOut(allSoldOut);if(stockStatus){stockStatus.className='stock-status ok';stockStatus.textContent=allSoldOut?'All BC10000 flavours are currently sold out.':(cart.length?'Live stock verified. Your saved basket is ready.':'Live stock verified with Zoho Books.');}}
-    catch(e){setShopSoldOut(false);Array.prototype.forEach.call(flavour.options,function(opt,index){if(index>0)opt.disabled=true;});flavour.disabled=true;if(stockStatus){stockStatus.className='stock-status warn';stockStatus.textContent='Stock could not be verified. Ordering is disabled for safety.';}}
+    if(!flavour)return;
+    if(!bc10000Selected()){syncModelSelection();return;}
+    flavour.disabled=true;
+    try{var result=await apiRequest({action:'availability'});availability=result.availability||{};var allSoldOut=availabilityConfirmsSoldOut();Array.prototype.forEach.call(flavour.options,function(opt,index){if(index===0){opt.textContent='Select a flavour';return;}var item=availability[opt.value];opt.disabled=!(item&&item.available);opt.textContent=opt.value+(item&&item.available?' — '+item.stock+' in stock':' — unavailable');});flavour.disabled=allSoldOut;revalidateBasketAgainstAvailability();setShopSoldOut(allSoldOut);updateFlavourCardStockStates();if(stockStatus){stockStatus.className='stock-status ok';stockStatus.textContent=allSoldOut?'All BC10000 flavours are currently sold out.':(cart.length?'Live stock verified. Your saved basket is ready.':'Live stock verified with Zoho Books.');}}
+    catch(e){setShopSoldOut(false);Array.prototype.forEach.call(flavour.options,function(opt,index){if(index>0)opt.disabled=true;});flavour.disabled=true;updateFlavourCardStockStates();if(stockStatus){stockStatus.className='stock-status warn';stockStatus.textContent='Stock could not be verified. Ordering is disabled for safety.';}}
     validateSelectedStock();
   }
   async function clipboardMatches(value){
@@ -604,6 +641,7 @@
 
   function selectionChanged(){validateSelectedStock();}
   if(quantity){quantity.addEventListener('change',selectionChanged);quantity.addEventListener('input',selectionChanged);}
+  if(model){model.addEventListener('change',function(){syncModelSelection();if(bc10000Selected())loadAvailability();});}
   if(flavour){flavour.addEventListener('change',selectionChanged);flavour.addEventListener('input',selectionChanged);}
   document.addEventListener('click',function(e){
     var target=e.target&&e.target.closest?e.target.closest('#addToBasket'):null;
@@ -625,6 +663,7 @@
   if(collectionCodeInput)collectionCodeInput.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();validateCollectionAccess();}});
   restoreBasketSession();
   syncFulfilmentUi();
+  syncModelSelection();
   updateTotals();loadAvailability();restorePendingCheckout();
 
   document.addEventListener('click',function(e){

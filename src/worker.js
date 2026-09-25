@@ -5359,6 +5359,9 @@ function cachePolicyForPath(pathname) {
   if (/^\/flavours\/(blueberry-mint|miami-mint|blue-razz-ice|strawberry-kiwi-ice|watermelon-ice)(?:\.html)?$/.test(path)) {
     return "public, max-age=30, s-maxage=60, must-revalidate";
   }
+  if (/^\/elfa-pro\/(peach-ice|spearmint|miami-mint|grape|watermelon)(?:\.html)?$/.test(path)) {
+    return "public, max-age=300, s-maxage=1800, must-revalidate";
+  }
   if (path === "/" || path.endsWith(".html") || !path.includes(".") && path !== "") {
     return "public, max-age=300, s-maxage=1800, must-revalidate";
   }
@@ -5410,6 +5413,15 @@ function canonicalRedirectResponse(request) {
     changed = true;
   } else if (/^\/flavours\/(blueberry-mint|miami-mint|blue-razz-ice|strawberry-kiwi-ice|watermelon-ice)\.html$/.test(url.pathname)) {
     url.pathname = url.pathname.replace(/\.html$/, "");
+    changed = true;
+  } else if (["/bc10000", "/elfbar", "/elfa-master", "/elfa-pro"].includes(url.pathname)) {
+    url.pathname = url.pathname + "/";
+    changed = true;
+  } else if (/^\/elfa-pro\/(peach-ice|spearmint|miami-mint|grape|watermelon)\.html$/.test(url.pathname)) {
+    url.pathname = url.pathname.replace(/\.html$/, "");
+    changed = true;
+  } else if (/^\/elfa-pro\/(peach-ice|spearmint|miami-mint|grape|watermelon)\/$/.test(url.pathname)) {
+    url.pathname = url.pathname.replace(/\/$/, "");
     changed = true;
   }
   if (!changed) return null;
@@ -5658,6 +5670,18 @@ __name(injectGoogleAvailability, "injectGoogleAvailability");
 var worker_default = {
   async fetch(request, env) {
     const url = new URL(request.url);
+    if ((request.method === "GET" || request.method === "HEAD") && /^\/elfa-pro\/(peach-ice|spearmint|miami-mint|grape|watermelon)$/.test(url.pathname)) {
+      const rewritten = new URL(request.url);
+      rewritten.pathname = url.pathname + ".html";
+      const assetRequest = new Request(rewritten.toString(), {
+        method: request.method,
+        headers: request.headers
+      });
+      const assetResponse = await env.ASSETS.fetch(assetRequest);
+      if (assetResponse.status !== 404) {
+        return withSecurityHeaders(assetResponse, url.pathname);
+      }
+    }
     if ((request.method === "GET" || request.method === "HEAD") && /^\/flavours\/(blueberry-mint|miami-mint|blue-razz-ice|strawberry-kiwi-ice|watermelon-ice)$/.test(url.pathname)) {
       const rewritten = new URL(request.url);
       rewritten.pathname = url.pathname + ".html";
