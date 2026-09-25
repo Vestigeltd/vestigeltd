@@ -136,15 +136,58 @@ var require_zoho_integration = __commonJS({
     // V35.29.1: Owner inventory catalogue is deliberately separate from the BC10000 checkout allow-list.
     // New ELFA stock can therefore be discovered and monitored without inheriting BC10000 pricing/checkout rules.
     var OWNER_INVENTORY_PRODUCTS = Object.freeze({
-      "ELFA MASTER · Dark Cosmo": Object.freeze({ family: "ELFA MASTER", variant: "Dark Cosmo", sku: "ELFH01", expectedRetailPrice: 250, checkoutEnabled: false, nameHints: ["ELFA Master Dark Cosmo", "ELFA Master Dark Cosmo Kit", "ELFA Master Prefilled Pod Kit Dark Cosmo"] }),
-      "ELFA MASTER · Dusty Pink": Object.freeze({ family: "ELFA MASTER", variant: "Dusty Pink", sku: "ELFH02", expectedRetailPrice: 250, checkoutEnabled: false, nameHints: ["ELFA Master Dusty Pink", "ELFA Master Dusty Pink Kit", "ELFA Master Prefilled Pod Kit Dusty Pink"] }),
-      "ELFA MASTER · Black Knight": Object.freeze({ family: "ELFA MASTER", variant: "Black Knight", sku: "ELFH03", expectedRetailPrice: 250, checkoutEnabled: false, nameHints: ["ELFA Master Black Knight", "ELFA Master Black Knight Kit", "ELFA Master Prefilled Pod Kit Black Knight"] }),
-      "ELFA PRO · Grape": Object.freeze({ family: "ELFA PRO", variant: "Grape", sku: "ELFI03", expectedRetailPrice: 150, checkoutEnabled: false, nameHints: ["ELFA PRO Grape 50mg", "ELFA PRO Grape"] }),
-      "ELFA PRO · Peach Ice": Object.freeze({ family: "ELFA PRO", variant: "Peach Ice", sku: "ELFI06", expectedRetailPrice: 150, checkoutEnabled: false, nameHints: ["ELFA PRO Peach Ice 50mg", "ELFA PRO Peach Ice"] }),
-      "ELFA PRO · Watermelon": Object.freeze({ family: "ELFA PRO", variant: "Watermelon", sku: "ELFI08", expectedRetailPrice: 150, checkoutEnabled: false, nameHints: ["ELFA PRO Watermelon 50mg", "ELFA PRO Watermelon"] }),
-      "ELFA PRO · Miami Mint": Object.freeze({ family: "ELFA PRO", variant: "Miami Mint", sku: "ELFI09", expectedRetailPrice: 150, checkoutEnabled: false, nameHints: ["ELFA PRO Miami Mint 50mg", "ELFA PRO Miami Mint"] }),
-      "ELFA PRO · Spearmint": Object.freeze({ family: "ELFA PRO", variant: "Spearmint", sku: "ELFI02", expectedRetailPrice: 150, checkoutEnabled: false, nameHints: ["ELFA PRO Spearmint 50mg", "ELFA PRO Spearmint"] })
+      "ELFA MASTER · Dark Cosmo": Object.freeze({ family: "ELFA MASTER", variant: "Dark Cosmo", sku: "ELFH01", expectedRetailPrice: 250, checkoutEnabled: true, nameHints: ["ELFA Master Dark Cosmo", "ELFA Master Dark Cosmo Kit", "ELFA Master Prefilled Pod Kit Dark Cosmo"] }),
+      "ELFA MASTER · Dusty Pink": Object.freeze({ family: "ELFA MASTER", variant: "Dusty Pink", sku: "ELFH02", expectedRetailPrice: 250, checkoutEnabled: true, nameHints: ["ELFA Master Dusty Pink", "ELFA Master Dusty Pink Kit", "ELFA Master Prefilled Pod Kit Dusty Pink"] }),
+      "ELFA MASTER · Black Knight": Object.freeze({ family: "ELFA MASTER", variant: "Black Knight", sku: "ELFH03", expectedRetailPrice: 250, checkoutEnabled: true, nameHints: ["ELFA Master Black Knight", "ELFA Master Black Knight Kit", "ELFA Master Prefilled Pod Kit Black Knight"] }),
+      "ELFA PRO · Grape": Object.freeze({ family: "ELFA PRO", variant: "Grape", sku: "ELFI03", expectedRetailPrice: 150, checkoutEnabled: true, nameHints: ["ELFA PRO Grape 50mg", "ELFA PRO Grape"] }),
+      "ELFA PRO · Peach Ice": Object.freeze({ family: "ELFA PRO", variant: "Peach Ice", sku: "ELFI06", expectedRetailPrice: 150, checkoutEnabled: true, nameHints: ["ELFA PRO Peach Ice 50mg", "ELFA PRO Peach Ice"] }),
+      "ELFA PRO · Watermelon": Object.freeze({ family: "ELFA PRO", variant: "Watermelon", sku: "ELFI08", expectedRetailPrice: 150, checkoutEnabled: true, nameHints: ["ELFA PRO Watermelon 50mg", "ELFA PRO Watermelon"] }),
+      "ELFA PRO · Miami Mint": Object.freeze({ family: "ELFA PRO", variant: "Miami Mint", sku: "ELFI09", expectedRetailPrice: 150, checkoutEnabled: true, nameHints: ["ELFA PRO Miami Mint 50mg", "ELFA PRO Miami Mint"] }),
+      "ELFA PRO · Spearmint": Object.freeze({ family: "ELFA PRO", variant: "Spearmint", sku: "ELFI02", expectedRetailPrice: 150, checkoutEnabled: true, nameHints: ["ELFA PRO Spearmint 50mg", "ELFA PRO Spearmint"] })
     });
+    // V35.29.1 Phase 2B: immutable server-side checkout catalogue.
+    // Browser-submitted prices are never trusted; productKey selects a server-owned definition.
+    var BC_CHECKOUT_KEYS_BY_FLAVOUR = Object.freeze({
+      "Blueberry Mint": "bc10000:blueberry-mint",
+      "Miami Mint": "bc10000:miami-mint",
+      "Blue Razz Ice": "bc10000:blue-razz-ice",
+      "Strawberry Kiwi Ice": "bc10000:strawberry-kiwi-ice",
+      "Watermelon Ice": "bc10000:watermelon-ice"
+    });
+    var CHECKOUT_PRODUCTS = Object.freeze({
+      "bc10000:blueberry-mint": Object.freeze({ family: "BC10000", variant: "Blueberry Mint", inventoryLabel: "BC10000 · Blueberry Mint", displayName: "ELFBAR BC10000 · Blueberry Mint", unitPrice: 300 }),
+      "bc10000:miami-mint": Object.freeze({ family: "BC10000", variant: "Miami Mint", inventoryLabel: "BC10000 · Miami Mint", displayName: "ELFBAR BC10000 · Miami Mint", unitPrice: 300 }),
+      "bc10000:blue-razz-ice": Object.freeze({ family: "BC10000", variant: "Blue Razz Ice", inventoryLabel: "BC10000 · Blue Razz Ice", displayName: "ELFBAR BC10000 · Blue Razz Ice", unitPrice: 300 }),
+      "bc10000:strawberry-kiwi-ice": Object.freeze({ family: "BC10000", variant: "Strawberry Kiwi Ice", inventoryLabel: "BC10000 · Strawberry Kiwi Ice", displayName: "ELFBAR BC10000 · Strawberry Kiwi Ice", unitPrice: 300 }),
+      "bc10000:watermelon-ice": Object.freeze({ family: "BC10000", variant: "Watermelon Ice", inventoryLabel: "BC10000 · Watermelon Ice", displayName: "ELFBAR BC10000 · Watermelon Ice", unitPrice: 300 }),
+      "elfa-master:dark-cosmo": Object.freeze({ family: "ELFA MASTER", variant: "Dark Cosmo", inventoryLabel: "ELFA MASTER · Dark Cosmo", displayName: "ELFA MASTER · Dark Cosmo + Miami Mint", unitPrice: 250 }),
+      "elfa-master:dusty-pink": Object.freeze({ family: "ELFA MASTER", variant: "Dusty Pink", inventoryLabel: "ELFA MASTER · Dusty Pink", displayName: "ELFA MASTER · Dusty Pink + Peach Ice", unitPrice: 250 }),
+      "elfa-master:black-knight": Object.freeze({ family: "ELFA MASTER", variant: "Black Knight", inventoryLabel: "ELFA MASTER · Black Knight", displayName: "ELFA MASTER · Black Knight + Pink Lemonade", unitPrice: 250 }),
+      "elfa-pro:grape": Object.freeze({ family: "ELFA PRO", variant: "Grape", inventoryLabel: "ELFA PRO · Grape", displayName: "ELFA PRO · Grape · 2-pod pack", unitPrice: 150 }),
+      "elfa-pro:peach-ice": Object.freeze({ family: "ELFA PRO", variant: "Peach Ice", inventoryLabel: "ELFA PRO · Peach Ice", displayName: "ELFA PRO · Peach Ice · 2-pod pack", unitPrice: 150 }),
+      "elfa-pro:watermelon": Object.freeze({ family: "ELFA PRO", variant: "Watermelon", inventoryLabel: "ELFA PRO · Watermelon", displayName: "ELFA PRO · Watermelon · 2-pod pack", unitPrice: 150 }),
+      "elfa-pro:miami-mint": Object.freeze({ family: "ELFA PRO", variant: "Miami Mint", inventoryLabel: "ELFA PRO · Miami Mint", displayName: "ELFA PRO · Miami Mint · 2-pod pack", unitPrice: 150 }),
+      "elfa-pro:spearmint": Object.freeze({ family: "ELFA PRO", variant: "Spearmint", inventoryLabel: "ELFA PRO · Spearmint", displayName: "ELFA PRO · Spearmint · 2-pod pack", unitPrice: 150 })
+    });
+    var CHECKOUT_PRODUCT_KEYS = Object.freeze(Object.keys(CHECKOUT_PRODUCTS));
+    function checkoutProductDefinition(productKey) {
+      const key = cleanText(productKey, 80).toLowerCase();
+      return CHECKOUT_PRODUCTS[key] || null;
+    }
+    __name(checkoutProductDefinition, "checkoutProductDefinition");
+    function checkoutProductKeyFromInput(raw) {
+      const supplied = cleanText(raw?.productKey, 80).toLowerCase();
+      if (supplied && CHECKOUT_PRODUCTS[supplied]) return supplied;
+      const legacyFlavour = cleanText(raw?.flavour ?? raw?.variant, 100);
+      return BC_CHECKOUT_KEYS_BY_FLAVOUR[legacyFlavour] || "";
+    }
+    __name(checkoutProductKeyFromInput, "checkoutProductKeyFromInput");
+    function checkoutProductEnabled(spec) {
+      if (!spec) return false;
+      if (spec.family === "BC10000") return true;
+      return OWNER_INVENTORY_PRODUCTS[spec.inventoryLabel]?.checkoutEnabled === true;
+    }
+    __name(checkoutProductEnabled, "checkoutProductEnabled");
     var ALLOWED_ACCOUNTS_HOSTS = /* @__PURE__ */ new Set([
       "accounts.zoho.com",
       "accounts.zoho.eu",
@@ -1587,36 +1630,49 @@ If you received this email, Worker owner alerts are operational.`
         requireCollectionAccessToken(input.collectionAccessToken, checkoutId);
       }
       if (customerName.length < 2) throw new TypeError("A valid customer name is required.");
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new TypeError("A valid email address is required.");
-      if (!/^[+()\d\s.-]{7,50}$/.test(mobile) || (mobile.match(/\d/g) || []).length < 7) throw new TypeError("A valid mobile number is required.");
+      if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) throw new TypeError("A valid email address is required.");
+      if (!/^[+()\\d\\s.-]{7,50}$/.test(mobile) || (mobile.match(/\\d/g) || []).length < 7) throw new TypeError("A valid mobile number is required.");
       if (addressLine1.length < 3) throw new TypeError("A valid billing street address is required.");
       if (addressLine2.length < 2 || city.length < 2 || province.length < 2 || postalCode.length < 3 || country.length < 2) throw new TypeError("A complete billing/contact address is required.");
       const rawItems = Array.isArray(input.items) ? input.items : [];
-      if (rawItems.length < 1 || rawItems.length > ALLOWED_FLAVOURS.size) throw new TypeError("Add at least one valid flavour to the basket.");
-      const seenFlavours = /* @__PURE__ */ new Set();
+      if (rawItems.length < 1 || rawItems.length > CHECKOUT_PRODUCT_KEYS.length) throw new TypeError("Add at least one valid product to the basket.");
+      const seenProductKeys = /* @__PURE__ */ new Set();
       const seenItemIds = /* @__PURE__ */ new Set();
       const items = rawItems.map((raw) => {
-        const flavour = cleanText(raw?.flavour, 100);
+        const productKey = checkoutProductKeyFromInput(raw);
+        const spec = checkoutProductDefinition(productKey);
         const requestedItemId = cleanText(raw?.itemId, 40);
-        const itemId = /^\d+$/.test(requestedItemId) ? requestedItemId : "";
+        const itemId = /^\\d+$/.test(requestedItemId) ? requestedItemId : "";
         const quantity = Number(raw?.quantity);
-        if (!ALLOWED_FLAVOURS.has(flavour)) throw new TypeError("A valid BC10000 flavour is required.");
+        if (!spec || !checkoutProductEnabled(spec)) throw new TypeError("Select a valid product that is enabled for checkout.");
         if (!itemId) throw new TypeError("A verified Zoho item identifier is required. Please reload the shop and rebuild the basket.");
-        if (!Number.isInteger(quantity) || quantity < 1 || quantity > MAX_QUANTITY) throw new TypeError("Each flavour quantity must be between 1 and 5.");
-        if (seenFlavours.has(flavour) || seenItemIds.has(itemId)) throw new TypeError("Each flavour may appear only once in the basket.");
-        seenFlavours.add(flavour);
+        if (!Number.isInteger(quantity) || quantity < 1 || quantity > MAX_QUANTITY) throw new TypeError("Each product quantity must be between 1 and 5.");
+        if (seenProductKeys.has(productKey) || seenItemIds.has(itemId)) throw new TypeError("Each product variant may appear only once in the basket.");
+        seenProductKeys.add(productKey);
         seenItemIds.add(itemId);
-        return { flavour, itemId, quantity };
+        const unitPrice = Number(spec.unitPrice);
+        return {
+          productKey,
+          productFamily: spec.family,
+          variant: spec.variant,
+          flavour: spec.variant,
+          displayName: spec.displayName,
+          itemId,
+          quantity,
+          unitPrice,
+          lineTotal: unitPrice * quantity
+        };
       });
       const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
-      const amount = totalQuantity * PRODUCT_PRICE_ZAR + deliveryCharge;
+      const productsTotal = items.reduce((sum, item) => sum + Number(item.lineTotal || 0), 0);
+      const amount = productsTotal + deliveryCharge;
       const submittedAmount = Number(input.amount);
       if (!Number.isFinite(submittedAmount) || Math.abs(submittedAmount - amount) > PAYMENT_EPSILON) {
         const e = new TypeError("The submitted total does not match server pricing.");
         e.statusCode = 400;
         throw e;
       }
-      return { customerName, email, mobile, addressLine1, addressLine2, city, province, postalCode, country, deliveryMethod, deliveryCharge, courierLocker, checkoutId, items, totalQuantity, amount };
+      return { customerName, email, mobile, addressLine1, addressLine2, city, province, postalCode, country, deliveryMethod, deliveryCharge, courierLocker, checkoutId, items, totalQuantity, productsTotal, amount };
     }
     __name(validateBankCartOrder, "validateBankCartOrder");
     function splitName(fullName) {
@@ -2118,11 +2174,15 @@ If you received this email, Worker owner alerts are operational.`
       ]);
       const catalogue = {};
       for (const [flavour, state] of Object.entries(bcAvailability || {})) {
-        catalogue[`BC10000 · ${flavour}`] = {
-          productFamily: "BC10000",
-          variant: flavour,
-          displayName: `ELFBAR BC10000 · ${flavour}`,
-          unitPrice: PRODUCT_PRICE_ZAR,
+        const productKey = BC_CHECKOUT_KEYS_BY_FLAVOUR[flavour];
+        const spec = CHECKOUT_PRODUCTS[productKey];
+        if (!spec) continue;
+        catalogue[productKey] = {
+          productKey,
+          productFamily: spec.family,
+          variant: spec.variant,
+          displayName: spec.displayName,
+          unitPrice: Number(spec.unitPrice),
           available: state?.available === true,
           stock: Math.max(0, Math.floor(Number(state?.stock || 0))),
           itemId: cleanText(state?.itemId || state?.item_id, 80) || null,
@@ -2131,18 +2191,35 @@ If you received this email, Worker owner alerts are operational.`
         };
       }
       for (const [label, state] of Object.entries(elfaAvailability || {})) {
-        const spec = OWNER_INVENTORY_PRODUCTS[label];
-        if (!spec) continue;
-        catalogue[label] = {
+        const ownerSpec = OWNER_INVENTORY_PRODUCTS[label];
+        const productKey = CHECKOUT_PRODUCT_KEYS.find((key) => CHECKOUT_PRODUCTS[key]?.inventoryLabel === label);
+        const spec = productKey ? CHECKOUT_PRODUCTS[productKey] : null;
+        if (!ownerSpec || !spec) continue;
+        const itemId = cleanText(state?.itemId || state?.item_id, 80) || null;
+        let adjusted = state;
+        if (itemId && Number.isFinite(Number(state?.stock))) {
+          try {
+            adjusted = await applyWebsiteReservationOverlay({
+              ...state,
+              requestedQuantity: 1,
+              canFulfil: state?.available === true && Number(state?.stock || 0) >= 1
+            }, itemId);
+          } catch (_) {
+            adjusted = { ...state, available: false, stock: 0, reason: "Website stock reservation state could not be verified." };
+          }
+        }
+        const priceMatches = Number.isFinite(Number(adjusted?.price)) && Math.abs(Number(adjusted.price) - Number(spec.unitPrice)) <= PAYMENT_EPSILON;
+        catalogue[productKey] = {
+          productKey,
           productFamily: spec.family,
           variant: spec.variant,
-          displayName: label,
-          unitPrice: Number(spec.expectedRetailPrice),
-          available: state?.available === true,
-          stock: Math.max(0, Math.floor(Number(state?.stock || 0))),
-          itemId: cleanText(state?.itemId || state?.item_id, 80) || null,
-          reason: cleanText(state?.reason, 180) || null,
-          checkoutEnabled: spec.checkoutEnabled === true
+          displayName: spec.displayName,
+          unitPrice: Number(spec.unitPrice),
+          available: adjusted?.available === true && priceMatches && ownerSpec.checkoutEnabled === true,
+          stock: Math.max(0, Math.floor(Number(adjusted?.stock || 0))),
+          itemId,
+          reason: !priceMatches ? `Zoho item price does not match R${Number(spec.unitPrice).toFixed(2)}` : cleanText(adjusted?.reason, 180) || null,
+          checkoutEnabled: ownerSpec.checkoutEnabled === true && priceMatches
         };
       }
       return catalogue;
@@ -2441,6 +2518,133 @@ If you received this email, Worker owner alerts are operational.`
       return { item, snapshot };
     }
     __name(requireStockState, "requireStockState");
+    function buildCheckoutStockSnapshot(spec, item, quantity = 1) {
+      const requestedQuantity = Number.isInteger(Number(quantity)) && Number(quantity) > 0 ? Number(quantity) : 1;
+      let locationState;
+      try {
+        locationState = chooseStockLocation(item, requestedQuantity);
+      } catch (error) {
+        return {
+          productKey: null,
+          productFamily: spec.family,
+          variant: spec.variant,
+          displayName: spec.displayName,
+          flavour: spec.variant,
+          itemId: item?.item_id ? String(item.item_id) : null,
+          itemName: item?.name || null,
+          available: false,
+          canFulfil: false,
+          stock: 0,
+          physicalStock: null,
+          stockSignals: {},
+          stockSource: null,
+          requestedQuantity,
+          price: Number(item?.rate),
+          unitPrice: Number(spec.unitPrice),
+          locationId: null,
+          locationName: null,
+          reason: error.message
+        };
+      }
+      const stock = locationState.available;
+      const active = String(item?.status || "").toLowerCase() === "active";
+      const priceMatches = Number.isFinite(Number(item?.rate)) && Math.abs(Number(item.rate) - Number(spec.unitPrice)) <= PAYMENT_EPSILON;
+      const configured = stock !== null;
+      const wholeStock = configured ? Math.max(0, Math.floor(Number(stock))) : 0;
+      const physicalStock = locationState.physical === null ? null : Math.max(0, Math.floor(Number(locationState.physical)));
+      let reason = null;
+      if (!active) reason = "Item inactive in Zoho Books";
+      else if (!priceMatches) reason = `Zoho item price does not match R${Number(spec.unitPrice).toFixed(2)}`;
+      else if (!configured) reason = "Stock quantity is not configured in Zoho Books";
+      else if (wholeStock < requestedQuantity) reason = `Only ${wholeStock} unit(s) are currently available.`;
+      return {
+        productKey: null,
+        productFamily: spec.family,
+        variant: spec.variant,
+        displayName: spec.displayName,
+        flavour: spec.variant,
+        itemId: item?.item_id ? String(item.item_id) : null,
+        itemName: item?.name || null,
+        available: active && priceMatches && configured && wholeStock > 0,
+        canFulfil: active && priceMatches && configured && wholeStock >= requestedQuantity,
+        stock: wholeStock,
+        physicalStock,
+        stockSignals: collectStockSignals(item, locationState.locationId || ""),
+        stockSource: locationState.stockSource || null,
+        requestedQuantity,
+        price: Number(item?.rate),
+        unitPrice: Number(spec.unitPrice),
+        locationId: locationState.locationId || null,
+        locationName: locationState.location?.location_name || locationState.location?.name || null,
+        reason
+      };
+    }
+    __name(buildCheckoutStockSnapshot, "buildCheckoutStockSnapshot");
+    async function requireCheckoutStockState(line) {
+      const productKey = checkoutProductKeyFromInput(line);
+      const spec = checkoutProductDefinition(productKey);
+      if (!spec || !checkoutProductEnabled(spec)) {
+        const e = new TypeError("This product is not enabled for checkout.");
+        e.statusCode = 400;
+        throw e;
+      }
+      if (spec.family === "BC10000") {
+        const result = await requireStockState(spec.variant, line.quantity, line.itemId);
+        return {
+          item: result.item,
+          snapshot: {
+            ...result.snapshot,
+            productKey,
+            productFamily: spec.family,
+            variant: spec.variant,
+            displayName: spec.displayName,
+            unitPrice: Number(spec.unitPrice)
+          }
+        };
+      }
+      const ownerSpec = OWNER_INVENTORY_PRODUCTS[spec.inventoryLabel];
+      if (!ownerSpec || ownerSpec.checkoutEnabled !== true) {
+        const e = new Error("This ELFA product has not been enabled for checkout.");
+        e.statusCode = 409;
+        throw e;
+      }
+      await discoverOwnerInventoryCatalog(false);
+      const mappedId = String(resolvedOwnerInventoryItemIds.get(spec.inventoryLabel) || "");
+      const expectedItemId = String(line.itemId || "").trim();
+      if (!mappedId || !/^\\d+$/.test(mappedId)) {
+        const e = new Error(`Zoho item mapping for ${spec.displayName} is not available.`);
+        e.statusCode = 409;
+        e.freshAvailabilityNeeded = true;
+        throw e;
+      }
+      if (!/^\\d+$/.test(expectedItemId) || expectedItemId !== mappedId) {
+        const e = new Error(`${spec.displayName} no longer matches the verified Zoho item catalogue. Please refresh the shop.`);
+        e.statusCode = 409;
+        e.freshAvailabilityNeeded = true;
+        throw e;
+      }
+      const item = await getItemById(mappedId);
+      if (!item?.item_id || ownerInventoryItemMatchScore(item, ownerSpec) < 180) {
+        const e = new Error(`Zoho item mapping for ${spec.displayName} could not be verified.`);
+        e.statusCode = 409;
+        e.freshAvailabilityNeeded = true;
+        throw e;
+      }
+      const snapshot = {
+        ...buildCheckoutStockSnapshot(spec, item, line.quantity),
+        productKey
+      };
+      if (!snapshot.canFulfil) {
+        const detail = snapshot.reason || "This product is not currently available.";
+        const message = snapshot.stock === 0 ? `${spec.displayName} is now out of stock.` : Number(snapshot.stock) < Number(line.quantity) ? `Only ${snapshot.stock} unit(s) of ${spec.displayName} remain. Please lower the quantity.` : detail;
+        const e = new Error(message);
+        e.statusCode = 409;
+        e.freshAvailabilityNeeded = true;
+        throw e;
+      }
+      return { item, snapshot };
+    }
+    __name(requireCheckoutStockState, "requireCheckoutStockState");
     async function findCustomerByEmail(email) {
       const data = await zohoRequest(`/contacts?${organizationQuery({ contact_type: "customer", email, per_page: "2" })}`);
       const contacts = Array.isArray(data.contacts) ? data.contacts : [];
@@ -2895,7 +3099,7 @@ If you received this email, Worker owner alerts are operational.`
         e.statusCode = 409;
         throw e;
       }
-      const expected = order.items.map((line) => ({ itemId: String(line.itemId), quantity: Number(line.quantity), rate: PRODUCT_PRICE_ZAR })).sort((a, b) => a.itemId.localeCompare(b.itemId));
+      const expected = order.items.map((line) => ({ itemId: String(line.itemId), quantity: Number(line.quantity), rate: Number(line.unitPrice) })).sort((a, b) => a.itemId.localeCompare(b.itemId));
       const actual = bankInvoiceLineSignature(invoice.line_items);
       if (JSON.stringify(actual) !== JSON.stringify(expected)) {
         const e = new Error("Recovered invoice basket does not match this checkout. Manual review is required.");
@@ -2938,7 +3142,7 @@ If you received this email, Worker owner alerts are operational.`
     async function createBankInvoice(order, customer, paymentReference, paymentDate, stockLines) {
       const line_items = stockLines.map(({ line, item, snapshot }) => ({
         item_id: String(item.item_id),
-        rate: PRODUCT_PRICE_ZAR,
+        rate: Number(line.unitPrice),
         quantity: Number(line.quantity),
         ...String(snapshot?.locationId || "").trim() ? { location_id: String(snapshot.locationId).trim() } : {}
       }));
@@ -3287,13 +3491,23 @@ If you received this email, Worker owner alerts are operational.`
       const verified = data.verified || {};
       const response = data.response || {};
       const customer = progress.customer || {};
-      const items = Array.isArray(progress.items) ? progress.items.map((line) => ({
-        flavour: cleanText(line.flavour, 80),
-        itemId: cleanText(line.itemId, 80),
-        quantity: Number(line.quantity || 0),
-        unitPrice: PRODUCT_PRICE_ZAR,
-        lineTotal: Number(line.quantity || 0) * PRODUCT_PRICE_ZAR
-      })) : [];
+      const items = Array.isArray(progress.items) ? progress.items.map((line) => {
+        const productKey = checkoutProductKeyFromInput(line);
+        const spec = checkoutProductDefinition(productKey);
+        const quantity = Number(line.quantity || 0);
+        const unitPrice = Number(spec?.unitPrice ?? line.unitPrice ?? PRODUCT_PRICE_ZAR);
+        return {
+          productKey: productKey || null,
+          productFamily: spec?.family || cleanText(line.productFamily, 80) || "BC10000",
+          variant: spec?.variant || cleanText(line.variant ?? line.flavour, 80),
+          flavour: spec?.variant || cleanText(line.flavour, 80),
+          displayName: spec?.displayName || cleanText(line.displayName, 160) || cleanText(line.flavour, 80),
+          itemId: cleanText(line.itemId, 80),
+          quantity,
+          unitPrice,
+          lineTotal: quantity * unitPrice
+        };
+      }) : [];
       const paymentReference = cleanText(
         progress.paymentReference || response.paymentReference || located?.paymentReference,
         24
@@ -3761,7 +3975,7 @@ If you received this email, Worker owner alerts are operational.`
         for (const line of lockLines) itemLocks.push(await acquireStockLock(line.itemId, `bank-confirm-${located.checkoutId}`));
         const stockLines = [];
         for (const line of order.items) {
-          const stock = await requireStockState(line.flavour, line.quantity, line.itemId);
+          const stock = await requireCheckoutStockState(line);
           const snapshot = await applyWebsiteReservationOverlay(stock.snapshot, line.itemId, located.checkoutId);
           if (!snapshot.canFulfil) {
             const e = new Error(
@@ -4224,7 +4438,7 @@ ${ownerConsoleUrl()}`
       const reservedItemIds = [];
       try {
         for (const line of order.items) {
-          const preflight = await requireStockState(line.flavour, line.quantity, line.itemId);
+          const preflight = await requireCheckoutStockState(line);
           if (String(preflight.item.item_id) !== String(line.itemId)) {
             const e = new Error(`${line.flavour} no longer matches the Zoho Books item catalogue. Please refresh the shop.`);
             e.statusCode = 409;
@@ -4239,7 +4453,7 @@ ${ownerConsoleUrl()}`
         for (const lock of locks) await renewDistributedLock(lock);
         const finalLines = [];
         for (const line of order.items) {
-          const finalStock = await requireStockState(line.flavour, line.quantity, line.itemId);
+          const finalStock = await requireCheckoutStockState(line);
           const snapshot = await applyWebsiteReservationOverlay(finalStock.snapshot, line.itemId, order.checkoutId);
           if (!snapshot.canFulfil) {
             const e = new Error(snapshot.stock === 0 ? `${line.flavour} has just been reserved by another customer and is now unavailable.` : `Only ${snapshot.stock} unit(s) of ${line.flavour} remain after active website reservations. Please lower that quantity or remove the flavour.`);

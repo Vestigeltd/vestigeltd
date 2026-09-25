@@ -8,7 +8,7 @@
   "scripts": {
     "verify": "node scripts/verify-v35.29.1.mjs",
     "test": "node scripts/test-fulfilment.mjs",
-    "check": "node --check src/worker.js && node --check public/owner.js && node --check public/order-status.js && npm run verify && npm test",
+    "check": "node --check src/worker.js && node --check public/script.js && node --check public/owner.js && node --check public/order-status.js && npm run verify && npm test",
     "dry-run": "wrangler deploy --dry-run --outdir dist-check",
     "dev": "wrangler dev",
     "preview": "wrangler versions upload --message \"V35.29.1 stock catalogue development preview\""

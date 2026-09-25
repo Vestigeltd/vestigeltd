@@ -45,7 +45,7 @@ const bc=read(path.join(pub,'bc10000','index.html'));
 const shopJs=read(path.join(pub,'script.js'));
 assert.match(elfbar,/BC10000/); assert.match(elfbar,/ELFA MASTER/); assert.match(elfbar,/ELFA MASTER (?:coming soon|available)/i);
 assert.match(master,/850 mAh/); assert.match(master,/9–18 W/); assert.match(master,/Charging cable/); assert.match(master,/Not included/); assert.match(master,/R250\.00/);
-assert.match(bc,/id="modelSelect"/); assert.match(bc,/ELFA MASTER — R250\.00 — coming soon/);
+assert.match(bc,/id="modelSelect"/); assert.match(bc,/ELFA MASTER — R250\.00 — (?:coming soon|available)/);
 for(const flavour of ['Blueberry Mint','Miami Mint','Blue Razz Ice','Strawberry Kiwi Ice','Watermelon Ice']) assert.ok(bc.includes(`data-stock-flavour="${flavour}"`),`stock badge target missing ${flavour}`);
 assert.match(shopJs,/function updateFlavourCardStockStates/); assert.match(shopJs,/function syncModelSelection/);
 assert.ok(sitemap.includes('https://vestigeltd.co.za/elfbar/'),'ELFBAR sitemap entry missing');

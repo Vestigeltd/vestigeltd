@@ -17,7 +17,7 @@ function ok(condition,message){if(!condition)throw new Error('FAIL '+message);}
 for(const sku of ['ELFH01','ELFH02','ELFH03','ELFI03','ELFI06','ELFI08','ELFI09','ELFI02']) ok(worker.includes(sku),'inventory SKU '+sku);
 ok(worker.includes('OWNER_INVENTORY_PRODUCTS'),'owner inventory catalogue definition');
 ok(worker.includes('getOwnerInventoryAvailability(true, false)'),'owner dashboard uses multi-product inventory source');
-ok(worker.includes('checkoutEnabled: false'),'new ELFA items remain isolated from checkout activation');
+ok(worker.includes('CHECKOUT_PRODUCTS') && worker.includes('checkoutEnabled: true'),'verified ELFA catalogue is activated through the server checkout catalogue');
 ok(worker.includes('var ALLOWED_FLAVOURS = new Set(Object.keys(PRODUCT_NAMES));'),'BC10000 checkout allow-list remains present');
 ok(owner.includes('inventory-family-cell'),'owner inventory table includes product-family presentation');
 ok(owner.includes('<th>Product</th><th>Family</th><th>SKU</th>'),'owner inventory table headings');
@@ -62,4 +62,54 @@ console.log('PASS V35.29.1 multi-product owner inventory catalogue');
   assert.match(worker,/if \(!ALLOWED_FLAVOURS\.has\(flavour\)\)/,'BC10000 checkout allow-list guard unexpectedly changed');
 
   console.log('PASS V35.29.1 Phase 2A verified customer availability and public catalogue');
+}
+
+
+// V35.29.1 Phase 2B server-authoritative multi-product checkout guards
+{
+  const worker = read(path.join(root,'src','worker.js'));
+  const shopJs = read(path.join(pub,'script.js'));
+  const shop = read(path.join(pub,'bc10000','index.html'));
+  const ownerStart = worker.indexOf('var OWNER_INVENTORY_PRODUCTS = Object.freeze({');
+  const ownerEnd = worker.indexOf('var ALLOWED_ACCOUNTS_HOSTS',ownerStart);
+  const ownerBlock = worker.slice(ownerStart,ownerEnd);
+  assert.equal((ownerBlock.match(/checkoutEnabled: true/g)||[]).length,8,'all 8 verified ELFA inventory items must be checkout-enabled');
+
+  const requiredKeys = [
+    'bc10000:blueberry-mint','bc10000:miami-mint','bc10000:blue-razz-ice','bc10000:strawberry-kiwi-ice','bc10000:watermelon-ice',
+    'elfa-master:dark-cosmo','elfa-master:dusty-pink','elfa-master:black-knight',
+    'elfa-pro:grape','elfa-pro:peach-ice','elfa-pro:watermelon','elfa-pro:miami-mint','elfa-pro:spearmint'
+  ];
+  for (const key of requiredKeys) assert.ok(worker.includes('"' + key + '"'),`server checkout product missing ${key}`);
+
+  assert.ok(worker.includes('unitPrice: 300') && worker.includes('unitPrice: 250') && worker.includes('unitPrice: 150'),'R300/R250/R150 server price tiers missing');
+  assert.ok(worker.includes('function checkoutProductKeyFromInput'),'server productKey resolver missing');
+  assert.ok(worker.includes('async function requireCheckoutStockState'),'generic checkout stock verifier missing');
+
+  const validator = worker.slice(worker.indexOf('function validateBankCartOrder'),worker.indexOf('function splitName'));
+  assert.ok(validator.includes('checkoutProductKeyFromInput(raw)'),'bank validator must resolve productKey server-side');
+  assert.ok(validator.includes('unitPrice = Number(spec.unitPrice)'),'bank validator must derive unit price from server catalogue');
+  assert.ok(validator.includes('productsTotal = items.reduce'),'bank validator must total per-line server prices');
+  assert.ok(!validator.includes('totalQuantity * PRODUCT_PRICE_ZAR'),'bank validator must not use fixed BC10000 pricing');
+
+  const bankInvoice = worker.slice(worker.indexOf('function assertBankInvoiceMatches'),worker.indexOf('function emailPaidBankInvoice'));
+  assert.ok(bankInvoice.includes('rate: Number(line.unitPrice)'),'bank invoice recovery must validate each server line price');
+  assert.ok(bankInvoice.includes('rate: Number(line.unitPrice),'),'Zoho bank invoice creation must use each server line price');
+  assert.ok(!bankInvoice.includes('rate: PRODUCT_PRICE_ZAR'),'bank invoice path must not force R300');
+
+  const prepare = worker.slice(worker.indexOf('async function prepareBankOrder'),worker.indexOf('function signCheckout'));
+  assert.ok((prepare.match(/requireCheckoutStockState\(line\)/g)||[]).length>=2,'prepare-bank-order must use generic stock verification before and after locks');
+
+  const confirm = worker.slice(worker.indexOf('async function confirmBankPaymentManually'),worker.indexOf('function moneyForError'));
+  assert.ok(confirm.includes('requireCheckoutStockState(line)'),'manual bank confirmation must re-verify generic product stock');
+
+  assert.ok(shop.includes('value="ELFA_MASTER"') && shop.includes('value="ELFA_PRO"'),'shop must expose MASTER and PRO models');
+  assert.ok(shop.includes('R300.00 — available') && shop.includes('R250.00 — available') && shop.includes('R150.00 — available'),'shop model prices/status missing');
+  assert.ok(shopJs.includes("catalogue={}"),'client live product catalogue state missing');
+  assert.ok(shopJs.includes('productKey:x.productKey'),'client checkout payload must send productKey, not a client price');
+  assert.ok(shopJs.includes('Number(item.unitPrice||0)'),'client mixed-price basket math missing');
+  assert.ok(!shopJs.includes('cartQuantity()*PRODUCT_PRICE'),'client basket must not use fixed R300');
+  assert.ok(shopJs.includes('Number(x.unitPrice||0)'),'payment summary must use server-returned line prices');
+
+  console.log('PASS V35.29.1 Phase 2B server-authoritative multi-product checkout');
 }

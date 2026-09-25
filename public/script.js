@@ -20,15 +20,41 @@
   var deliveryMethodInputs=document.querySelectorAll('input[name="deliveryMethod"]'), courierLockerWrap=document.getElementById('courierLockerWrap'), collectionNote=document.getElementById('collectionNote'), courierLockerInput=form&&form.elements?form.elements.courierLocker:null;
   var collectionMethod=document.getElementById('collectionMethod'), collectionOption=document.getElementById('collectionOption'), collectionCodeInput=document.getElementById('collectionAccessCode'), validateCollectionButton=document.getElementById('validateCollectionAccess'), collectionAccessStatus=document.getElementById('collectionAccessStatus'), collectionLockLabel=document.getElementById('collectionLockLabel');
   var submitButton=document.getElementById('orderSubmit'), paymentPanel=document.getElementById('paymentPanel'), receiptPanel=document.getElementById('receiptPanel');
-  var PRODUCT_PRICE=300, DELIVERY_PRICE=60, API_URL='/api/zoho', availability={}, checkoutToken='', activeCheckout=null, cart=[], checkoutBusy=false, reservationTimer=null, collectionAccessToken='', draftCheckoutId=makeCheckoutId(), globalSoldOut=false;
+  var DELIVERY_PRICE=60, API_URL='/api/zoho', availability={}, catalogue={}, checkoutToken='', activeCheckout=null, cart=[], checkoutBusy=false, reservationTimer=null, collectionAccessToken='', draftCheckoutId=makeCheckoutId(), globalSoldOut=false;
 
   // Flavour/quantity are basket-builder controls, not final form requirements.
   // Their validity is enforced before an item can be added to the basket.
   if(flavour) flavour.required=false;
   if(quantity) quantity.required=false;
 
+  var MODEL_FAMILY={BC10000:'BC10000',ELFA_MASTER:'ELFA MASTER',ELFA_PRO:'ELFA PRO'};
+  var LEGACY_BC_KEYS={'Blueberry Mint':'bc10000:blueberry-mint','Miami Mint':'bc10000:miami-mint','Blue Razz Ice':'bc10000:blue-razz-ice','Strawberry Kiwi Ice':'bc10000:strawberry-kiwi-ice','Watermelon Ice':'bc10000:watermelon-ice'};
   function selectedModel(){return String(model&&model.value||'BC10000');}
-  function bc10000Selected(){return selectedModel()==='BC10000';}
+  function selectedFamily(){return MODEL_FAMILY[selectedModel()]||'BC10000';}
+  function bc10000Selected(){return selectedFamily()==='BC10000';}
+  function legacyClientProductKey(flavourName){return LEGACY_BC_KEYS[String(flavourName||'').trim()]||'';}
+  function catalogueEntriesForFamily(family){
+    return Object.keys(catalogue).map(function(key){return catalogue[key];}).filter(function(item){return item&&item.productKey&&item.productFamily===family&&item.checkoutEnabled===true;}).sort(function(a,b){return String(a.displayName||a.variant||'').localeCompare(String(b.displayName||b.variant||''));});
+  }
+  function selectionLabel(item){
+    var text=String(item&&item.displayName||item&&item.variant||'Product');
+    if(item&&item.productFamily==='BC10000')text=String(item.variant||text);
+    if(item&&item.productFamily==='ELFA MASTER')text=text.replace(/^ELFA MASTER · /,'');
+    if(item&&item.productFamily==='ELFA PRO')text=text.replace(/^ELFA PRO · /,'');
+    return text;
+  }
+  function populateProductOptions(){
+    if(!flavour)return false;
+    var family=selectedFamily(),entries=catalogueEntriesForFamily(family),available=entries.filter(function(item){return item.available&&Number(item.stock)>0;});
+    flavour.innerHTML='';
+    var placeholder=document.createElement('option');placeholder.value='';placeholder.textContent=family==='ELFA MASTER'?'Select a starter kit':family==='ELFA PRO'?'Select a pod flavour':'Select a flavour';flavour.appendChild(placeholder);
+    entries.forEach(function(item){
+      var opt=document.createElement('option');opt.value=item.productKey;opt.disabled=!(item.available&&Number(item.stock)>0);opt.dataset.unitPrice=String(Number(item.unitPrice||0));opt.dataset.productFamily=String(item.productFamily||'');opt.textContent=selectionLabel(item)+' — '+money(item.unitPrice)+(item.available?' — '+Number(item.stock)+' in stock':' — unavailable');flavour.appendChild(opt);
+    });
+    flavour.disabled=available.length===0;
+    if(quantity)quantity.disabled=available.length===0;
+    return available.length>0;
+  }
   function updateFlavourCardStockStates(){
     Array.prototype.forEach.call(document.querySelectorAll('[data-stock-flavour]'),function(card){
       var name=String(card.getAttribute('data-stock-flavour')||'');
@@ -42,34 +68,27 @@
     });
   }
   function syncModelSelection(){
-    var bc=bc10000Selected();
-    if(!bc){
-      if(flavour){flavour.value='';flavour.disabled=true;}
-      if(quantity){quantity.value='';quantity.disabled=true;}
-      if(addButton)addButton.disabled=true;
-      if(stockStatus){stockStatus.className='stock-status';stockStatus.textContent='ELFA MASTER · R250.00 · coming soon. Ordering will open after physical stock and Zoho sale-item mapping are verified.';}
-      if(orderStatus)orderStatus.textContent='';
-      setShopSoldOut(false);
-    }else{
-      if(quantity)quantity.disabled=false;
-      if(Object.keys(availability).length){
-        var allSoldOut=availabilityConfirmsSoldOut();
-        if(flavour)flavour.disabled=allSoldOut;
-      }
+    if(!Object.keys(catalogue).length){
+      if(flavour)flavour.disabled=true;
+      if(quantity)quantity.disabled=true;
+      if(stockStatus){stockStatus.className='stock-status';stockStatus.textContent='Checking live Vestige stock…';}
+      validateSelectedStock();
+      return;
+    }
+    var hasAvailable=populateProductOptions();
+    setShopSoldOut(catalogueConfirmsSoldOut());
+    if(stockStatus){
+      stockStatus.className=hasAvailable?'stock-status ok':'stock-status warn';
+      stockStatus.textContent=hasAvailable?(cart.length?'Live stock verified. Your basket is ready.':'Live '+selectedFamily()+' stock verified with Zoho Books.'):'No '+selectedFamily()+' variants are currently available. Select another ELFBAR model.';
     }
     validateSelectedStock();
   }
 
   function money(n){return 'R'+Number(n||0).toFixed(2);}
-  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
-  function availabilityConfirmsSoldOut(){
-    if(!bc10000Selected())return false;
-    var names=Array.prototype.map.call(flavour&&flavour.options||[],function(opt){return String(opt.value||'').trim();}).filter(Boolean);
-    return names.length>0&&names.every(function(name){
-      var item=availability[name];
-      var stock=Number(item&&item.stock);
-      return !!item&&Number.isFinite(stock)&&stock<=0;
-    });
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c];});}
+  function catalogueConfirmsSoldOut(){
+    var enabled=Object.keys(catalogue).map(function(key){return catalogue[key];}).filter(function(item){return item&&item.checkoutEnabled===true;});
+    return enabled.length>0&&enabled.every(function(item){return !(item.available&&Number(item.stock)>0);});
   }
   function setShopSoldOut(soldOut){
     var effective=!!soldOut&&!activeCheckout&&!checkoutToken;
@@ -79,7 +98,7 @@
     if(form){form.toggleAttribute('inert',effective);if(effective)form.setAttribute('aria-disabled','true');else form.removeAttribute('aria-disabled');}
   }
   function cartQuantity(){return cart.reduce(function(sum,item){return sum+Number(item.quantity||0);},0);}
-  function cartProductsTotal(){return cartQuantity()*PRODUCT_PRICE;}
+  function cartProductsTotal(){return cart.reduce(function(sum,item){return sum+(Number(item.quantity||0)*Number(item.unitPrice||0));},0);}
   var BASKET_SESSION_KEY='vestigeBasketV1';
   function saveBasketSession(){
     try{
@@ -91,27 +110,27 @@
     try{
       var stored=JSON.parse(sessionStorage.getItem(BASKET_SESSION_KEY)||'[]');
       if(!Array.isArray(stored))return;
-      var validFlavours=Array.prototype.map.call(flavour&&flavour.options||[],function(opt){return String(opt.value||'');});
       cart=stored.map(function(item){
-        return {flavour:String(item&&item.flavour||''),itemId:String(item&&item.itemId||''),quantity:Number(item&&item.quantity||0)};
+        var productKey=String(item&&item.productKey||legacyClientProductKey(item&&item.flavour)||'');
+        return {productKey:productKey,productFamily:String(item&&item.productFamily||''),flavour:String(item&&item.flavour||item&&item.variant||''),displayName:String(item&&item.displayName||item&&item.flavour||''),itemId:String(item&&item.itemId||''),quantity:Number(item&&item.quantity||0),unitPrice:Number(item&&item.unitPrice||0)};
       }).filter(function(item){
-        return validFlavours.indexOf(item.flavour)!==-1&&item.itemId&&Number.isInteger(item.quantity)&&item.quantity>=1&&item.quantity<=5;
+        return item.productKey&&item.itemId&&Number.isInteger(item.quantity)&&item.quantity>=1&&item.quantity<=5;
       });
     }catch(_){cart=[];}
   }
   function revalidateBasketAgainstAvailability(){
     cart=cart.map(function(item){
-      var live=availability[item.flavour];
+      var live=catalogue[item.productKey];
       var liveId=String(live&&(live.itemId||live.item_id)||'').trim();
       var quantity=Math.min(Number(item.quantity||0),Number(live&&live.stock||0),5);
-      return live&&live.available&&liveId&&quantity>0?{flavour:item.flavour,itemId:liveId,quantity:quantity}:null;
+      return live&&live.checkoutEnabled===true&&live.available&&liveId&&quantity>0?{productKey:String(live.productKey),productFamily:String(live.productFamily||''),flavour:String(live.variant||''),displayName:String(live.displayName||live.variant||''),itemId:liveId,quantity:quantity,unitPrice:Number(live.unitPrice||0)}:null;
     }).filter(Boolean);
     renderCart();
   }
   function publishCartSummary(){
     if(!form)return;
     var summary={
-      items:cart.map(function(item){return {flavour:item.flavour,quantity:Number(item.quantity||0)};}),
+      items:cart.map(function(item){return {productKey:item.productKey,productFamily:item.productFamily,flavour:item.flavour,displayName:item.displayName,quantity:Number(item.quantity||0),unitPrice:Number(item.unitPrice||0)};}),
       totalQuantity:cartQuantity(),
       productsTotal:cartProductsTotal(),
       deliveryMethod:selectedDeliveryMethod(),
@@ -387,12 +406,11 @@
   }
 
   function currentSelection(){
-    if(!bc10000Selected())return {name:'',qty:0,item:null,itemId:''};
-    var name=String(flavour&&flavour.value||'').trim();
+    var productKey=String(flavour&&flavour.value||'').trim();
     var qty=Number(quantity&&quantity.value||0);
-    var item=availability[name]||null;
+    var item=productKey?catalogue[productKey]||null:null;
     var itemId=item?String(item.itemId||item.item_id||'').trim():'';
-    return {name:name,qty:qty,item:item,itemId:itemId};
+    return {productKey:productKey,name:item?String(item.variant||''):'',displayName:item?String(item.displayName||item.variant||''):'',qty:qty,item:item,itemId:itemId,unitPrice:item?Number(item.unitPrice||0):0};
   }
   function updateTotals(){
     if(!productTotal||!orderTotal)return;
@@ -419,13 +437,10 @@
     validateSelectedStock();
   }
   function validateSelectedStock(){
-    var selection=currentSelection(),name=selection.name,qty=selection.qty,item=selection.item,itemId=selection.itemId;
-    var existing=name?cart.find(function(x){return x.flavour===name;}):null;
+    var selection=currentSelection(),productKey=selection.productKey,name=selection.name,qty=selection.qty,item=selection.item,itemId=selection.itemId;
+    var existing=productKey?cart.find(function(x){return x.productKey===productKey;}):null;
     var combined=(existing?Number(existing.quantity||0):0)+qty;
-    var canAdd=!!(name&&qty>0&&item&&item.available&&Number(item.stock)>=combined&&itemId&&!checkoutToken&&!checkoutBusy);
-    // Do not use the native disabled attribute for the basket controls. Some versions of
-    // the existing page/CSS leave dynamically-disabled buttons impossible to re-activate.
-    // Keep them clickable and enforce validity in the click/submit handlers instead.
+    var canAdd=!!(productKey&&qty>0&&item&&item.checkoutEnabled===true&&item.available&&Number(item.stock)>=combined&&itemId&&!checkoutToken&&!checkoutBusy);
     if(addButton){
       var addLocked=!!(checkoutToken||checkoutBusy);
       addButton.disabled=false;
@@ -446,42 +461,58 @@
       submitButton.style.cursor=checkoutLocked?'wait':'pointer';
     }
     if(!stockStatus)return;
-    if(!name){stockStatus.className='stock-status';stockStatus.textContent=cart.length?'Select another flavour to add, or continue with your basket.':'Select an available flavour.';return;}
-    if(!item||!item.available){stockStatus.className='stock-status warn';stockStatus.textContent=(item&&item.reason)||'This flavour is not currently available.';return;}
-    if(qty<=0){stockStatus.className='stock-status';stockStatus.textContent='Select a quantity to add this flavour to your basket.';return;}
-    if(!itemId){stockStatus.className='stock-status warn';stockStatus.textContent='This flavour could not be linked to its Zoho item. Please refresh and try again.';return;}
+    if(!productKey){stockStatus.className='stock-status';stockStatus.textContent=cart.length?'Select another product to add, or continue with your basket.':'Select an available product variant.';return;}
+    if(!item||item.checkoutEnabled!==true||!item.available){stockStatus.className='stock-status warn';stockStatus.textContent=(item&&item.reason)||'This product is not currently available.';return;}
+    if(qty<=0){stockStatus.className='stock-status';stockStatus.textContent='Select a quantity to add this product to your basket.';return;}
+    if(!itemId){stockStatus.className='stock-status warn';stockStatus.textContent='This product could not be linked to its Zoho item. Please refresh and try again.';return;}
     if(Number(item.stock)<combined){stockStatus.className='stock-status warn';stockStatus.textContent='Basket plus selection would exceed the '+item.stock+' unit(s) currently available.';return;}
-    stockStatus.className='stock-status ok';stockStatus.textContent=item.stock+' unit(s) currently available. Ready to add to basket.';
+    stockStatus.className='stock-status ok';stockStatus.textContent=item.stock+' unit(s) currently available at '+money(item.unitPrice)+' each. Ready to add to basket.';
   }
   function renderCart(){
     if(!cartBox)return;
     if(!cart.length){cartBox.hidden=true;cartBox.innerHTML='';updateTotals();saveBasketSession();publishCartSummary();return;}
     cartBox.hidden=false;
-    var rows=cart.map(function(item,index){return '<div class="cart-row"><div><strong>'+esc(item.flavour)+'</strong><small>'+money(PRODUCT_PRICE)+' each</small></div><span>Qty '+item.quantity+'</span><strong>'+money(item.quantity*PRODUCT_PRICE)+'</strong><button type="button" class="cart-remove" data-cart-index="'+index+'" aria-label="Remove '+esc(item.flavour)+'">Remove</button></div>';}).join('');
+    var rows=cart.map(function(item,index){var label=String(item.displayName||item.flavour||item.productKey);return '<div class="cart-row"><div><strong>'+esc(label)+'</strong><small>'+money(item.unitPrice)+' each</small></div><span>Qty '+item.quantity+'</span><strong>'+money(Number(item.quantity)*Number(item.unitPrice||0))+'</strong><button type="button" class="cart-remove" data-cart-index="'+index+'" aria-label="Remove '+esc(label)+'">Remove</button></div>';}).join('');
     cartBox.innerHTML='<div class="cart-head"><strong>YOUR BASKET</strong><span>'+cartQuantity()+' item'+(cartQuantity()===1?'':'s')+'</span></div>'+rows+'<div class="cart-foot"><span>Products '+money(cartProductsTotal())+' + '+(selectedDeliveryMethod()==='collection'?'collection ':'delivery ')+money(currentDeliveryPrice())+'</span><strong>'+money(cartGrandTotal())+'</strong></div>';
     updateTotals();
     saveBasketSession();
     publishCartSummary();
   }
   function addSelectionToCart(){
-    if(globalSoldOut){if(orderStatus)orderStatus.textContent='All BC10000 flavours are currently sold out.';return;}
-    var selection=currentSelection(),name=selection.name,qty=selection.qty,item=selection.item,itemId=selection.itemId;
-    if(!name){if(orderStatus)orderStatus.textContent='Select a flavour first.';return;}
+    if(globalSoldOut){if(orderStatus)orderStatus.textContent='All Vestige ELFBAR products are currently sold out.';return;}
+    var selection=currentSelection(),productKey=selection.productKey,name=selection.name,displayName=selection.displayName,qty=selection.qty,item=selection.item,itemId=selection.itemId;
+    if(!productKey){if(orderStatus)orderStatus.textContent='Select a product variant first.';return;}
     if(qty<=0){if(orderStatus)orderStatus.textContent='Select a quantity first.';return;}
-    if(!item||!item.available){if(orderStatus)orderStatus.textContent=(item&&item.reason)||'This flavour is not currently available.';return;}
-    if(!itemId){if(orderStatus)orderStatus.textContent='This flavour could not be linked to its Zoho item. Refresh the page and try again.';return;}
-    var existing=cart.find(function(x){return x.flavour===name;});var next=(existing?existing.quantity:0)+qty;
-    if(next>5){if(orderStatus)orderStatus.textContent='Maximum quantity per flavour is 5.';return;}
-    if(next>Number(item.stock)){if(orderStatus)orderStatus.textContent='That quantity exceeds current stock for '+name+'.';return;}
-    if(existing)existing.quantity=next;else cart.push({flavour:name,itemId:itemId,quantity:qty});
-    if(flavour)flavour.value='';if(quantity)quantity.value='';if(orderStatus)orderStatus.textContent=name+' added to your basket.';renderCart();
+    if(!item||item.checkoutEnabled!==true||!item.available){if(orderStatus)orderStatus.textContent=(item&&item.reason)||'This product is not currently available.';return;}
+    if(!itemId){if(orderStatus)orderStatus.textContent='This product could not be linked to its Zoho item. Refresh the page and try again.';return;}
+    var existing=cart.find(function(x){return x.productKey===productKey;});var nextQty=(existing?existing.quantity:0)+qty;
+    if(nextQty>5){if(orderStatus)orderStatus.textContent='Maximum quantity per product variant is 5.';return;}
+    if(nextQty>Number(item.stock)){if(orderStatus)orderStatus.textContent='That quantity exceeds current stock for '+displayName+'.';return;}
+    if(existing)existing.quantity=nextQty;else cart.push({productKey:productKey,productFamily:String(item.productFamily||''),flavour:String(item.variant||name||''),displayName:String(item.displayName||displayName||name||''),itemId:itemId,quantity:qty,unitPrice:Number(item.unitPrice||0)});
+    if(flavour)flavour.value='';if(quantity)quantity.value='';if(orderStatus)orderStatus.textContent=displayName+' added to your basket.';renderCart();
   }
   async function loadAvailability(){
     if(!flavour)return;
-    if(!bc10000Selected()){syncModelSelection();return;}
     flavour.disabled=true;
-    try{var result=await apiRequest({action:'availability'});availability=result.availability||{};var allSoldOut=availabilityConfirmsSoldOut();Array.prototype.forEach.call(flavour.options,function(opt,index){if(index===0){opt.textContent='Select a flavour';return;}var item=availability[opt.value];opt.disabled=!(item&&item.available);opt.textContent=opt.value+(item&&item.available?' — '+item.stock+' in stock':' — unavailable');});flavour.disabled=allSoldOut;revalidateBasketAgainstAvailability();setShopSoldOut(allSoldOut);updateFlavourCardStockStates();if(stockStatus){stockStatus.className='stock-status ok';stockStatus.textContent=allSoldOut?'All BC10000 flavours are currently sold out.':(cart.length?'Live stock verified. Your saved basket is ready.':'Live stock verified with Zoho Books.');}}
-    catch(e){setShopSoldOut(false);Array.prototype.forEach.call(flavour.options,function(opt,index){if(index>0)opt.disabled=true;});flavour.disabled=true;updateFlavourCardStockStates();if(stockStatus){stockStatus.className='stock-status warn';stockStatus.textContent='Stock could not be verified. Ordering is disabled for safety.';}}
+    try{
+      var result=await apiRequest({action:'availability'});
+      availability=result.availability||{};
+      catalogue=result.catalogue||{};
+      syncModelSelection();
+      revalidateBasketAgainstAvailability();
+      var allSoldOut=catalogueConfirmsSoldOut();
+      setShopSoldOut(allSoldOut);
+      updateFlavourCardStockStates();
+      if(stockStatus&&allSoldOut){stockStatus.className='stock-status warn';stockStatus.textContent='All Vestige ELFBAR products are currently sold out.';}
+    }catch(e){
+      setShopSoldOut(false);
+      catalogue={};
+      flavour.innerHTML='<option value="">Stock unavailable</option>';
+      flavour.disabled=true;
+      if(quantity)quantity.disabled=true;
+      updateFlavourCardStockStates();
+      if(stockStatus){stockStatus.className='stock-status warn';stockStatus.textContent='Stock could not be verified. Ordering is disabled for safety.';}
+    }
     validateSelectedStock();
   }
   async function clipboardMatches(value){
@@ -538,8 +569,8 @@
     try{sessionStorage.removeItem(BASKET_SESSION_KEY);}catch(_){}
 
     var amount=document.getElementById('bankAmount'),ref=document.getElementById('bankReference'),qr=document.getElementById('capitecQr');if(amount)amount.textContent=money(o.amount);if(ref)ref.textContent=result.paymentReference||'—';if(qr&&result.capitec&&result.capitec.qrImageUrl)qr.src=result.capitec.qrImageUrl;
-    var summary=document.getElementById('summaryItems');if(summary){summary.innerHTML='';items.forEach(function(item){var row=document.createElement('div');row.className='summary-product';var d=document.createElement('div');var name=document.createElement('strong');name.textContent='ELFBAR BC10000';var f=document.createElement('span');f.textContent=item.flavour;d.append(name,f);var q=document.createElement('span');q.textContent='Qty: '+item.quantity;var line=document.createElement('strong');line.className='summary-item-total';line.textContent=money(Number(item.quantity)*PRODUCT_PRICE);row.append(d,q,line);summary.appendChild(row);});}
-    var sp=document.getElementById('summaryProducts'),st=document.getElementById('summaryTotal');if(sp)sp.textContent=money((Number(o.totalQuantity)||items.reduce(function(s,x){return s+Number(x.quantity||0);},0))*PRODUCT_PRICE);if(st)st.textContent=money(o.amount);
+    var summary=document.getElementById('summaryItems');if(summary){summary.innerHTML='';items.forEach(function(item){var row=document.createElement('div');row.className='summary-product';var d=document.createElement('div');var name=document.createElement('strong');name.textContent=String(item.displayName||item.productFamily||'ELFBAR');var f=document.createElement('span');f.textContent=String(item.variant||item.flavour||'');d.append(name,f);var q=document.createElement('span');q.textContent='Qty: '+item.quantity;var line=document.createElement('strong');line.className='summary-item-total';line.textContent=money(Number(item.quantity)*Number(item.unitPrice||0));row.append(d,q,line);summary.appendChild(row);});}
+    var sp=document.getElementById('summaryProducts'),st=document.getElementById('summaryTotal');if(sp)sp.textContent=money(items.reduce(function(s,x){return s+(Number(x.quantity||0)*Number(x.unitPrice||0));},0));if(st)st.textContent=money(o.amount);
     var fulfilLabel=document.getElementById('paymentFulfilmentLabel'),deliveryCharge=document.getElementById('paymentDeliveryCharge');
     if(fulfilLabel)fulfilLabel.innerHTML=o.deliveryMethod==='collection'?'Collection<br><small>Vestige Ltd — arranged collection</small>':'Delivery<br><small>The Courier Guy — Locker to Locker</small>';
     if(deliveryCharge)deliveryCharge.textContent=money(Number(o.deliveryCharge||0));
@@ -599,7 +630,7 @@
     try{
       var editableCart=[];
       if(preserveBasket&&activeCheckout&&activeCheckout.order&&Array.isArray(activeCheckout.order.items)){
-        editableCart=activeCheckout.order.items.map(function(item){return {flavour:String(item.flavour||''),itemId:String(item.itemId||''),quantity:Number(item.quantity||0)};}).filter(function(item){return item.flavour&&item.itemId&&Number.isInteger(item.quantity)&&item.quantity>0;});
+        editableCart=activeCheckout.order.items.map(function(item){return {productKey:String(item.productKey||legacyClientProductKey(item.flavour)||''),productFamily:String(item.productFamily||''),flavour:String(item.variant||item.flavour||''),displayName:String(item.displayName||item.flavour||''),itemId:String(item.itemId||''),quantity:Number(item.quantity||0),unitPrice:Number(item.unitPrice||0)};}).filter(function(item){return item.productKey&&item.itemId&&Number.isInteger(item.quantity)&&item.quantity>0;});
       }
       var result=await apiRequest({action:'cancel_bank_order',checkoutToken:checkoutToken});
       closePaymentView();
@@ -641,7 +672,7 @@
 
   function selectionChanged(){validateSelectedStock();}
   if(quantity){quantity.addEventListener('change',selectionChanged);quantity.addEventListener('input',selectionChanged);}
-  if(model){model.addEventListener('change',function(){syncModelSelection();if(bc10000Selected())loadAvailability();});}
+  if(model){model.addEventListener('change',function(){syncModelSelection();loadAvailability();});}
   if(flavour){flavour.addEventListener('change',selectionChanged);flavour.addEventListener('input',selectionChanged);}
   document.addEventListener('click',function(e){
     var target=e.target&&e.target.closest?e.target.closest('#addToBasket'):null;
@@ -670,16 +701,16 @@
     var target=e.target&&e.target.closest?e.target.closest('#orderSubmit'):null;
     if(!target)return;
     if(checkoutBusy||checkoutToken){e.preventDefault();if(orderStatus)orderStatus.textContent='Checkout is already being processed.';return;}
-    if(!cart.length){e.preventDefault();if(orderStatus)orderStatus.textContent='Add at least one flavour to your basket first.';}
+    if(!cart.length){e.preventDefault();if(orderStatus)orderStatus.textContent='Add at least one product to your basket first.';}
   },true);
 
   if(form)form.addEventListener('submit',async function(event){
     event.preventDefault();
-    if(globalSoldOut){if(orderStatus)orderStatus.textContent='All BC10000 flavours are currently sold out.';return;}
+    if(globalSoldOut){if(orderStatus)orderStatus.textContent='All Vestige ELFBAR products are currently sold out.';return;}
     if(checkoutBusy||checkoutToken)return;
-    if(!cart.length){if(orderStatus)orderStatus.textContent='Add at least one flavour to your basket first.';return;}
+    if(!cart.length){if(orderStatus)orderStatus.textContent='Add at least one product to your basket first.';return;}
     if(!form.reportValidity())return;
-    var data=new FormData(form),payload={action:'prepare_bank_order',checkoutId:draftCheckoutId,collectionAccessToken:collectionAccessToken,customerName:String(data.get('name')||''),email:String(data.get('email')||''),mobile:String(data.get('mobile')||''),addressLine1:String(data.get('addressLine1')||''),addressLine2:String(data.get('addressLine2')||''),city:String(data.get('city')||''),province:String(data.get('province')||''),postalCode:String(data.get('postalCode')||''),country:String(data.get('country')||'South Africa'),deliveryMethod:selectedDeliveryMethod(),courierLocker:String(data.get('courierLocker')||''),items:cart.map(function(x){return {flavour:x.flavour,itemId:x.itemId,quantity:x.quantity};}),amount:cartGrandTotal()};
+    var data=new FormData(form),payload={action:'prepare_bank_order',checkoutId:draftCheckoutId,collectionAccessToken:collectionAccessToken,customerName:String(data.get('name')||''),email:String(data.get('email')||''),mobile:String(data.get('mobile')||''),addressLine1:String(data.get('addressLine1')||''),addressLine2:String(data.get('addressLine2')||''),city:String(data.get('city')||''),province:String(data.get('province')||''),postalCode:String(data.get('postalCode')||''),country:String(data.get('country')||'South Africa'),deliveryMethod:selectedDeliveryMethod(),courierLocker:String(data.get('courierLocker')||''),items:cart.map(function(x){return {productKey:x.productKey,itemId:x.itemId,quantity:x.quantity};}),amount:cartGrandTotal()};
     checkoutBusy=true;validateSelectedStock();if(orderStatus)orderStatus.textContent='Rechecking live stock and reserving your complete basket for bank payment…';if(paymentPanel)paymentPanel.hidden=true;
     try{var result=await apiRequest(payload);showBankPayment(result);if(orderStatus)orderStatus.textContent=result.message;}
     catch(e){if(orderStatus)orderStatus.textContent=e.message||'Unable to reserve the basket.';checkoutToken='';activeCheckout=null;clearPendingCheckoutRecovery();await loadAvailability();}
@@ -1141,7 +1172,6 @@
    Front-end conversion layer only.
    No checkout, stock, Zoho, D1 or payment server logic is changed. */
 (function () {
-  const PRODUCT_PRICE = 300;
   const DELIVERY_PRICE = 60;
 
   function money(n) {
@@ -1250,7 +1280,7 @@
           window.vestigeTrackConversion('product_selection_completed', {
             flavour:f,
             quantity:q,
-            amount:(PRODUCT_PRICE*q)+DELIVERY_PRICE
+            amount:(Number((flavour.selectedOptions&&flavour.selectedOptions[0]&&flavour.selectedOptions[0].dataset.unitPrice)||0)*q)+DELIVERY_PRICE
           });
         }
       } catch (_) {}
