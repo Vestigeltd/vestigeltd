@@ -133,6 +133,18 @@ var require_zoho_integration = __commonJS({
     });
     var STOCK_LOCATION_ID_ENV = "ZOHO_LOCATION_ID";
     var ALLOWED_FLAVOURS = new Set(Object.keys(PRODUCT_NAMES));
+    // V35.29.1: Owner inventory catalogue is deliberately separate from the BC10000 checkout allow-list.
+    // New ELFA stock can therefore be discovered and monitored without inheriting BC10000 pricing/checkout rules.
+    var OWNER_INVENTORY_PRODUCTS = Object.freeze({
+      "ELFA MASTER · Dark Cosmo": Object.freeze({ family: "ELFA MASTER", variant: "Dark Cosmo", sku: "ELFH01", expectedRetailPrice: 250, checkoutEnabled: false, nameHints: ["ELFA Master Dark Cosmo", "ELFA Master Dark Cosmo Kit", "ELFA Master Prefilled Pod Kit Dark Cosmo"] }),
+      "ELFA MASTER · Dusty Pink": Object.freeze({ family: "ELFA MASTER", variant: "Dusty Pink", sku: "ELFH02", expectedRetailPrice: 250, checkoutEnabled: false, nameHints: ["ELFA Master Dusty Pink", "ELFA Master Dusty Pink Kit", "ELFA Master Prefilled Pod Kit Dusty Pink"] }),
+      "ELFA MASTER · Black Knight": Object.freeze({ family: "ELFA MASTER", variant: "Black Knight", sku: "ELFH03", expectedRetailPrice: 250, checkoutEnabled: false, nameHints: ["ELFA Master Black Knight", "ELFA Master Black Knight Kit", "ELFA Master Prefilled Pod Kit Black Knight"] }),
+      "ELFA PRO · Grape": Object.freeze({ family: "ELFA PRO", variant: "Grape", sku: "ELFI03", expectedRetailPrice: 150, checkoutEnabled: false, nameHints: ["ELFA PRO Grape 50mg", "ELFA PRO Grape"] }),
+      "ELFA PRO · Peach Ice": Object.freeze({ family: "ELFA PRO", variant: "Peach Ice", sku: "ELFI06", expectedRetailPrice: 150, checkoutEnabled: false, nameHints: ["ELFA PRO Peach Ice 50mg", "ELFA PRO Peach Ice"] }),
+      "ELFA PRO · Watermelon": Object.freeze({ family: "ELFA PRO", variant: "Watermelon", sku: "ELFI08", expectedRetailPrice: 150, checkoutEnabled: false, nameHints: ["ELFA PRO Watermelon 50mg", "ELFA PRO Watermelon"] }),
+      "ELFA PRO · Miami Mint": Object.freeze({ family: "ELFA PRO", variant: "Miami Mint", sku: "ELFI09", expectedRetailPrice: 150, checkoutEnabled: false, nameHints: ["ELFA PRO Miami Mint 50mg", "ELFA PRO Miami Mint"] }),
+      "ELFA PRO · Spearmint": Object.freeze({ family: "ELFA PRO", variant: "Spearmint", sku: "ELFI02", expectedRetailPrice: 150, checkoutEnabled: false, nameHints: ["ELFA PRO Spearmint 50mg", "ELFA PRO Spearmint"] })
+    });
     var ALLOWED_ACCOUNTS_HOSTS = /* @__PURE__ */ new Set([
       "accounts.zoho.com",
       "accounts.zoho.eu",
@@ -175,6 +187,9 @@ var require_zoho_integration = __commonJS({
     var cachedProductCatalogUntil = 0;
     var PRODUCT_CATALOG_CACHE_MS = 30 * 60 * 1e3;
     var resolvedProductItemIds = /* @__PURE__ */ new Map();
+    var resolvedOwnerInventoryItemIds = /* @__PURE__ */ new Map();
+    var ownerInventoryResolutionErrors = /* @__PURE__ */ new Map();
+    var cachedOwnerInventoryCatalogUntil = 0;
     var d1Database = null;
     function bindCloudflareRuntime(env) {
       d1Database = env?.CHECKOUT_DB || null;
@@ -1948,6 +1963,154 @@ If you received this email, Worker owner alerts are operational.`
       return item.item_id ? await getItemById(item.item_id) || item : item;
     }
     __name(findExactItemByName, "findExactItemByName");
+    function ownerInventoryItemMatchScore(item, spec) {
+      if (!item || String(item.status || "active").toLowerCase() === "inactive") return -1;
+      const targetSku = normalizeItemName(spec?.sku).replace(/\s+/g, "");
+      const candidateSkuValues = [item?.sku, item?.item_code, item?.cf_sku, item?.name].map((value) => normalizeItemName(value).replace(/\s+/g, "")).filter(Boolean);
+      if (targetSku && candidateSkuValues.some((value) => value === targetSku || value.includes(targetSku))) return 300;
+      const itemName = normalizeItemName(item?.name);
+      for (const hint of spec?.nameHints || []) {
+        if (itemName && itemName === normalizeItemName(hint)) return 250;
+      }
+      const familyTokens = normalizeItemName(spec?.family).split(" ").filter(Boolean);
+      const variantTokens = normalizeItemName(spec?.variant).split(" ").filter(Boolean);
+      if (itemName && familyTokens.every((token) => itemName.includes(token)) && variantTokens.every((token) => itemName.includes(token))) return 180;
+      return -1;
+    }
+    __name(ownerInventoryItemMatchScore, "ownerInventoryItemMatchScore");
+    async function discoverOwnerInventoryCatalog(force = false) {
+      const labels = Object.keys(OWNER_INVENTORY_PRODUCTS);
+      const allResolved = labels.every((label) => resolvedOwnerInventoryItemIds.has(label));
+      if (!force && allResolved && Date.now() < cachedOwnerInventoryCatalogUntil) return;
+      if (!force && Date.now() < cachedOwnerInventoryCatalogUntil && resolvedOwnerInventoryItemIds.size) return;
+      const candidates = (await listItems()).filter((item) => String(item.status || "active").toLowerCase() !== "inactive");
+      ownerInventoryResolutionErrors.clear();
+      for (const label of labels) {
+        const spec = OWNER_INVENTORY_PRODUCTS[label];
+        const ranked = candidates.map((item) => ({ item, score: ownerInventoryItemMatchScore(item, spec) })).filter((entry) => entry.score >= 180).sort((a, b) => b.score - a.score);
+        if (!ranked.length) {
+          resolvedOwnerInventoryItemIds.delete(label);
+          ownerInventoryResolutionErrors.set(label, `Active Zoho item for ${spec.sku} (${label}) was not found.`);
+          continue;
+        }
+        if (ranked.length > 1 && ranked[0].score === ranked[1].score) {
+          resolvedOwnerInventoryItemIds.delete(label);
+          ownerInventoryResolutionErrors.set(label, `Multiple active Zoho items match ${spec.sku} (${label}).`);
+          continue;
+        }
+        resolvedOwnerInventoryItemIds.set(label, String(ranked[0].item.item_id));
+      }
+      cachedOwnerInventoryCatalogUntil = Date.now() + (resolvedOwnerInventoryItemIds.size === labels.length ? PRODUCT_CATALOG_CACHE_MS : 5 * 60 * 1e3);
+    }
+    __name(discoverOwnerInventoryCatalog, "discoverOwnerInventoryCatalog");
+    function buildOwnerInventorySnapshot(label, spec, item) {
+      let locationState;
+      try {
+        locationState = chooseStockLocation(item, 1);
+      } catch (error) {
+        return {
+          available: false, stock: 0, reason: cleanText(error?.message, 180) || "Zoho stock location could not be verified.",
+          itemId: item?.item_id ? String(item.item_id) : null, itemName: item?.name || null, price: Number.isFinite(Number(item?.rate)) ? Number(item.rate) : null,
+          locationId: null, locationName: null, stockSource: null, physicalStock: null,
+          productFamily: spec.family, variant: spec.variant, sku: spec.sku, checkoutEnabled: spec.checkoutEnabled === true, expectedRetailPrice: spec.expectedRetailPrice
+        };
+      }
+      const configured = Number.isFinite(Number(locationState?.available));
+      const stock = configured ? Math.max(0, Math.floor(Number(locationState.available))) : 0;
+      const active = String(item?.status || "active").toLowerCase() === "active";
+      const physicalStock = Number.isFinite(Number(locationState?.physical)) ? Math.max(0, Math.floor(Number(locationState.physical))) : null;
+      let reason = null;
+      if (!active) reason = "Zoho item is inactive";
+      else if (!configured) reason = "Stock quantity is not configured in Zoho Books";
+      else if (stock <= 0) reason = "Out of stock";
+      return {
+        available: active && configured && stock > 0,
+        stock, reason,
+        itemId: item?.item_id ? String(item.item_id) : null,
+        itemName: item?.name || null,
+        price: Number.isFinite(Number(item?.rate)) ? Number(item.rate) : null,
+        locationId: locationState?.locationId || null,
+        locationName: locationState?.location?.location_name || locationState?.location?.name || null,
+        stockSource: locationState?.stockSource || null,
+        physicalStock,
+        productFamily: spec.family, variant: spec.variant, sku: spec.sku, checkoutEnabled: spec.checkoutEnabled === true, expectedRetailPrice: spec.expectedRetailPrice
+      };
+    }
+    __name(buildOwnerInventorySnapshot, "buildOwnerInventorySnapshot");
+    async function getOwnerInventoryAvailability(forceStockRefresh = false, forceCatalogRefresh = false) {
+      if (forceCatalogRefresh) {
+        cachedProductCatalogUntil = 0;
+        cachedOwnerInventoryCatalogUntil = 0;
+      }
+      try {
+        await discoverProductCatalog(forceCatalogRefresh);
+      } catch (error) {
+        console.error("Zoho BC10000 catalogue discovery failed for owner inventory", { message: error.message });
+      }
+      try {
+        await discoverOwnerInventoryCatalog(forceCatalogRefresh);
+      } catch (error) {
+        console.error("Zoho ELFA catalogue discovery failed for owner inventory", { message: error.message });
+      }
+      const bcFlavours = Object.keys(PRODUCT_NAMES);
+      const ownerLabels = Object.keys(OWNER_INVENTORY_PRODUCTS);
+      const allIds = [
+        ...bcFlavours.map((flavour) => resolvedProductItemIds.get(flavour)),
+        ...ownerLabels.map((label) => resolvedOwnerInventoryItemIds.get(label))
+      ].filter(Boolean);
+      let detailedItems = [];
+      try {
+        detailedItems = await getItemsByIds(allIds);
+      } catch (error) {
+        console.error("Zoho combined inventory detail lookup failed", { message: error.message });
+      }
+      const byId = new Map(detailedItems.filter(Boolean).map((item) => [String(item.item_id || ""), item]));
+      const result = {};
+      for (const flavour of bcFlavours) {
+        const label = `BC10000 · ${flavour}`;
+        try {
+          const mappedId = resolvedProductItemIds.get(flavour);
+          let item = mappedId ? byId.get(String(mappedId)) : null;
+          if (!item) item = await resolveProductItem(flavour, false);
+          if (!item?.item_id || itemMatchScore(item, flavour) < 60) throw Object.assign(new Error(`Zoho item mapping for ${flavour} could not be verified.`), { statusCode: 409 });
+          resolvedProductItemIds.set(flavour, String(item.item_id));
+          let snapshot = buildStockSnapshot(flavour, item, 1);
+          if (snapshot.reason === "Stock quantity is not configured in Zoho Books") {
+            const fullItem = await getItemById(item.item_id);
+            if (fullItem) { item = fullItem; snapshot = buildStockSnapshot(flavour, item, 1); }
+          }
+          result[label] = {
+            available: snapshot.available, stock: snapshot.stock, reason: snapshot.reason || (snapshot.available ? null : "Out of stock"),
+            itemId: snapshot.itemId, itemName: snapshot.itemName, price: snapshot.price, locationId: snapshot.locationId, locationName: snapshot.locationName,
+            stockSource: snapshot.stockSource || null, physicalStock: snapshot.physicalStock,
+            productFamily: "BC10000", variant: flavour, sku: cleanText(item?.sku || item?.item_code, 80) || null, checkoutEnabled: true, expectedRetailPrice: PRODUCT_PRICE_ZAR
+          };
+        } catch (error) {
+          result[label] = { available: false, stock: 0, reason: error.statusCode === 409 ? error.message : "Zoho stock lookup failed", itemId: resolvedProductItemIds.get(flavour) || null, itemName: null, price: null, productFamily: "BC10000", variant: flavour, sku: null, checkoutEnabled: true, expectedRetailPrice: PRODUCT_PRICE_ZAR };
+        }
+      }
+      for (const label of ownerLabels) {
+        const spec = OWNER_INVENTORY_PRODUCTS[label];
+        try {
+          const mappedId = resolvedOwnerInventoryItemIds.get(label);
+          if (!mappedId) throw Object.assign(new Error(ownerInventoryResolutionErrors.get(label) || `Zoho item mapping for ${label} is not available.`), { statusCode: 409 });
+          let item = byId.get(String(mappedId));
+          if (!item) item = await getItemById(mappedId);
+          if (!item?.item_id || ownerInventoryItemMatchScore(item, spec) < 180) throw Object.assign(new Error(`Zoho item mapping for ${label} could not be verified.`), { statusCode: 409 });
+          resolvedOwnerInventoryItemIds.set(label, String(item.item_id));
+          let snapshot = buildOwnerInventorySnapshot(label, spec, item);
+          if (snapshot.reason === "Stock quantity is not configured in Zoho Books") {
+            const fullItem = await getItemById(item.item_id);
+            if (fullItem) snapshot = buildOwnerInventorySnapshot(label, spec, fullItem);
+          }
+          result[label] = snapshot;
+        } catch (error) {
+          result[label] = { available: false, stock: 0, reason: cleanText(error?.message, 180) || "Zoho stock lookup failed", itemId: resolvedOwnerInventoryItemIds.get(label) || null, itemName: null, price: null, productFamily: spec.family, variant: spec.variant, sku: spec.sku, checkoutEnabled: false, expectedRetailPrice: spec.expectedRetailPrice };
+        }
+      }
+      return result;
+    }
+    __name(getOwnerInventoryAvailability, "getOwnerInventoryAvailability");
     async function discoverProductCatalog(force = false) {
       const allResolved = Object.keys(PRODUCT_NAMES).every((f) => resolvedProductItemIds.has(f));
       if (!force && allResolved && Date.now() < cachedProductCatalogUntil) return;
@@ -3313,7 +3476,7 @@ If you received this email, Worker owner alerts are operational.`
     }
     __name(adminCancelUnpaidBankOrder, "adminCancelUnpaidBankOrder");
     async function adminStockDashboard() {
-      const availability = await getProductAvailability(true, false);
+      const availability = await getOwnerInventoryAvailability(true, false);
       const result = {};
       for (const [flavour, item] of Object.entries(availability)) {
         const itemId = cleanText(item.itemId || item.item_id, 80) || null;
@@ -3348,7 +3511,14 @@ If you received this email, Worker owner alerts are operational.`
           sellableStock,
           alertLevel,
           itemId,
-          reason: cleanText(item.reason, 180) || null
+          reason: cleanText(item.reason, 180) || null,
+          productFamily: cleanText(item.productFamily, 80) || "BC10000",
+          variant: cleanText(item.variant, 100) || flavour,
+          sku: cleanText(item.sku, 80) || null,
+          itemName: cleanText(item.itemName, 180) || null,
+          price: Number.isFinite(Number(item.price)) ? Number(item.price) : null,
+          expectedRetailPrice: Number.isFinite(Number(item.expectedRetailPrice)) ? Number(item.expectedRetailPrice) : null,
+          checkoutEnabled: item.checkoutEnabled === true
         };
       }
       return result;

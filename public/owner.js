@@ -307,10 +307,14 @@ function renderRecent(orders){
 function renderStock(stock){
   var host=document.getElementById('stockTable');
   var alerts=document.getElementById('stockAlerts');
-  var rows=Object.keys(stock).map(function(name){return [name,stock[name]||{}];});
+  var rows=Object.keys(stock).map(function(name){return [name,stock[name]||{}];}).sort(function(a,b){
+    var familyCompare=String(a[1].productFamily||'').localeCompare(String(b[1].productFamily||''));
+    if(familyCompare)return familyCompare;
+    return String(a[1].variant||a[0]).localeCompare(String(b[1].variant||b[0]));
+  });
 
   if(!rows.length){
-    host.innerHTML='<p class="owner-message">No stock data returned.</p>';
+    host.innerHTML='<p class="owner-message">No inventory data returned.</p>';
     if(alerts)alerts.innerHTML='';
     return;
   }
@@ -321,7 +325,7 @@ function renderStock(stock){
 
   if(alerts){
     if(!attention.length){
-      alerts.innerHTML='<div class="owner-exception-empty">All flavours are above the low-stock attention threshold.</div>';
+      alerts.innerHTML='<div class="owner-exception-empty">All inventory items are above the low-stock attention threshold.</div>';
     }else{
       alerts.innerHTML=attention.map(function(row){
         var name=row[0],item=row[1];
@@ -333,18 +337,23 @@ function renderStock(stock){
               : 'Stock is running low at '+Number(item.sellableStock||0)+' sellable unit(s).');
         return '<div class="owner-stock-alert '+esc(level)+'"><strong>'+esc(name)+':</strong> '+esc(message)+
           (Number(item.websiteReserved||0)>0?' '+Number(item.websiteReserved||0)+' unit(s) are currently held by pending website order(s).':'')+
+          (item.reason?' <small>'+esc(item.reason)+'</small>':'')+
           '</div>';
       }).join('');
     }
   }
 
-  host.innerHTML='<table class="owner-table"><thead><tr><th>Flavour</th><th>Zoho stock</th><th>Reserved</th><th>Owner excluded</th><th>Sellable now</th><th>Status</th></tr></thead><tbody>'+
+  host.innerHTML='<table class="owner-table"><thead><tr><th>Product</th><th>Family</th><th>SKU</th><th>Zoho stock</th><th>Reserved</th><th>Owner excluded</th><th>Sellable now</th><th>Status</th></tr></thead><tbody>'+
     rows.map(function(row){
       var name=row[0],item=row[1]||{};
       var level=String(item.alertLevel||'healthy');
       var status=level==='healthy'?'Healthy':(level==='low'?'Low stock':(level==='critical'?'Critical':'Out of stock'));
+      var variant=String(item.variant||name);
+      var zohoName=String(item.itemName||'');
       return '<tr class="owner-stock-row '+esc(level)+'">'+
-        '<td>'+esc(name)+'</td>'+
+        '<td><strong>'+esc(variant)+'</strong>'+(zohoName&&zohoName!==variant?'<br><small>'+esc(zohoName)+'</small>':'')+'</td>'+
+        '<td class="inventory-family-cell">'+esc(item.productFamily||'—')+'</td>'+
+        '<td>'+esc(item.sku||'—')+'</td>'+
         '<td class="owner-stock-value">'+Number(item.zohoStock||0)+'</td>'+
         '<td class="owner-stock-reserved">'+Number(item.websiteReserved||0)+'</td>'+
         '<td class="owner-stock-excluded">'+Number(item.ownerExcluded||0)+'</td>'+
