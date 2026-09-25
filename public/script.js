@@ -468,12 +468,48 @@
     if(Number(item.stock)<combined){stockStatus.className='stock-status warn';stockStatus.textContent='Basket plus selection would exceed the '+item.stock+' unit(s) currently available.';return;}
     stockStatus.className='stock-status ok';stockStatus.textContent=item.stock+' unit(s) currently available at '+money(item.unitPrice)+' each. Ready to add to basket.';
   }
+  var MASTER_INCLUDED_PODS={'Dark Cosmo':'Miami Mint','Dusty Pink':'Peach Ice','Black Knight':'Pink Lemonade'};
+  function basketPresentation(item){
+    var family=String(item&&item.productFamily||'');
+    var variant=String(item&&item.flavour||'');
+    if(family==='ELFA MASTER'){
+      return {product:'ELFA MASTER · '+variant,flavour:MASTER_INCLUDED_PODS[variant]||'Included prefilled pods'};
+    }
+    if(family==='ELFA PRO'){
+      return {product:'ELFA PRO 2-pod pack',flavour:variant};
+    }
+    return {product:'ELFBAR BC10000',flavour:variant};
+  }
   function renderCart(){
     if(!cartBox)return;
     if(!cart.length){cartBox.hidden=true;cartBox.innerHTML='';updateTotals();saveBasketSession();publishCartSummary();return;}
     cartBox.hidden=false;
-    var rows=cart.map(function(item,index){var label=String(item.displayName||item.flavour||item.productKey);return '<div class="cart-row"><div><strong>'+esc(label)+'</strong><small>'+money(item.unitPrice)+' each</small></div><span>Qty '+item.quantity+'</span><strong>'+money(Number(item.quantity)*Number(item.unitPrice||0))+'</strong><button type="button" class="cart-remove" data-cart-index="'+index+'" aria-label="Remove '+esc(label)+'">Remove</button></div>';}).join('');
-    cartBox.innerHTML='<div class="cart-head"><strong>YOUR BASKET</strong><span>'+cartQuantity()+' item'+(cartQuantity()===1?'':'s')+'</span></div>'+rows+'<div class="cart-foot"><span>Products '+money(cartProductsTotal())+' + '+(selectedDeliveryMethod()==='collection'?'collection ':'delivery ')+money(currentDeliveryPrice())+'</span><strong>'+money(cartGrandTotal())+'</strong></div>';
+    var itemCount=cartQuantity();
+    var rows=cart.map(function(item,index){
+      var view=basketPresentation(item);
+      var qty=Number(item.quantity||0);
+      var lineTotal=qty*Number(item.unitPrice||0);
+      return '<tr class="basket-product-row">'+
+        '<td data-label="Product"><strong>'+esc(view.product)+'</strong><small>'+money(item.unitPrice)+' each</small></td>'+
+        '<td data-label="Flavour">'+esc(view.flavour)+'</td>'+
+        '<td data-label="Quantity" class="basket-qty">'+qty+'</td>'+
+        '<td data-label="Cost" class="basket-cost"><strong>'+money(lineTotal)+'</strong></td>'+
+        '<td class="basket-action"><button type="button" class="cart-remove" data-cart-index="'+index+'" aria-label="Remove '+esc(view.product)+' '+esc(view.flavour)+' from basket">Remove</button></td>'+
+      '</tr>';
+    }).join('');
+    var fulfilment=selectedDeliveryMethod()==='collection'?'Collection':'The Courier Guy · Locker to Locker';
+    var fulfilmentPrice=currentDeliveryPrice();
+    cartBox.innerHTML=
+      '<div class="vestige-basket-card">'+
+        '<div class="vestige-basket-heading"><div><span>BASKET</span><strong>Items</strong></div><p>'+itemCount+' item'+(itemCount===1?'':'s')+'</p></div>'+
+        '<div class="vestige-basket-table-wrap"><table class="vestige-basket-table" aria-label="Vestige basket items">'+
+          '<thead><tr><th>Product</th><th>Flavour</th><th>Quantity</th><th>Cost</th><th><span class="basket-sr-only">Action</span></th></tr></thead>'+
+          '<tbody>'+rows+
+            '<tr class="basket-fulfilment-row"><th colspan="3">Delivery / Collection<small>'+esc(fulfilment)+'</small></th><td colspan="2"><strong>'+money(fulfilmentPrice)+'</strong></td></tr>'+
+            '<tr class="basket-total-row"><th colspan="3">Total Amount</th><td colspan="2"><strong>'+money(cartGrandTotal())+'</strong></td></tr>'+
+          '</tbody>'+
+        '</table></div>'+
+      '</div>';
     updateTotals();
     saveBasketSession();
     publishCartSummary();

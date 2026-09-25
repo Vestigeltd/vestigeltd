@@ -130,3 +130,41 @@ console.log('PASS V35.29.1 multi-product owner inventory catalogue');
 
   console.log('PASS V35.29.1 Phase 2B regex/runtime-input integrity');
 }
+
+
+// V35.29.1 Phase 2C premium basket + InnoGate guards
+{
+  const shopJs = read(path.join(pub,'script.js'));
+  const styles = read(path.join(pub,'styles.css'));
+  const shop = read(path.join(pub,'bc10000','index.html'));
+  const master = read(path.join(pub,'elfa-master','index.html'));
+  const worker = read(path.join(root,'src','worker.js'));
+
+  assert.ok(shopJs.includes("function basketPresentation(item)"),'premium basket presentation helper missing');
+  assert.ok(shopJs.includes("ELFBAR BC10000") && shopJs.includes("ELFA MASTER · ") && shopJs.includes("ELFA PRO 2-pod pack"),'basket product labels missing');
+  for (const heading of ['Product','Flavour','Quantity','Cost','Delivery / Collection','Total Amount']) {
+    assert.ok(shopJs.includes(heading),`basket heading/label missing: ${heading}`);
+  }
+  assert.ok(shopJs.includes("MASTER_INCLUDED_PODS={'Dark Cosmo':'Miami Mint','Dusty Pink':'Peach Ice','Black Knight':'Pink Lemonade'}"),'MASTER included-pod basket mapping missing');
+  assert.ok(styles.includes('V35.29.1 PHASE 2C PREMIUM MULTI-PRODUCT BASKET'),'premium basket CSS marker missing');
+  assert.ok(styles.includes('.vestige-basket-table'),'premium basket table styling missing');
+  assert.ok(shop.includes('/script.js?v=35.29.1.2c') && shop.includes('/styles.css?v=35.29.1.2c'),'shop Phase 2C cache keys missing');
+
+  assert.ok(shopJs.includes("function currentDeliveryPrice(){return selectedDeliveryMethod()==='collection'?0:DELIVERY_PRICE;}"),'client collection/courier fee rule changed');
+  assert.ok(shopJs.includes('function cartGrandTotal(){return cart.length?cartProductsTotal()+currentDeliveryPrice():0;}'),'client must add one fulfilment charge to the whole basket');
+  const validator = worker.slice(worker.indexOf('function validateBankCartOrder'),worker.indexOf('function splitName'));
+  assert.ok(validator.includes('const productsTotal = items.reduce'),'server mixed-product total missing');
+  assert.ok(validator.includes('const amount = productsTotal + deliveryCharge'),'server must add one delivery charge per order, not per item');
+
+  assert.ok(master.includes('ELFA MASTER + InnoGate App.'),'MASTER InnoGate section missing');
+  assert.ok(master.includes('Bluetooth · InnoGate App'),'MASTER technical Bluetooth row missing');
+  for (const capability of ['Usage insights','SmartSensation','Battery optimisation','OTA updates','Connected range']) {
+    assert.ok(master.includes(capability),`MASTER InnoGate capability missing: ${capability}`);
+  }
+  assert.ok(master.includes('up to 25%'),'MASTER smart battery-saving manufacturer figure missing');
+  assert.ok(master.includes('up to 10 metres'),'MASTER Bluetooth range manufacturer figure missing');
+  assert.ok(master.includes('https://www.elfbar.com/product/elfa-master.html'),'MASTER official ELFBAR smart-feature reference missing');
+  assert.ok(styles.includes('V35.29.1 PHASE 2C ELFA MASTER INNOGATE'),'MASTER InnoGate CSS marker missing');
+
+  console.log('PASS V35.29.1 Phase 2C premium basket, one-fee fulfilment and InnoGate');
+}

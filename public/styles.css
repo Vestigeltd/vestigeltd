@@ -1241,3 +1241,73 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
 .model-grid-v2 .model-card .model-facts div{border-bottom:1px solid #e0e3e6}
 .model-grid-v2 .model-card .model-facts dt{color:#5d6875;font-weight:700}
 .model-grid-v2 .model-card .model-facts dd{color:#172231;font-weight:700}
+
+
+/* V35.29.1 PHASE 2C PREMIUM MULTI-PRODUCT BASKET */
+.vestige-cart{margin-top:18px}
+.vestige-basket-card{overflow:hidden;border:1px solid rgba(200,155,67,.34);background:#f8f7f3;color:#172231;box-shadow:0 18px 45px rgba(7,19,33,.16)}
+.vestige-basket-heading{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:17px 20px;background:linear-gradient(135deg,#0b1727,#10253b);border-bottom:3px solid #c89b43;color:#fff}
+.vestige-basket-heading>div{display:flex;align-items:baseline;gap:9px}
+.vestige-basket-heading span{font-size:11px;font-weight:800;letter-spacing:2.3px;color:#c89b43}
+.vestige-basket-heading strong{font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:400}
+.vestige-basket-heading p{margin:0;color:#c7d0db;font-size:12px;font-weight:700;letter-spacing:.7px}
+.vestige-basket-table-wrap{width:100%;overflow-x:auto}
+.vestige-basket-table{width:100%;border-collapse:collapse;background:#fff;table-layout:auto}
+.vestige-basket-table th,.vestige-basket-table td{padding:14px 16px;border-bottom:1px solid #e0e3e6;text-align:left;vertical-align:middle}
+.vestige-basket-table thead th{background:#eef0ed;color:#465261;font-size:11px;font-weight:800;letter-spacing:1.15px;text-transform:uppercase}
+.vestige-basket-table thead th:nth-child(3),.vestige-basket-table .basket-qty{text-align:center}
+.vestige-basket-table thead th:nth-child(4),.vestige-basket-table .basket-cost{text-align:right}
+.vestige-basket-table thead th:last-child{width:88px}
+.vestige-basket-table .basket-product-row td:first-child strong{display:block;color:#0b1727;font-family:Georgia,'Times New Roman',serif;font-size:16px;line-height:1.25}
+.vestige-basket-table .basket-product-row td:first-child small{display:block;margin-top:4px;color:#7a8491;font-size:10px;font-weight:700;letter-spacing:.35px}
+.vestige-basket-table .basket-product-row td:nth-child(2){color:#465261;font-weight:700}
+.vestige-basket-table .basket-qty{font-weight:800;color:#172231}
+.vestige-basket-table .basket-cost strong{color:#172231;font-size:15px}
+.vestige-basket-table .basket-action{text-align:right}
+.vestige-basket-table .cart-remove{min-width:70px;padding:8px 11px;border:1px solid rgba(200,155,67,.7);background:transparent;color:#7d5d20;font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;cursor:pointer}
+.vestige-basket-table .cart-remove:hover,.vestige-basket-table .cart-remove:focus-visible{background:#c89b43;color:#07101b;outline:none}
+.vestige-basket-table .basket-fulfilment-row th,.vestige-basket-table .basket-fulfilment-row td{background:#f5f3ee;border-bottom:1px solid #d8dce0}
+.vestige-basket-table .basket-fulfilment-row th{color:#465261;font-size:13px}
+.vestige-basket-table .basket-fulfilment-row th small{display:block;margin-top:2px;color:#7a8491;font-size:10px;font-weight:600}
+.vestige-basket-table .basket-fulfilment-row td{text-align:right;color:#172231}
+.vestige-basket-table .basket-total-row th,.vestige-basket-table .basket-total-row td{background:#0b1727;border-bottom:0;color:#fff;padding-top:17px;padding-bottom:17px}
+.vestige-basket-table .basket-total-row th{font-family:Georgia,'Times New Roman',serif;font-size:18px;font-weight:400}
+.vestige-basket-table .basket-total-row td{text-align:right}
+.vestige-basket-table .basket-total-row strong{color:#d4aa58;font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:400}
+.basket-sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+
+@media(max-width:760px){
+  .vestige-basket-heading{padding:15px 16px}
+  .vestige-basket-table-wrap{overflow:visible}
+  .vestige-basket-table,.vestige-basket-table tbody{display:block;width:100%}
+  .vestige-basket-table thead{display:none}
+  .vestige-basket-table .basket-product-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px 16px;padding:15px 16px;border-bottom:1px solid #dfe2e5}
+  .vestige-basket-table .basket-product-row td{display:block;padding:0;border:0;text-align:left}
+  .vestige-basket-table .basket-product-row td:first-child{grid-column:1 / -1}
+  .vestige-basket-table .basket-product-row td:nth-child(2){grid-column:1 / -1;padding-bottom:4px}
+  .vestige-basket-table .basket-product-row td:nth-child(3){grid-column:1;text-align:left}
+  .vestige-basket-table .basket-product-row td:nth-child(4){grid-column:2;text-align:right}
+  .vestige-basket-table .basket-product-row td:nth-child(5){grid-column:1 / -1;text-align:right;padding-top:4px}
+  .vestige-basket-table .basket-product-row td:nth-child(3)::before{content:'Quantity · ';color:#7a8491;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.6px}
+  .vestige-basket-table .basket-product-row td:nth-child(4)::before{content:'Cost · ';color:#7a8491;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.6px}
+  .vestige-basket-table .basket-fulfilment-row,.vestige-basket-table .basket-total-row{display:grid;grid-template-columns:1fr auto;align-items:center}
+  .vestige-basket-table .basket-fulfilment-row th,.vestige-basket-table .basket-total-row th{display:block;padding:14px 16px;border:0}
+  .vestige-basket-table .basket-fulfilment-row td,.vestige-basket-table .basket-total-row td{display:block;padding:14px 16px;border:0;text-align:right}
+}
+
+
+/* V35.29.1 PHASE 2C ELFA MASTER INNOGATE */
+.master-smart-connectivity{padding:100px 0;background:#0a1524;color:#eef2f7}
+.master-smart-grid{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:34px;align-items:start}
+.master-smart-intro{position:sticky;top:112px;padding:34px;border:1px solid rgba(200,155,67,.28);background:linear-gradient(145deg,#0b1727,#0e2034);box-shadow:0 20px 50px rgba(0,0,0,.18)}
+.master-smart-intro h2{margin:0 0 18px;font-size:clamp(34px,4vw,52px)}
+.master-smart-intro>p:not(.eyebrow){color:#aeb9c7}
+.master-smart-intro .btn{margin-top:12px}
+.master-smart-note{margin:20px 0 0!important;padding-top:16px;border-top:1px solid rgba(200,155,67,.18);font-size:11px;line-height:1.6;color:#788697!important}
+.master-smart-capabilities{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.master-smart-capabilities article{min-height:210px;padding:27px;border:1px solid rgba(255,255,255,.08);background:#0b1828}
+.master-smart-capabilities article>span{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border:1px solid rgba(200,155,67,.5);color:#d4aa58;font-size:10px;font-weight:800;letter-spacing:1px}
+.master-smart-capabilities h3{margin:18px 0 10px;font-size:25px}
+.master-smart-capabilities p{margin:0;color:#9ba7b5;font-size:13px;line-height:1.65}
+@media(max-width:900px){.master-smart-grid{grid-template-columns:1fr}.master-smart-intro{position:static}.master-smart-capabilities{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.master-smart-connectivity{padding:72px 0}.master-smart-intro{padding:25px}.master-smart-capabilities{grid-template-columns:1fr}.master-smart-capabilities article{min-height:0}}

@@ -110,7 +110,7 @@ console.log('PASS confirmed ELFA retail pricing guards');
   assert(elfbar.includes('INTRODUCING ELFBAR') && elfbar.includes('Design-led from the beginning.'), 'ELFBAR introduction restoration missing');
   assert(elfbar.includes('ELFBAR · CURATED BY VESTIGE') && elfbar.includes('Two different ownership models.'), 'ELFBAR curated/model wording missing');
   assert(elfbar.includes('/assets/approved-bc10000-comparison.png') && elfbar.includes('/assets/approved-elfa-master-comparison.png'), 'approved comparison artwork missing');
-  assert(master.includes('master-table-unified') && master.includes('rowspan="12"'), 'unified 3-column ELFA MASTER table missing');
+  assert(master.includes('master-table-unified') && (master.includes('rowspan="12"') || master.includes('rowspan="13"')), 'unified 3-column ELFA MASTER table missing');
   assert(master.includes('Device and pods are sold separately.') || master.includes('Device supplied with 2 prefilled flavour pods.'), 'ELFA MASTER package-clarity wording missing');
   assert(!master.includes("Wicked Imports' product description does not state"), 'internal supplier-analysis copy leaked into public page');
   for (const asset of ['peach-ice','spearmint','miami-mint','grape','watermelon']) {
