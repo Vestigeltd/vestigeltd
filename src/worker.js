@@ -1630,8 +1630,8 @@ If you received this email, Worker owner alerts are operational.`
         requireCollectionAccessToken(input.collectionAccessToken, checkoutId);
       }
       if (customerName.length < 2) throw new TypeError("A valid customer name is required.");
-      if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) throw new TypeError("A valid email address is required.");
-      if (!/^[+()\\d\\s.-]{7,50}$/.test(mobile) || (mobile.match(/\\d/g) || []).length < 7) throw new TypeError("A valid mobile number is required.");
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new TypeError("A valid email address is required.");
+      if (!/^[+()\d\s.-]{7,50}$/.test(mobile) || (mobile.match(/\d/g) || []).length < 7) throw new TypeError("A valid mobile number is required.");
       if (addressLine1.length < 3) throw new TypeError("A valid billing street address is required.");
       if (addressLine2.length < 2 || city.length < 2 || province.length < 2 || postalCode.length < 3 || country.length < 2) throw new TypeError("A complete billing/contact address is required.");
       const rawItems = Array.isArray(input.items) ? input.items : [];
@@ -1642,7 +1642,7 @@ If you received this email, Worker owner alerts are operational.`
         const productKey = checkoutProductKeyFromInput(raw);
         const spec = checkoutProductDefinition(productKey);
         const requestedItemId = cleanText(raw?.itemId, 40);
-        const itemId = /^\\d+$/.test(requestedItemId) ? requestedItemId : "";
+        const itemId = /^\d+$/.test(requestedItemId) ? requestedItemId : "";
         const quantity = Number(raw?.quantity);
         if (!spec || !checkoutProductEnabled(spec)) throw new TypeError("Select a valid product that is enabled for checkout.");
         if (!itemId) throw new TypeError("A verified Zoho item identifier is required. Please reload the shop and rebuild the basket.");
@@ -2611,13 +2611,13 @@ If you received this email, Worker owner alerts are operational.`
       await discoverOwnerInventoryCatalog(false);
       const mappedId = String(resolvedOwnerInventoryItemIds.get(spec.inventoryLabel) || "");
       const expectedItemId = String(line.itemId || "").trim();
-      if (!mappedId || !/^\\d+$/.test(mappedId)) {
+      if (!mappedId || !/^\d+$/.test(mappedId)) {
         const e = new Error(`Zoho item mapping for ${spec.displayName} is not available.`);
         e.statusCode = 409;
         e.freshAvailabilityNeeded = true;
         throw e;
       }
-      if (!/^\\d+$/.test(expectedItemId) || expectedItemId !== mappedId) {
+      if (!/^\d+$/.test(expectedItemId) || expectedItemId !== mappedId) {
         const e = new Error(`${spec.displayName} no longer matches the verified Zoho item catalogue. Please refresh the shop.`);
         e.statusCode = 409;
         e.freshAvailabilityNeeded = true;

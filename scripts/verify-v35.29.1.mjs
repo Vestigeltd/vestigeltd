@@ -113,3 +113,20 @@ console.log('PASS V35.29.1 multi-product owner inventory catalogue');
 
   console.log('PASS V35.29.1 Phase 2B server-authoritative multi-product checkout');
 }
+
+
+// V35.29.1 Phase 2B regex/runtime-input integrity guards
+{
+  const worker = read(path.join(root,'src','worker.js'));
+  const shopJs = read(path.join(pub,'script.js'));
+  const validator = worker.slice(worker.indexOf('function validateBankCartOrder'),worker.indexOf('function splitName'));
+  const stockGuard = worker.slice(worker.indexOf('async function requireCheckoutStockState'),worker.indexOf('async function findCustomerByEmail'));
+
+  assert.ok(validator.includes(String.raw`/^[^\s@]+@[^\s@]+\.[^\s@]+$/`),'bank checkout email regex must accept normal email syntax');
+  assert.ok(validator.includes(String.raw`/^[+()\d\s.-]{7,50}$/`),'bank checkout mobile regex must use digit/whitespace character classes');
+  assert.ok(validator.includes(String.raw`/^\d+$/`),'bank checkout Zoho item ID must use numeric regex');
+  assert.ok((stockGuard.split(String.raw`/^\d+$/`).length-1)>=2,'generic ELFA item-ID guards must use numeric regex');
+  assert.ok(shopJs.includes(String.raw`'"':'&quot;'`),'client esc() must retain a complete &quot; entity');
+
+  console.log('PASS V35.29.1 Phase 2B regex/runtime-input integrity');
+}

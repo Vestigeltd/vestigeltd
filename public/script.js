@@ -85,7 +85,7 @@
   }
 
   function money(n){return 'R'+Number(n||0).toFixed(2);}
-  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c];});}
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
   function catalogueConfirmsSoldOut(){
     var enabled=Object.keys(catalogue).map(function(key){return catalogue[key];}).filter(function(item){return item&&item.checkoutEnabled===true;});
     return enabled.length>0&&enabled.every(function(item){return !(item.available&&Number(item.stock)>0);});
