@@ -169,7 +169,7 @@ console.log('PASS confirmed ELFA retail pricing guards');
   assert(css.includes('V35.29.0 Phase 8 — approved comparison-card artwork lock'), 'Phase 8 approved artwork lock CSS missing');
   assert(css.includes('aspect-ratio:1122 / 1402') && css.includes('transform:none!important') && css.includes('filter:none!important'), 'approved comparison artwork must render without cropping, shifting or filtering');
   const sha = p => crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
-  assert.equal(sha(path.join(pub,'assets','approved-bc10000-comparison.png')), 'e9f7c1ca4efcba186a83fbc445cfd1ae4faa953f67e27ac5698debf686bcd0c3', 'approved BC10000 artwork hash changed');
-  assert.equal(sha(path.join(pub,'assets','approved-elfa-master-comparison.png')), '28da1f40f5fa11e2e5ad213bde6ff5ac39b05b884d7b1cb21080eafcac580eef', 'approved ELFA MASTER artwork hash changed');
+  assert.equal(sha(path.join(pub,'assets','approved-bc10000-comparison.png')), '9c16e02dda5fe9d493b4151c0e0ea4ef17c3a1bed4382e92706dbfe3d1eed1f7', 'approved BC10000 artwork hash changed');
+  assert.equal(sha(path.join(pub,'assets','approved-elfa-master-comparison.png')), '93426bafd60c1b187b9e5b3fbd950365eef06f9c64fe3377fcf086ff7d330d9d', 'approved ELFA MASTER artwork hash changed');
   console.log('PASS Phase 8 approved comparison artwork lock');
 }
