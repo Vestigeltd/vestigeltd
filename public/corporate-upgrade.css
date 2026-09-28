@@ -1,0 +1,217 @@
+/* Vestige V35.30.1 — corporate presentation refinement
+   Presentation layer only. Commerce, stock, payment, fulfilment, age controls and Owner systems are untouched. */
+
+.corporate-home{
+  --vestige-navy:#071321;
+  --vestige-navy-2:#0a1b2d;
+  --vestige-navy-3:#102a43;
+  --vestige-gold:#c89b43;
+  --vestige-gold-light:#e0bb73;
+  --vestige-ivory:#f4f1ea;
+  --vestige-paper:#f7f4ed;
+  --vestige-ink:#111c29;
+  --vestige-muted:#687482;
+}
+.corporate-home .container{width:min(92%,1320px);max-width:1320px}
+.corporate-home section{scroll-margin-top:82px}
+
+/* Header — transparent corporate signature, no boxed logo */
+.corporate-home .site-header{background:rgba(7,19,33,.965);border-bottom:1px solid rgba(200,155,67,.2);box-shadow:0 8px 28px rgba(3,10,18,.12)}
+.corporate-home .nav-wrap{min-height:82px}
+.corporate-home .corporate-brand{gap:14px;min-width:208px}
+.corporate-home .corporate-brand-mark{width:48px;height:48px;object-fit:contain;background:transparent;filter:drop-shadow(0 5px 10px rgba(0,0,0,.16))}
+.corporate-home .corporate-brand .brand-name{font-size:17px;letter-spacing:3.4px;white-space:nowrap}
+.corporate-home .corporate-nav{gap:18px;font-size:10.5px;letter-spacing:.62px}
+.corporate-home .corporate-nav a{position:relative;padding:30px 0 27px}
+.corporate-home .corporate-nav a:not(.nav-owner):after{content:"";position:absolute;left:0;right:100%;bottom:20px;height:1px;background:var(--vestige-gold);transition:right .22s ease}
+.corporate-home .corporate-nav a:not(.nav-owner):hover:after{right:0}
+.corporate-home .corporate-nav .nav-owner{opacity:.48;margin-left:2px}
+
+/* Hero — controlled editorial proposition + resolution-independent Vestige Standard emblem */
+.corporate-home .corporate-hero{
+  background:
+    radial-gradient(circle at 78% 39%,rgba(200,155,67,.09),transparent 25%),
+    radial-gradient(circle at 79% 40%,rgba(32,68,101,.22),transparent 44%),
+    linear-gradient(132deg,#071321 0%,#081827 48%,#0d263c 100%);
+}
+.corporate-home .corporate-hero-grid{
+  min-height:clamp(660px,calc(100svh - 82px),780px);
+  grid-template-columns:minmax(0,1.08fr) minmax(430px,.92fr);
+  gap:clamp(46px,5vw,78px);
+  padding-top:56px;
+  padding-bottom:58px;
+}
+.corporate-home .corporate-hero-copy{position:relative;z-index:3;max-width:760px}
+.corporate-home .corporate-hero-copy h1{
+  font-size:clamp(54px,4.25vw,82px);
+  line-height:.99;
+  letter-spacing:-1.8px;
+  max-width:780px;
+  margin:0 0 25px;
+  text-wrap:balance;
+}
+.corporate-home .corporate-hero-copy h1 span{display:block}
+.corporate-home .corporate-hero-body{font-size:18px;line-height:1.65;max-width:650px;margin-bottom:18px;color:#bec8d2}
+.corporate-home .corporate-proposition{font-size:18px;line-height:1.5;color:#ead8b2}
+.corporate-home .corporate-actions{margin-top:27px;gap:11px}
+.corporate-home .corporate-actions .btn{padding:12px 20px}
+
+.vestige-standard-emblem{
+  position:relative;
+  width:min(100%,620px);
+  aspect-ratio:1;
+  justify-self:end;
+  isolation:isolate;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 46%,rgba(27,59,91,.28) 0 31%,transparent 31.4%),
+    radial-gradient(circle at 50% 46%,rgba(13,36,57,.95) 0 54%,rgba(9,27,44,.96) 54.5% 72%,rgba(8,24,39,.75) 72.5%,transparent 73%),
+    radial-gradient(circle at 50% 46%,rgba(30,67,103,.45),rgba(7,19,33,.05) 68%);
+  filter:drop-shadow(0 28px 44px rgba(0,0,0,.22));
+}
+.vestige-standard-emblem:before,.vestige-standard-emblem:after{content:"";position:absolute;inset:2.5%;border:1px solid rgba(224,187,115,.7);border-radius:50%;z-index:-1}
+.vestige-standard-emblem:after{inset:10%;border-color:rgba(90,135,177,.27)}
+.emblem-ring{position:absolute;left:50%;top:46%;translate:-50% -50%;border-radius:50%;pointer-events:none}
+.emblem-ring-outer{width:88%;height:88%;border:1px solid rgba(224,187,115,.77);box-shadow:0 0 0 1px rgba(255,255,255,.035) inset}
+.emblem-ring-middle{width:72%;height:72%;border:1px solid rgba(73,119,160,.34)}
+.emblem-ring-inner{width:59%;height:59%;border:1px solid rgba(224,187,115,.9);box-shadow:0 0 0 5px rgba(11,31,49,.96),0 0 0 6px rgba(224,187,115,.42)}
+
+.emblem-center{
+  position:absolute;
+  left:50%;top:46%;translate:-50% -50%;
+  width:55%;aspect-ratio:1;border-radius:50%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  color:#0b1a2b;
+  background:radial-gradient(circle at 45% 38%,#fffdf8,#f1ecdf 72%,#e8dfcf 100%);
+  box-shadow:0 0 0 2px rgba(244,241,234,.78),0 0 0 5px rgba(200,155,67,.8),0 20px 44px rgba(0,0,0,.2);
+  z-index:4;
+}
+.emblem-mark{width:31%;height:auto;object-fit:contain;margin:-3% 0 1%;filter:drop-shadow(0 6px 9px rgba(0,0,0,.10))}
+.emblem-name{font-family:Georgia,'Times New Roman',serif;font-size:clamp(15px,1.62vw,24px);letter-spacing:.22em;line-height:1;color:#101a28;margin-left:.22em;white-space:nowrap}
+.emblem-divider{width:34%;height:1px;background:linear-gradient(90deg,transparent,var(--vestige-gold),transparent);margin:6.5% 0 4%}
+.emblem-avenue{font-size:clamp(6.6px,.62vw,9.5px);font-weight:700;letter-spacing:.24em;line-height:1.25;white-space:nowrap}
+.emblem-diamond{font-size:8px;line-height:1;color:var(--vestige-gold);margin:3.5% 0}
+
+.emblem-value{position:absolute;z-index:5;display:flex;flex-direction:column;align-items:center;gap:7px;color:#f5efe2;font-family:Georgia,'Times New Roman',serif;font-size:clamp(8px,.72vw,11px);letter-spacing:.28em;white-space:nowrap;text-shadow:0 2px 8px rgba(0,0,0,.35)}
+.emblem-value b{font-weight:400;margin-left:.28em}
+.emblem-icon{width:52px;height:52px;border:1px solid rgba(224,187,115,.95);border-radius:50%;display:grid;place-items:center;background:#0b1b2c;box-shadow:0 7px 20px rgba(0,0,0,.2)}
+.emblem-icon svg{width:30px;height:30px;fill:none;stroke:#e0bb73;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.emblem-clarity{left:50%;top:1.7%;translate:-50% 0}
+.emblem-discipline{left:0.5%;top:46%;translate:0 -50%}
+.emblem-precision{right:.5%;top:46%;translate:0 -50%}
+.emblem-service{left:50%;bottom:10.2%;translate:-50% 0}
+.emblem-standard{position:absolute;left:10%;right:10%;bottom:1.7%;z-index:5;display:flex;align-items:center;gap:12px;color:#e0bb73;font-family:Georgia,'Times New Roman',serif;font-size:clamp(9px,.9vw,14px);letter-spacing:.32em;white-space:nowrap}
+.emblem-standard:before,.emblem-standard:after{content:"";height:1px;flex:1;background:linear-gradient(90deg,transparent,rgba(224,187,115,.9))}
+.emblem-standard:after{background:linear-gradient(90deg,rgba(224,187,115,.9),transparent)}
+.emblem-standard span{margin-left:.32em}
+
+/* Page rhythm — use space and field changes instead of excessive framing */
+.corporate-home .corporate-discover,.corporate-home .corporate-direction,.corporate-home .corporate-experience{background:var(--vestige-paper)}
+.corporate-home .corporate-discover,.corporate-home .corporate-direction,.corporate-home .corporate-capabilities,.corporate-home .corporate-experience,.corporate-home .corporate-vapes,.corporate-home .corporate-contact{padding:clamp(100px,8vw,138px) 0}
+.corporate-home .corporate-standard{padding:clamp(104px,8vw,140px) 0;background:linear-gradient(135deg,#081522,#0a1a2a 54%,#0c2135)}
+.corporate-home .corporate-heading{margin-bottom:52px}
+.corporate-home .corporate-heading h2,.corporate-home .corporate-section-intro h2,.corporate-home .experience-copy h2,.corporate-home .corporate-vapes h2{font-size:clamp(44px,4.4vw,62px);line-height:1.05;letter-spacing:-.7px}
+.corporate-home .corporate-editorial-grid{grid-template-columns:minmax(260px,.68fr) minmax(0,1.32fr);gap:clamp(60px,7vw,102px)}
+.corporate-home .corporate-editorial-copy>p{font-size:16.5px;line-height:1.82}
+.corporate-home .corporate-editorial-copy .lead-copy{font-size:22px;line-height:1.62}
+.corporate-home .matters-sequence{margin:38px 0;padding-left:30px}
+.corporate-home .matters-sequence p{margin-bottom:15px}
+
+/* Standard — four equal principles, deliberately quieter cards */
+.corporate-home .corporate-standard-grid{gap:18px}
+.corporate-home .corporate-standard-grid article{min-height:315px;padding:33px 29px;background:rgba(13,32,51,.72);border:1px solid rgba(255,255,255,.065);border-top:1px solid rgba(224,187,115,.7);box-shadow:none}
+.corporate-home .corporate-standard-grid .corporate-number{font-size:50px;margin-bottom:34px;color:#d8ad59}
+.corporate-home .corporate-standard-grid h3{font-size:27px}
+.corporate-home .corporate-standard-grid article>p:last-child{font-size:13.5px;line-height:1.72;color:#abb7c4}
+.corporate-home .corporate-values-line{margin-top:48px}
+
+/* Direction — strategic statements with hierarchy, not heavy boxes */
+.corporate-home .direction-grid{gap:24px}
+.corporate-home .direction-card{padding:44px 46px;background:rgba(255,255,255,.7);border:1px solid #dedbd3;border-top:2px solid var(--vestige-gold);box-shadow:0 14px 35px rgba(23,37,56,.045)}
+.corporate-home .direction-card h3{font-size:30px;margin-top:10px}
+.corporate-home .direction-card>p:last-child{font-size:19px;line-height:1.68}
+.corporate-home .direction-strategy{padding-left:6.5%;padding-right:6.5%}
+
+/* Capabilities — equal avenues, one visual system */
+.corporate-home .corporate-capabilities{background:linear-gradient(135deg,#081522,#0b1d30 62%,#102a43)}
+.corporate-home .capability-grid{gap:22px}
+.corporate-home .capability-card{min-height:390px;padding:44px;background:rgba(8,23,38,.42);border:1px solid rgba(255,255,255,.075);box-shadow:none}
+.corporate-home .capability-card:after{opacity:.62}
+.corporate-home .capability-index{font-size:52px;margin-bottom:45px}
+.corporate-home .capability-card h3{font-size:35px}
+
+/* Experience — cleaner editorial split */
+.corporate-home .experience-grid{grid-template-columns:minmax(360px,.88fr) minmax(0,1.12fr);gap:clamp(58px,7vw,96px)}
+.corporate-home .experience-visual{min-height:500px;border:0;box-shadow:0 22px 55px rgba(23,37,56,.11);background:linear-gradient(145deg,#0a1929,#11304c)}
+.corporate-home .experience-copy>p:not(.eyebrow){font-size:16px;line-height:1.82}
+
+/* Current business activity — unmistakable boundary from parent corporate story */
+.corporate-home .corporate-vapes{position:relative;background:#e9e3d7;border-top:0;padding-top:132px}
+.corporate-home .corporate-vapes:before{content:"";position:absolute;left:0;right:0;top:0;height:12px;background:linear-gradient(90deg,#071321 0 28%,#c89b43 28% 31%,#071321 31% 100%)}
+.corporate-home .corporate-vapes:after{content:"CURRENT BUSINESS ACTIVITY";position:absolute;top:34px;left:50%;translate:-50% 0;color:#9a742e;font-size:10px;font-weight:700;letter-spacing:3.2px;white-space:nowrap}
+.corporate-home .vapes-transition-grid{gap:clamp(50px,6vw,82px)}
+.corporate-home .vapes-action-card{padding:42px;background:#0b1727;border-top:2px solid var(--vestige-gold);box-shadow:0 18px 42px rgba(23,37,56,.13)}
+
+/* Contact — single strong conversion ending */
+.corporate-home .corporate-contact{background:radial-gradient(circle at 50% 20%,rgba(32,69,103,.32),transparent 38%),linear-gradient(135deg,#071321,#0b2034)}
+.corporate-home .corporate-contact h2{font-size:clamp(52px,5.3vw,72px);letter-spacing:-1px}
+.corporate-home .contact-primary{margin-top:26px;padding:14px 26px}
+.corporate-home .contact-links{margin-top:28px;padding-top:24px}
+
+@media(max-width:1180px){
+  .corporate-home .corporate-nav{gap:11px;font-size:9.5px;letter-spacing:.35px}
+  .corporate-home .corporate-brand{min-width:180px}
+  .corporate-home .corporate-brand .brand-name{font-size:15px;letter-spacing:2.8px}
+  .corporate-home .corporate-hero-grid{grid-template-columns:minmax(0,1.03fr) minmax(390px,.97fr);gap:38px}
+  .emblem-icon{width:46px;height:46px}.emblem-icon svg{width:27px;height:27px}
+}
+
+@media(max-width:980px){
+  .corporate-home .corporate-hero-grid{grid-template-columns:1fr;min-height:auto;padding-top:72px;padding-bottom:78px;gap:52px}
+  .corporate-home .corporate-hero-copy{max-width:780px}
+  .vestige-standard-emblem{justify-self:center;width:min(86vw,620px)}
+  .corporate-home .experience-grid{grid-template-columns:1fr}
+}
+
+@media(max-width:760px){
+  .corporate-home .container{width:min(90%,1320px)}
+  .corporate-home .corporate-brand-mark{width:44px;height:44px}
+  .corporate-home .corporate-brand .brand-name{font-size:14px;letter-spacing:2.5px}
+  .corporate-home .corporate-nav a{padding:0}
+  .corporate-home .corporate-nav a:after{display:none}
+  .corporate-home .corporate-hero-grid{padding-top:62px;padding-bottom:68px;gap:44px}
+  .corporate-home .corporate-hero-copy h1{font-size:clamp(43px,11.2vw,58px);line-height:1.01;letter-spacing:-1px}
+  .corporate-home .corporate-hero-copy h1 span{display:inline}
+  .corporate-home .corporate-hero-copy h1 span:not(:last-child):after{content:" "}
+  .corporate-home .corporate-hero-body{font-size:17px}
+  .corporate-home .corporate-actions{margin-top:26px}
+  .vestige-standard-emblem{width:min(96vw,570px)}
+  .emblem-icon{width:42px;height:42px}.emblem-icon svg{width:24px;height:24px}
+  .emblem-name{font-size:clamp(13px,4.4vw,21px)}
+  .emblem-avenue{font-size:clamp(6px,1.8vw,9px)}
+  .emblem-value{font-size:clamp(7px,2vw,10px)}
+  .emblem-standard{font-size:clamp(8px,2.3vw,12px)}
+  .corporate-home .corporate-discover,.corporate-home .corporate-standard,.corporate-home .corporate-direction,.corporate-home .corporate-capabilities,.corporate-home .corporate-experience,.corporate-home .corporate-vapes,.corporate-home .corporate-contact{padding:84px 0}
+  .corporate-home .corporate-vapes{padding-top:116px}
+  .corporate-home .direction-card{padding:32px}
+  .corporate-home .capability-card{padding:34px}
+}
+
+@media(max-width:480px){
+  .corporate-home .corporate-hero-grid{padding-top:52px;gap:38px}
+  .corporate-home .corporate-hero-copy h1{font-size:42px}
+  .corporate-home .corporate-actions{flex-direction:column;align-items:stretch}
+  .corporate-home .corporate-actions .btn{text-align:center}
+  .vestige-standard-emblem{width:100%;overflow:visible;filter:drop-shadow(0 22px 34px rgba(0,0,0,.18))}
+  .emblem-center{width:56%}
+  .emblem-icon{width:36px;height:36px}.emblem-icon svg{width:21px;height:21px}
+  .emblem-discipline{left:-1%}.emblem-precision{right:-1%}
+  .emblem-service{bottom:9.4%}
+  .emblem-standard{left:7%;right:7%;gap:7px;letter-spacing:.22em}
+  .corporate-home .corporate-heading h2,.corporate-home .corporate-section-intro h2,.corporate-home .experience-copy h2,.corporate-home .corporate-vapes h2{font-size:38px}
+}
+
+@media(prefers-reduced-motion:no-preference){
+  .vestige-standard-emblem{animation:vestigeEmblemReveal .72s cubic-bezier(.2,.7,.2,1) .08s both}
+}
+@keyframes vestigeEmblemReveal{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
