@@ -24,6 +24,23 @@
   });
 })();
 
+/* V35.30.6 shared header mark: one approved asset and size system across pages using site-nav. */
+(() => {
+  const logo = document.querySelector('.site-header .brand-logo');
+  if (logo) {
+    logo.src = '/assets/vestige-header-logo-dark-v35.30.6.webp';
+    logo.alt = 'Vestige Ltd logo';
+    logo.width = 471;
+    logo.height = 361;
+  }
+  if (!document.getElementById('vestigeHeaderLogoStandard')) {
+    const style = document.createElement('style');
+    style.id = 'vestigeHeaderLogoStandard';
+    style.textContent = '.site-header .brand-logo{width:56px!important;height:56px!important;flex:0 0 56px!important;object-fit:contain!important;background:#fff!important;padding:0!important}@media(max-width:980px){.site-header .brand-logo{width:50px!important;height:50px!important;flex-basis:50px!important}}@media(max-width:760px){.site-header .brand-logo{width:44px!important;height:44px!important;flex-basis:44px!important}}';
+    document.head.appendChild(style);
+  }
+})();
+
 (() => {
   const ELFA_PRO_KEYS = Object.freeze({
     'peach-ice': 'elfa-pro:peach-ice',
