@@ -1,0 +1,73 @@
+/* Vestige V35.30.2 — product presentation alignment
+   Visual-only refinement for the ELFBAR landing page. */
+
+.elfbar-page{
+  --vestige-deep:#000f1e;
+  --vestige-blue:#061f37;
+  --vestige-blue-2:#0d243b;
+  --vestige-gold:#c89b43;
+  --vestige-gold-light:#e0bb73;
+}
+
+.elfbar-page .brand-hero-v2{
+  background:
+    radial-gradient(circle at 78% 38%,rgba(36,77,114,.28),transparent 34%),
+    linear-gradient(138deg,#000f1e 0%,#03172b 44%,#061f37 72%,#0d243b 100%);
+}
+.elfbar-page .brand-hero-v2:after{
+  content:"";
+  position:absolute;
+  left:4%;right:4%;bottom:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(224,187,115,.58),transparent);
+  pointer-events:none;
+}
+
+/* Product specification / shop card — stronger hierarchy, less empty-box treatment */
+.elfbar-page .shop-spec-card{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  padding:42px 42px 38px;
+  background:
+    radial-gradient(circle at 92% 10%,rgba(36,77,114,.3),transparent 36%),
+    linear-gradient(145deg,#00101f 0%,#041b31 56%,#0d243b 100%);
+  border:1px solid rgba(224,187,115,.2);
+  border-top:2px solid var(--vestige-gold);
+  box-shadow:0 24px 54px rgba(9,22,38,.18);
+}
+.elfbar-page .shop-spec-card:before{
+  content:"";
+  position:absolute;
+  width:220px;height:220px;
+  right:-118px;bottom:-122px;
+  border:1px solid rgba(224,187,115,.16);
+  border-radius:50%;
+  box-shadow:0 0 0 34px rgba(224,187,115,.025),0 0 0 68px rgba(91,137,179,.022);
+  z-index:-1;
+}
+.elfbar-page .shop-spec-card .eyebrow{margin-bottom:18px;color:var(--vestige-gold-light)}
+.elfbar-page .shop-spec-card h3{
+  margin:0 0 20px;
+  max-width:430px;
+  color:#f6f0e5;
+  font-family:Georgia,'Times New Roman',serif;
+  font-size:clamp(31px,3.2vw,42px);
+  font-weight:400;
+  line-height:1.08;
+}
+.elfbar-page .shop-spec-card>p:not(.eyebrow){
+  margin:0;
+  max-width:570px;
+  color:#b8c3cf;
+  font-size:15px;
+  line-height:1.78;
+}
+.elfbar-page .shop-spec-card .btn{
+  margin-top:28px;
+  padding:13px 22px;
+}
+
+@media(max-width:760px){
+  .elfbar-page .shop-spec-card{padding:34px 30px 32px}
+  .elfbar-page .shop-spec-card h3{font-size:32px}
+}
