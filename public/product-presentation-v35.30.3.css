@@ -1,0 +1,118 @@
+/* Vestige V35.30.3 — product presentation alignment
+   Visual-only. No stock, checkout, Zoho, payment or fulfilment logic changes. */
+
+/* ELFBAR model cards: level brand marks, centred model name, equal perimeter padding. */
+.elfbar-page .model-card-media{
+  position:relative;
+  overflow:hidden;
+  background:#fff;
+}
+.elfbar-page .model-brand-row{
+  position:absolute;
+  z-index:6;
+  top:20px;
+  left:20px;
+  right:20px;
+  min-height:126px;
+  display:grid;
+  grid-template-columns:minmax(88px,112px) minmax(0,1fr) minmax(88px,112px);
+  align-items:center;
+  gap:18px;
+  padding:14px 16px;
+  background:rgba(255,255,255,.97);
+  border:1px solid rgba(200,155,67,.22);
+  box-shadow:0 8px 24px rgba(10,24,38,.05);
+}
+.elfbar-page .model-brand-side{
+  min-width:0;
+  height:86px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.elfbar-page .model-brand-side img{
+  display:block;
+  width:auto;
+  height:auto;
+  max-width:100%;
+  max-height:78px;
+  object-fit:contain;
+}
+.elfbar-page .model-brand-elfbar img{max-height:76px}
+.elfbar-page .model-brand-vestige img{max-height:72px}
+.elfbar-page .model-brand-centre{
+  min-width:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+.elfbar-page .model-brand-centre span{
+  color:#111820;
+  font-family:Georgia,'Times New Roman',serif;
+  font-size:clamp(28px,3vw,46px);
+  font-weight:400;
+  line-height:1;
+  letter-spacing:.02em;
+  white-space:nowrap;
+}
+
+/* BC10000 flavour cards: one stock-badge origin point, with imagery/copy lowered for legibility. */
+.flavours .flavour{position:relative}
+.flavours .flavour-stock-state{
+  position:absolute!important;
+  top:18px!important;
+  left:18px!important;
+  right:auto!important;
+  bottom:auto!important;
+  z-index:8!important;
+  width:max-content;
+  max-width:calc(100% - 36px);
+  margin:0!important;
+}
+.flavours .flavour-icon{
+  translate:0 30px;
+}
+.flavours .flavour>h3,
+.flavours .flavour>p{
+  translate:0 15px;
+}
+
+/* Keep the lower action area fixed while the flavour identity is lowered. */
+.flavours .flavour-card-action{translate:0 0}
+
+@media(max-width:980px){
+  .elfbar-page .model-brand-row{
+    top:16px;
+    left:16px;
+    right:16px;
+    min-height:112px;
+    grid-template-columns:82px minmax(0,1fr) 82px;
+    padding:12px 14px;
+    gap:14px;
+  }
+  .elfbar-page .model-brand-side{height:76px}
+  .elfbar-page .model-brand-side img{max-height:68px}
+  .elfbar-page .model-brand-centre span{font-size:clamp(25px,4vw,38px)}
+}
+
+@media(max-width:620px){
+  .elfbar-page .model-brand-row{
+    top:12px;
+    left:12px;
+    right:12px;
+    min-height:94px;
+    grid-template-columns:66px minmax(0,1fr) 66px;
+    gap:10px;
+    padding:10px 11px;
+  }
+  .elfbar-page .model-brand-side{height:62px}
+  .elfbar-page .model-brand-side img{max-height:56px}
+  .elfbar-page .model-brand-centre span{
+    font-size:clamp(21px,6.2vw,30px);
+    white-space:normal;
+  }
+  .flavours .flavour-stock-state{top:14px!important;left:14px!important;max-width:calc(100% - 28px)}
+  .flavours .flavour-icon{translate:0 24px}
+  .flavours .flavour>h3,.flavours .flavour>p{translate:0 11px}
+}
