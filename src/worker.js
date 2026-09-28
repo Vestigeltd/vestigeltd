@@ -1,43 +1,43 @@
-var __create = Object.create;
 var __defProp = Object.defineProperty;
+var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
+
+// src/worker.js
+import libDefault from "crypto";
+var __create = Object.create;
+var __defProp2 = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
-var __commonJS = (cb, mod) => function __require() {
+var __name2 = /* @__PURE__ */ __name((target, value) => __defProp2(target, "name", { value, configurable: true }), "__name");
+var __commonJS = /* @__PURE__ */ __name((cb, mod) => /* @__PURE__ */ __name(function __require() {
   try {
     return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
   } catch (e) {
     throw mod = 0, e;
   }
-};
-var __copyProps = (to, from, except, desc) => {
+}, "__require"), "__commonJS");
+var __copyProps = /* @__PURE__ */ __name((to, from, except, desc) => {
   if (from && typeof from === "object" || typeof from === "function") {
     for (let key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp2(to, key, { get: /* @__PURE__ */ __name(() => from[key], "get"), enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
   }
   return to;
-};
-var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+}, "__copyProps");
+var __toESM = /* @__PURE__ */ __name((mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
   // If the importer is in node compatibility mode or this is not an ESM
   // file that has been converted to a CommonJS file using a Babel-
   // compatible transform (i.e. "__esModule" has not been set), then set
   // "default" to the CommonJS "module.exports" for node compatibility.
-  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  isNodeMode || !mod || !mod.__esModule ? __defProp2(target, "default", { value: mod, enumerable: true }) : target,
   mod
-));
-
-// node-built-in-modules:crypto
-import libDefault from "crypto";
+)), "__toESM");
 var require_crypto = __commonJS({
   "node-built-in-modules:crypto"(exports, module) {
     module.exports = libDefault;
   }
 });
-
-// src/zoho-integration.cjs
 var require_zoho_integration = __commonJS({
   "src/zoho-integration.cjs"(exports) {
     "use strict";
@@ -79,14 +79,17 @@ var require_zoho_integration = __commonJS({
       return method;
     }
     __name(validateDeliveryMethod, "validateDeliveryMethod");
+    __name2(validateDeliveryMethod, "validateDeliveryMethod");
     function deliveryChargeFor(method) {
       return method === DELIVERY_METHOD_COLLECTION ? 0 : DELIVERY_PRICE_ZAR;
     }
     __name(deliveryChargeFor, "deliveryChargeFor");
+    __name2(deliveryChargeFor, "deliveryChargeFor");
     function deliveryLabelFor(method) {
       return method === DELIVERY_METHOD_COLLECTION ? COLLECTION_METHOD_NAME : DELIVERY_METHOD_NAME;
     }
     __name(deliveryLabelFor, "deliveryLabelFor");
+    __name2(deliveryLabelFor, "deliveryLabelFor");
     function collectionAccessCode() {
       const code = requireEnv("VESTIGE_COLLECTION_ACCESS_CODE");
       if (Buffer.byteLength(code, "utf8") < 8) {
@@ -97,6 +100,7 @@ var require_zoho_integration = __commonJS({
       return code;
     }
     __name(collectionAccessCode, "collectionAccessCode");
+    __name2(collectionAccessCode, "collectionAccessCode");
     function issueCollectionAccessToken(checkoutId, suppliedCode) {
       const id = validateCheckoutId(checkoutId);
       const supplied = String(suppliedCode || "");
@@ -114,6 +118,7 @@ var require_zoho_integration = __commonJS({
       });
     }
     __name(issueCollectionAccessToken, "issueCollectionAccessToken");
+    __name2(issueCollectionAccessToken, "issueCollectionAccessToken");
     function requireCollectionAccessToken(token, checkoutId) {
       const payload = verifyCheckout(token);
       if (payload.type !== "collection_access" || String(payload.checkoutId || "") !== String(checkoutId || "")) {
@@ -124,6 +129,7 @@ var require_zoho_integration = __commonJS({
       return payload;
     }
     __name(requireCollectionAccessToken, "requireCollectionAccessToken");
+    __name2(requireCollectionAccessToken, "requireCollectionAccessToken");
     var PRODUCT_ITEM_ID_ENVS = Object.freeze({
       "Blueberry Mint": "ZOHO_ITEM_BLUEBERRY_MINT_ID",
       "Miami Mint": "ZOHO_ITEM_MIAMI_MINT_ID",
@@ -133,6 +139,60 @@ var require_zoho_integration = __commonJS({
     });
     var STOCK_LOCATION_ID_ENV = "ZOHO_LOCATION_ID";
     var ALLOWED_FLAVOURS = new Set(Object.keys(PRODUCT_NAMES));
+    var OWNER_INVENTORY_PRODUCTS = Object.freeze({
+      "ELFA MASTER \xB7 Dark Cosmo": Object.freeze({ family: "ELFA MASTER", variant: "Dark Cosmo", sku: "ELFH01", expectedRetailPrice: 250, checkoutEnabled: true, nameHints: ["ELFA Master Dark Cosmo", "ELFA Master Dark Cosmo Kit", "ELFA Master Prefilled Pod Kit Dark Cosmo"] }),
+      "ELFA MASTER \xB7 Dusty Pink": Object.freeze({ family: "ELFA MASTER", variant: "Dusty Pink", sku: "ELFH02", expectedRetailPrice: 250, checkoutEnabled: true, nameHints: ["ELFA Master Dusty Pink", "ELFA Master Dusty Pink Kit", "ELFA Master Prefilled Pod Kit Dusty Pink"] }),
+      "ELFA MASTER \xB7 Black Knight": Object.freeze({ family: "ELFA MASTER", variant: "Black Knight", sku: "ELFH03", expectedRetailPrice: 250, checkoutEnabled: true, nameHints: ["ELFA Master Black Knight", "ELFA Master Black Knight Kit", "ELFA Master Prefilled Pod Kit Black Knight"] }),
+      "ELFA PRO \xB7 Grape": Object.freeze({ family: "ELFA PRO", variant: "Grape", sku: "ELFI03", expectedRetailPrice: 150, checkoutEnabled: true, nameHints: ["ELFA PRO Grape 50mg", "ELFA PRO Grape"] }),
+      "ELFA PRO \xB7 Peach Ice": Object.freeze({ family: "ELFA PRO", variant: "Peach Ice", sku: "ELFI06", expectedRetailPrice: 150, checkoutEnabled: true, nameHints: ["ELFA PRO Peach Ice 50mg", "ELFA PRO Peach Ice"] }),
+      "ELFA PRO \xB7 Watermelon": Object.freeze({ family: "ELFA PRO", variant: "Watermelon", sku: "ELFI08", expectedRetailPrice: 150, checkoutEnabled: true, nameHints: ["ELFA PRO Watermelon 50mg", "ELFA PRO Watermelon"] }),
+      "ELFA PRO \xB7 Miami Mint": Object.freeze({ family: "ELFA PRO", variant: "Miami Mint", sku: "ELFI09", expectedRetailPrice: 150, checkoutEnabled: true, nameHints: ["ELFA PRO Miami Mint 50mg", "ELFA PRO Miami Mint"] }),
+      "ELFA PRO \xB7 Spearmint": Object.freeze({ family: "ELFA PRO", variant: "Spearmint", sku: "ELFI02", expectedRetailPrice: 150, checkoutEnabled: true, nameHints: ["ELFA PRO Spearmint 50mg", "ELFA PRO Spearmint"] })
+    });
+    var BC_CHECKOUT_KEYS_BY_FLAVOUR = Object.freeze({
+      "Blueberry Mint": "bc10000:blueberry-mint",
+      "Miami Mint": "bc10000:miami-mint",
+      "Blue Razz Ice": "bc10000:blue-razz-ice",
+      "Strawberry Kiwi Ice": "bc10000:strawberry-kiwi-ice",
+      "Watermelon Ice": "bc10000:watermelon-ice"
+    });
+    var CHECKOUT_PRODUCTS = Object.freeze({
+      "bc10000:blueberry-mint": Object.freeze({ family: "BC10000", variant: "Blueberry Mint", inventoryLabel: "BC10000 \xB7 Blueberry Mint", displayName: "ELFBAR BC10000 \xB7 Blueberry Mint", unitPrice: 300 }),
+      "bc10000:miami-mint": Object.freeze({ family: "BC10000", variant: "Miami Mint", inventoryLabel: "BC10000 \xB7 Miami Mint", displayName: "ELFBAR BC10000 \xB7 Miami Mint", unitPrice: 300 }),
+      "bc10000:blue-razz-ice": Object.freeze({ family: "BC10000", variant: "Blue Razz Ice", inventoryLabel: "BC10000 \xB7 Blue Razz Ice", displayName: "ELFBAR BC10000 \xB7 Blue Razz Ice", unitPrice: 300 }),
+      "bc10000:strawberry-kiwi-ice": Object.freeze({ family: "BC10000", variant: "Strawberry Kiwi Ice", inventoryLabel: "BC10000 \xB7 Strawberry Kiwi Ice", displayName: "ELFBAR BC10000 \xB7 Strawberry Kiwi Ice", unitPrice: 300 }),
+      "bc10000:watermelon-ice": Object.freeze({ family: "BC10000", variant: "Watermelon Ice", inventoryLabel: "BC10000 \xB7 Watermelon Ice", displayName: "ELFBAR BC10000 \xB7 Watermelon Ice", unitPrice: 300 }),
+      "elfa-master:dark-cosmo": Object.freeze({ family: "ELFA MASTER", variant: "Dark Cosmo", inventoryLabel: "ELFA MASTER \xB7 Dark Cosmo", displayName: "ELFA MASTER \xB7 Dark Cosmo + Miami Mint", unitPrice: 250 }),
+      "elfa-master:dusty-pink": Object.freeze({ family: "ELFA MASTER", variant: "Dusty Pink", inventoryLabel: "ELFA MASTER \xB7 Dusty Pink", displayName: "ELFA MASTER \xB7 Dusty Pink + Peach Ice", unitPrice: 250 }),
+      "elfa-master:black-knight": Object.freeze({ family: "ELFA MASTER", variant: "Black Knight", inventoryLabel: "ELFA MASTER \xB7 Black Knight", displayName: "ELFA MASTER \xB7 Black Knight + Pink Lemonade", unitPrice: 250 }),
+      "elfa-pro:grape": Object.freeze({ family: "ELFA PRO", variant: "Grape", inventoryLabel: "ELFA PRO \xB7 Grape", displayName: "ELFA PRO \xB7 Grape \xB7 2-pod pack", unitPrice: 150 }),
+      "elfa-pro:peach-ice": Object.freeze({ family: "ELFA PRO", variant: "Peach Ice", inventoryLabel: "ELFA PRO \xB7 Peach Ice", displayName: "ELFA PRO \xB7 Peach Ice \xB7 2-pod pack", unitPrice: 150 }),
+      "elfa-pro:watermelon": Object.freeze({ family: "ELFA PRO", variant: "Watermelon", inventoryLabel: "ELFA PRO \xB7 Watermelon", displayName: "ELFA PRO \xB7 Watermelon \xB7 2-pod pack", unitPrice: 150 }),
+      "elfa-pro:miami-mint": Object.freeze({ family: "ELFA PRO", variant: "Miami Mint", inventoryLabel: "ELFA PRO \xB7 Miami Mint", displayName: "ELFA PRO \xB7 Miami Mint \xB7 2-pod pack", unitPrice: 150 }),
+      "elfa-pro:spearmint": Object.freeze({ family: "ELFA PRO", variant: "Spearmint", inventoryLabel: "ELFA PRO \xB7 Spearmint", displayName: "ELFA PRO \xB7 Spearmint \xB7 2-pod pack", unitPrice: 150 })
+    });
+    var CHECKOUT_PRODUCT_KEYS = Object.freeze(Object.keys(CHECKOUT_PRODUCTS));
+    function checkoutProductDefinition(productKey) {
+      const key = cleanText(productKey, 80).toLowerCase();
+      return CHECKOUT_PRODUCTS[key] || null;
+    }
+    __name(checkoutProductDefinition, "checkoutProductDefinition");
+    __name2(checkoutProductDefinition, "checkoutProductDefinition");
+    function checkoutProductKeyFromInput(raw) {
+      const supplied = cleanText(raw?.productKey, 80).toLowerCase();
+      if (supplied && CHECKOUT_PRODUCTS[supplied]) return supplied;
+      const legacyFlavour = cleanText(raw?.flavour ?? raw?.variant, 100);
+      return BC_CHECKOUT_KEYS_BY_FLAVOUR[legacyFlavour] || "";
+    }
+    __name(checkoutProductKeyFromInput, "checkoutProductKeyFromInput");
+    __name2(checkoutProductKeyFromInput, "checkoutProductKeyFromInput");
+    function checkoutProductEnabled(spec) {
+      if (!spec) return false;
+      if (spec.family === "BC10000") return true;
+      return OWNER_INVENTORY_PRODUCTS[spec.inventoryLabel]?.checkoutEnabled === true;
+    }
+    __name(checkoutProductEnabled, "checkoutProductEnabled");
+    __name2(checkoutProductEnabled, "checkoutProductEnabled");
     var ALLOWED_ACCOUNTS_HOSTS = /* @__PURE__ */ new Set([
       "accounts.zoho.com",
       "accounts.zoho.eu",
@@ -175,12 +235,16 @@ var require_zoho_integration = __commonJS({
     var cachedProductCatalogUntil = 0;
     var PRODUCT_CATALOG_CACHE_MS = 30 * 60 * 1e3;
     var resolvedProductItemIds = /* @__PURE__ */ new Map();
+    var resolvedOwnerInventoryItemIds = /* @__PURE__ */ new Map();
+    var ownerInventoryResolutionErrors = /* @__PURE__ */ new Map();
+    var cachedOwnerInventoryCatalogUntil = 0;
     var d1Database = null;
     function bindCloudflareRuntime(env) {
       d1Database = env?.CHECKOUT_DB || null;
       globalThis.__VESTIGE_ENV = env || {};
     }
     __name(bindCloudflareRuntime, "bindCloudflareRuntime");
+    __name2(bindCloudflareRuntime, "bindCloudflareRuntime");
     function runtimeEnv(name) {
       const env = globalThis.__VESTIGE_ENV || {};
       const value = env[name];
@@ -188,6 +252,7 @@ var require_zoho_integration = __commonJS({
       return typeof process !== "undefined" && process.env ? process.env[name] : void 0;
     }
     __name(runtimeEnv, "runtimeEnv");
+    __name2(runtimeEnv, "runtimeEnv");
     function checkoutStorageError(error) {
       if (error?.service === "checkout_storage") return error;
       if (error?.statusCode) return error;
@@ -198,6 +263,7 @@ var require_zoho_integration = __commonJS({
       return e;
     }
     __name(checkoutStorageError, "checkoutStorageError");
+    __name2(checkoutStorageError, "checkoutStorageError");
     function requireDatabase() {
       if (!d1Database) {
         const e = new Error("Cloudflare D1 checkout storage is not bound.");
@@ -208,9 +274,13 @@ var require_zoho_integration = __commonJS({
       return d1Database;
     }
     __name(requireDatabase, "requireDatabase");
+    __name2(requireDatabase, "requireDatabase");
     var D1JsonStore = class {
       static {
         __name(this, "D1JsonStore");
+      }
+      static {
+        __name2(this, "D1JsonStore");
       }
       constructor(namespace) {
         this.namespace = namespace;
@@ -267,47 +337,58 @@ var require_zoho_integration = __commonJS({
       return STORES.get(name);
     }
     __name(getD1Store, "getD1Store");
+    __name2(getD1Store, "getD1Store");
     async function getStockLockStore() {
       return getD1Store("vestige-stock-locks");
     }
     __name(getStockLockStore, "getStockLockStore");
+    __name2(getStockLockStore, "getStockLockStore");
     async function getCheckoutStore() {
       return getD1Store("vestige-checkouts");
     }
     __name(getCheckoutStore, "getCheckoutStore");
+    __name2(getCheckoutStore, "getCheckoutStore");
     async function getReservationStore() {
       return getD1Store("vestige-stock-reservations");
     }
     __name(getReservationStore, "getReservationStore");
+    __name2(getReservationStore, "getReservationStore");
     async function getNotificationStore() {
       return getD1Store("vestige-notifications");
     }
     __name(getNotificationStore, "getNotificationStore");
+    __name2(getNotificationStore, "getNotificationStore");
     async function getOwnerStockAdjustmentStore() {
       return getD1Store("vestige-owner-stock-adjustments");
     }
     __name(getOwnerStockAdjustmentStore, "getOwnerStockAdjustmentStore");
+    __name2(getOwnerStockAdjustmentStore, "getOwnerStockAdjustmentStore");
     function ownerConsoleUrl() {
       return cleanText(runtimeEnv("OWNER_CONSOLE_URL"), 240) || "https://vestigeltd.co.za/owner.html";
     }
     __name(ownerConsoleUrl, "ownerConsoleUrl");
+    __name2(ownerConsoleUrl, "ownerConsoleUrl");
     var CONTACT_EMAIL = "contact@vestigeltd.co.za";
     function ownerAlertEmail() {
       return CONTACT_EMAIL;
     }
     __name(ownerAlertEmail, "ownerAlertEmail");
+    __name2(ownerAlertEmail, "ownerAlertEmail");
     function ownerAlertFromEmail() {
       return CONTACT_EMAIL;
     }
     __name(ownerAlertFromEmail, "ownerAlertFromEmail");
+    __name2(ownerAlertFromEmail, "ownerAlertFromEmail");
     function resendApiKey() {
       return cleanText(runtimeEnv("RESEND_API_KEY"), 500);
     }
     __name(resendApiKey, "resendApiKey");
+    __name2(resendApiKey, "resendApiKey");
     function ownerNotificationConfigured() {
       return Boolean(resendApiKey() && ownerAlertEmail() && ownerAlertFromEmail());
     }
     __name(ownerNotificationConfigured, "ownerNotificationConfigured");
+    __name2(ownerNotificationConfigured, "ownerNotificationConfigured");
     async function sendOwnerEmail(subject, text, idempotencyKey = "") {
       const apiKey = resendApiKey();
       const to = ownerAlertEmail();
@@ -354,6 +435,7 @@ var require_zoho_integration = __commonJS({
       };
     }
     __name(sendOwnerEmail, "sendOwnerEmail");
+    __name2(sendOwnerEmail, "sendOwnerEmail");
     async function notifyOwnerOnce(kind, paymentReference, subject, text) {
       const ref = cleanText(paymentReference, 24).toUpperCase();
       const safeKind = cleanText(kind, 60).toLowerCase().replace(/[^a-z0-9_-]/g, "-");
@@ -417,10 +499,12 @@ var require_zoho_integration = __commonJS({
       }
     }
     __name(notifyOwnerOnce, "notifyOwnerOnce");
+    __name2(notifyOwnerOnce, "notifyOwnerOnce");
     function orderStatusUrl() {
       return "https://vestigeltd.co.za/order-status";
     }
     __name(orderStatusUrl, "orderStatusUrl");
+    __name2(orderStatusUrl, "orderStatusUrl");
     async function sendCustomerEmail(toEmail, subject, text, idempotencyKey = "") {
       const apiKey = resendApiKey();
       const from = ownerAlertFromEmail();
@@ -460,6 +544,7 @@ var require_zoho_integration = __commonJS({
       return { sent: true, configured: true, messageId: cleanText(data?.id, 200) || null };
     }
     __name(sendCustomerEmail, "sendCustomerEmail");
+    __name2(sendCustomerEmail, "sendCustomerEmail");
     function customerFulfilmentEmail(data, paymentReference, fulfilment, deliveryMethod) {
       const progress = data?.progress || {};
       const customer = progress.customer || {};
@@ -472,27 +557,40 @@ var require_zoho_integration = __commonJS({
       let subject = `Vestige order ${ref} update`;
       let statusText = "Your order status has been updated.";
       if (state === "preparing") {
-        subject = `Vestige order ${ref} — being prepared`;
+        subject = `Vestige order ${ref} \u2014 being prepared`;
         statusText = "Your payment is confirmed and your order is now being prepared.";
       } else if (state === "ready_for_collection") {
-        subject = `Vestige order ${ref} — ready for collection`;
+        subject = `Vestige order ${ref} \u2014 ready for collection`;
         statusText = "Your order is ready for collection. Collection arrangements remain as agreed with Vestige Ltd.";
       } else if (state === "dispatched") {
-        subject = `Vestige order ${ref} — dispatched`;
-        statusText = `Your order has been handed to The Courier Guy for locker-to-locker delivery.${trackingReference ? `\n\nTracking reference: ${trackingReference}` : ""}`;
+        subject = `Vestige order ${ref} \u2014 dispatched`;
+        statusText = `Your order has been handed to The Courier Guy for locker-to-locker delivery.${trackingReference ? `
+
+Tracking reference: ${trackingReference}` : ""}`;
       } else if (state === "completed") {
         if (deliveryMethod === DELIVERY_METHOD_COLLECTION) {
-          subject = `Vestige order ${ref} — collected`;
+          subject = `Vestige order ${ref} \u2014 collected`;
           statusText = "Your order has been marked collected and complete.";
         } else {
-          subject = `Vestige order ${ref} — completed`;
+          subject = `Vestige order ${ref} \u2014 completed`;
           statusText = "Your order has been marked delivered and complete.";
         }
       }
-      const text = `Dear ${firstName},\n\n${statusText}\n\nOrder reference: ${ref}\n\nYou can check the latest status here:\n${orderStatusUrl()}\n\nRegards,\nVestige Ltd`;
+      const text = `Dear ${firstName},
+
+${statusText}
+
+Order reference: ${ref}
+
+You can check the latest status here:
+${orderStatusUrl()}
+
+Regards,
+Vestige Ltd`;
       return { email, subject, text, state };
     }
     __name(customerFulfilmentEmail, "customerFulfilmentEmail");
+    __name2(customerFulfilmentEmail, "customerFulfilmentEmail");
     async function notifyCustomerFulfilmentOnce(data, paymentReference, fulfilment, deliveryMethod) {
       const message = customerFulfilmentEmail(data, paymentReference, fulfilment, deliveryMethod);
       const ref = cleanText(paymentReference, 24).toUpperCase();
@@ -532,6 +630,7 @@ var require_zoho_integration = __commonJS({
       }
     }
     __name(notifyCustomerFulfilmentOnce, "notifyCustomerFulfilmentOnce");
+    __name2(notifyCustomerFulfilmentOnce, "notifyCustomerFulfilmentOnce");
     async function sendOwnerTestNotification() {
       return sendOwnerEmail(
         "Vestige owner notifications are working",
@@ -544,6 +643,7 @@ If you received this email, Worker owner alerts are operational.`
       );
     }
     __name(sendOwnerTestNotification, "sendOwnerTestNotification");
+    __name2(sendOwnerTestNotification, "sendOwnerTestNotification");
     async function writeAuditEvent(event) {
       try {
         const store = getD1Store("vestige-owner-audit");
@@ -570,6 +670,7 @@ If you received this email, Worker owner alerts are operational.`
       }
     }
     __name(writeAuditEvent, "writeAuditEvent");
+    __name2(writeAuditEvent, "writeAuditEvent");
     function classifyOwnerException(order, reservations) {
       const state = String(order?.state || "");
       const now = Date.now();
@@ -627,6 +728,7 @@ If you received this email, Worker owner alerts are operational.`
       return null;
     }
     __name(classifyOwnerException, "classifyOwnerException");
+    __name2(classifyOwnerException, "classifyOwnerException");
     async function adminOrderExceptions(limit = 50) {
       const orders = await adminRecentBankOrders(Math.min(Math.max(Number(limit || 50), 1), 50));
       const exceptions = [];
@@ -678,6 +780,7 @@ If you received this email, Worker owner alerts are operational.`
       return exceptions;
     }
     __name(adminOrderExceptions, "adminOrderExceptions");
+    __name2(adminOrderExceptions, "adminOrderExceptions");
     async function adminRecentAuditEvents(limit = 50) {
       const safeLimit = Math.min(Math.max(Number(limit || 50), 1), 100);
       const db = requireDatabase();
@@ -696,6 +799,7 @@ If you received this email, Worker owner alerts are operational.`
       return events;
     }
     __name(adminRecentAuditEvents, "adminRecentAuditEvents");
+    __name2(adminRecentAuditEvents, "adminRecentAuditEvents");
     var OWNER_RESET_NAMESPACES = Object.freeze([
       "vestige-checkouts",
       "vestige-order-sequence",
@@ -708,14 +812,17 @@ If you received this email, Worker owner alerts are operational.`
       return /^V\d{4,8}$/.test(ref) ? ref : null;
     }
     __name(ownerResetReference, "ownerResetReference");
+    __name2(ownerResetReference, "ownerResetReference");
     function ownerResetReferenceNumber(ref) {
       return ref ? Number(String(ref).slice(1)) : NaN;
     }
     __name(ownerResetReferenceNumber, "ownerResetReferenceNumber");
+    __name2(ownerResetReferenceNumber, "ownerResetReferenceNumber");
     function ownerResetCheckoutId(row) {
       return String(row?.key || "").replace(/^checkout-/, "");
     }
     __name(ownerResetCheckoutId, "ownerResetCheckoutId");
+    __name2(ownerResetCheckoutId, "ownerResetCheckoutId");
     function ownerResetHasFinancialEvidence(data) {
       const p = data?.progress || {};
       const verified = p?.verifiedBankPayment || {};
@@ -724,10 +831,12 @@ If you received this email, Worker owner alerts are operational.`
       );
     }
     __name(ownerResetHasFinancialEvidence, "ownerResetHasFinancialEvidence");
+    __name2(ownerResetHasFinancialEvidence, "ownerResetHasFinancialEvidence");
     function ownerResetProtectedState(state) {
       return ["confirmed", "paid", "completed", "fulfilled", "processing_fulfilment", "shipped"].includes(String(state || "").toLowerCase());
     }
     __name(ownerResetProtectedState, "ownerResetProtectedState");
+    __name2(ownerResetProtectedState, "ownerResetProtectedState");
     function ownerResetParseRows(rows) {
       return (Array.isArray(rows) ? rows : []).map((row) => {
         let value = null;
@@ -739,6 +848,7 @@ If you received this email, Worker owner alerts are operational.`
       });
     }
     __name(ownerResetParseRows, "ownerResetParseRows");
+    __name2(ownerResetParseRows, "ownerResetParseRows");
     function buildOwnerTestResetPlan(rawRows) {
       const rows = ownerResetParseRows(rawRows);
       const blockers = [];
@@ -844,6 +954,7 @@ If you received this email, Worker owner alerts are operational.`
       };
     }
     __name(buildOwnerTestResetPlan, "buildOwnerTestResetPlan");
+    __name2(buildOwnerTestResetPlan, "buildOwnerTestResetPlan");
     async function readOwnerTestResetRows() {
       const db = requireDatabase();
       const placeholders = OWNER_RESET_NAMESPACES.map((_, i) => `?${i + 1}`).join(",");
@@ -853,6 +964,7 @@ If you received this email, Worker owner alerts are operational.`
       return Array.isArray(result?.results) ? result.results : [];
     }
     __name(readOwnerTestResetRows, "readOwnerTestResetRows");
+    __name2(readOwnerTestResetRows, "readOwnerTestResetRows");
     function publicOwnerResetPreview(plan) {
       return {
         canApply: plan.canApply,
@@ -870,10 +982,12 @@ If you received this email, Worker owner alerts are operational.`
       };
     }
     __name(publicOwnerResetPreview, "publicOwnerResetPreview");
+    __name2(publicOwnerResetPreview, "publicOwnerResetPreview");
     async function adminPreviewTestOrderReset() {
       return publicOwnerResetPreview(buildOwnerTestResetPlan(await readOwnerTestResetRows()));
     }
     __name(adminPreviewTestOrderReset, "adminPreviewTestOrderReset");
+    __name2(adminPreviewTestOrderReset, "adminPreviewTestOrderReset");
     async function adminApplyTestOrderReset(input) {
       const confirmation = cleanText(input?.confirmation, 80).toUpperCase();
       const suppliedFingerprint = cleanText(input?.previewFingerprint, 80).toLowerCase();
@@ -933,6 +1047,7 @@ If you received this email, Worker owner alerts are operational.`
       };
     }
     __name(adminApplyTestOrderReset, "adminApplyTestOrderReset");
+    __name2(adminApplyTestOrderReset, "adminApplyTestOrderReset");
     async function testAtomicBlobStore(store, label) {
       const key = `health-${label}-${randomUUID()}`;
       const first = { phase: 1, nonce: randomUUID(), at: Date.now() };
@@ -955,6 +1070,7 @@ If you received this email, Worker owner alerts are operational.`
       }
     }
     __name(testAtomicBlobStore, "testAtomicBlobStore");
+    __name2(testAtomicBlobStore, "testAtomicBlobStore");
     async function testCheckoutStorage() {
       try {
         const [checkouts, reservations, locks] = await Promise.all([getCheckoutStore(), getReservationStore(), getStockLockStore()]);
@@ -973,6 +1089,7 @@ If you received this email, Worker owner alerts are operational.`
       }
     }
     __name(testCheckoutStorage, "testCheckoutStorage");
+    __name2(testCheckoutStorage, "testCheckoutStorage");
     function orderFingerprint(order) {
       const stable = JSON.stringify({
         checkoutId: order.checkoutId,
@@ -995,6 +1112,7 @@ If you received this email, Worker owner alerts are operational.`
       return createHash("sha256").update(stable).digest("hex");
     }
     __name(orderFingerprint, "orderFingerprint");
+    __name2(orderFingerprint, "orderFingerprint");
     async function beginCheckoutAttempt(order) {
       let store;
       try {
@@ -1044,6 +1162,7 @@ If you received this email, Worker owner alerts are operational.`
       throw e;
     }
     __name(beginCheckoutAttempt, "beginCheckoutAttempt");
+    __name2(beginCheckoutAttempt, "beginCheckoutAttempt");
     async function saveCheckoutProgress(ctx, patch) {
       if (!ctx?.store || !ctx?.key || !ctx?.ownerId) return;
       const current = await ctx.store.getWithMetadata(ctx.key, { type: "json", consistency: "strong" });
@@ -1065,6 +1184,7 @@ If you received this email, Worker owner alerts are operational.`
       ctx.progress = progress;
     }
     __name(saveCheckoutProgress, "saveCheckoutProgress");
+    __name2(saveCheckoutProgress, "saveCheckoutProgress");
     async function saveCheckoutPending(ctx, response) {
       if (!ctx?.store || !ctx?.key || !ctx?.ownerId) return;
       const current = await ctx.store.getWithMetadata(ctx.key, { type: "json", consistency: "strong" });
@@ -1089,6 +1209,7 @@ If you received this email, Worker owner alerts are operational.`
       }
     }
     __name(saveCheckoutPending, "saveCheckoutPending");
+    __name2(saveCheckoutPending, "saveCheckoutPending");
     async function markCheckoutConfirmed(checkout, verified) {
       if (!checkout?.checkoutId) return;
       try {
@@ -1115,6 +1236,7 @@ If you received this email, Worker owner alerts are operational.`
       }
     }
     __name(markCheckoutConfirmed, "markCheckoutConfirmed");
+    __name2(markCheckoutConfirmed, "markCheckoutConfirmed");
     async function markCheckoutFailed(ctx, message) {
       if (!ctx?.store || !ctx?.key || !ctx?.ownerId) return;
       try {
@@ -1133,6 +1255,7 @@ If you received this email, Worker owner alerts are operational.`
       }
     }
     __name(markCheckoutFailed, "markCheckoutFailed");
+    __name2(markCheckoutFailed, "markCheckoutFailed");
     async function acquireStockLock(itemId, ownerId) {
       let store;
       try {
@@ -1160,6 +1283,7 @@ If you received this email, Worker owner alerts are operational.`
       throw e;
     }
     __name(acquireStockLock, "acquireStockLock");
+    __name2(acquireStockLock, "acquireStockLock");
     async function renewDistributedLock(lock) {
       if (!lock?.store || !lock?.key || !lock?.ownerId) return lock;
       const current = await lock.store.getWithMetadata(lock.key, { type: "json", consistency: "strong" });
@@ -1179,6 +1303,7 @@ If you received this email, Worker owner alerts are operational.`
       return lock;
     }
     __name(renewDistributedLock, "renewDistributedLock");
+    __name2(renewDistributedLock, "renewDistributedLock");
     async function releaseStockLock(lock) {
       if (!lock?.store || !lock?.key) return;
       try {
@@ -1190,6 +1315,7 @@ If you received this email, Worker owner alerts are operational.`
       }
     }
     __name(releaseStockLock, "releaseStockLock");
+    __name2(releaseStockLock, "releaseStockLock");
     async function acquireCustomerLock(email, ownerId) {
       let store;
       try {
@@ -1214,22 +1340,26 @@ If you received this email, Worker owner alerts are operational.`
       throw e;
     }
     __name(acquireCustomerLock, "acquireCustomerLock");
+    __name2(acquireCustomerLock, "acquireCustomerLock");
     function reservationKey(itemId) {
       return `item-${String(itemId)}`;
     }
     __name(reservationKey, "reservationKey");
+    __name2(reservationKey, "reservationKey");
     function activeReservationRows(data, now = Date.now()) {
       return (Array.isArray(data?.reservations) ? data.reservations : []).filter(
         (row) => row && row.checkoutId && Number(row.quantity) > 0 && (row.paymentReviewHold === true || Number(row.expiresAt || 0) > now)
       );
     }
     __name(activeReservationRows, "activeReservationRows");
+    __name2(activeReservationRows, "activeReservationRows");
     async function readWebsiteReservations(itemId) {
       const store = await getReservationStore();
       const current = await store.getWithMetadata(reservationKey(itemId), { type: "json", consistency: "strong" });
       return { store, current, reservations: activeReservationRows(current?.data) };
     }
     __name(readWebsiteReservations, "readWebsiteReservations");
+    __name2(readWebsiteReservations, "readWebsiteReservations");
     async function mutateWebsiteReservations(itemId, mutator) {
       const store = await getReservationStore();
       const key = reservationKey(itemId);
@@ -1248,6 +1378,7 @@ If you received this email, Worker owner alerts are operational.`
       throw e;
     }
     __name(mutateWebsiteReservations, "mutateWebsiteReservations");
+    __name2(mutateWebsiteReservations, "mutateWebsiteReservations");
     async function placePaymentReviewHold(itemId, checkoutId, requiredQuantity, claimedAt) {
       const store = await getReservationStore();
       const key = reservationKey(itemId);
@@ -1286,6 +1417,7 @@ If you received this email, Worker owner alerts are operational.`
       throw e;
     }
     __name(placePaymentReviewHold, "placePaymentReviewHold");
+    __name2(placePaymentReviewHold, "placePaymentReviewHold");
     async function addWebsiteReservation(order, snapshot, invoice) {
       const checkoutId = String(order.checkoutId);
       const row = {
@@ -1303,6 +1435,7 @@ If you received this email, Worker owner alerts are operational.`
       return row;
     }
     __name(addWebsiteReservation, "addWebsiteReservation");
+    __name2(addWebsiteReservation, "addWebsiteReservation");
     async function releaseWebsiteReservationStrict(itemId, checkoutId) {
       if (!itemId || !checkoutId) return;
       await mutateWebsiteReservations(
@@ -1311,6 +1444,7 @@ If you received this email, Worker owner alerts are operational.`
       );
     }
     __name(releaseWebsiteReservationStrict, "releaseWebsiteReservationStrict");
+    __name2(releaseWebsiteReservationStrict, "releaseWebsiteReservationStrict");
     async function releaseWebsiteReservation(itemId, checkoutId) {
       if (!itemId || !checkoutId) return;
       try {
@@ -1320,6 +1454,7 @@ If you received this email, Worker owner alerts are operational.`
       }
     }
     __name(releaseWebsiteReservation, "releaseWebsiteReservation");
+    __name2(releaseWebsiteReservation, "releaseWebsiteReservation");
     async function bridgeConfirmedWebsiteReservation(itemId, checkoutId) {
       if (!itemId || !checkoutId) return;
       try {
@@ -1338,17 +1473,20 @@ If you received this email, Worker owner alerts are operational.`
       }
     }
     __name(bridgeConfirmedWebsiteReservation, "bridgeConfirmedWebsiteReservation");
+    __name2(bridgeConfirmedWebsiteReservation, "bridgeConfirmedWebsiteReservation");
     var OWNER_STOCK_ADJUSTMENT_REASONS = /* @__PURE__ */ new Set(["tester", "sample", "promotional", "damaged", "other", "correction"]);
     function ownerStockAdjustmentKey(itemId) {
       return `item-${String(itemId)}`;
     }
     __name(ownerStockAdjustmentKey, "ownerStockAdjustmentKey");
+    __name2(ownerStockAdjustmentKey, "ownerStockAdjustmentKey");
     function normaliseOwnerStockAdjustmentState(data) {
       const excluded = Math.max(0, Math.floor(Number(data?.excluded || 0)));
       const entries = (Array.isArray(data?.entries) ? data.entries : []).filter((row) => row && Number.isFinite(Number(row.delta))).slice(-100);
       return { excluded, entries, updatedAt: Number(data?.updatedAt || 0) || null };
     }
     __name(normaliseOwnerStockAdjustmentState, "normaliseOwnerStockAdjustmentState");
+    __name2(normaliseOwnerStockAdjustmentState, "normaliseOwnerStockAdjustmentState");
     async function readOwnerStockAdjustmentState(itemId) {
       const store = await getOwnerStockAdjustmentStore();
       const key = ownerStockAdjustmentKey(itemId);
@@ -1356,6 +1494,7 @@ If you received this email, Worker owner alerts are operational.`
       return { store, key, current, state: normaliseOwnerStockAdjustmentState(current?.data) };
     }
     __name(readOwnerStockAdjustmentState, "readOwnerStockAdjustmentState");
+    __name2(readOwnerStockAdjustmentState, "readOwnerStockAdjustmentState");
     async function mutateOwnerStockAdjustmentState(itemId, mutator) {
       const store = await getOwnerStockAdjustmentStore();
       const key = ownerStockAdjustmentKey(itemId);
@@ -1374,6 +1513,7 @@ If you received this email, Worker owner alerts are operational.`
       throw e;
     }
     __name(mutateOwnerStockAdjustmentState, "mutateOwnerStockAdjustmentState");
+    __name2(mutateOwnerStockAdjustmentState, "mutateOwnerStockAdjustmentState");
     async function applyWebsiteReservationOverlay(snapshot, itemId, currentCheckoutId = "") {
       if (!snapshot || !itemId || !Number.isFinite(Number(snapshot.stock))) return snapshot;
       const [{ reservations }, ownerState] = await Promise.all([
@@ -1409,6 +1549,7 @@ If you received this email, Worker owner alerts are operational.`
       };
     }
     __name(applyWebsiteReservationOverlay, "applyWebsiteReservationOverlay");
+    __name2(applyWebsiteReservationOverlay, "applyWebsiteReservationOverlay");
     function json(statusCode, payload, extraHeaders = {}) {
       return {
         statusCode,
@@ -1424,16 +1565,19 @@ If you received this email, Worker owner alerts are operational.`
       };
     }
     __name(json, "json");
+    __name2(json, "json");
     function publicError(statusCode, message, requestId, extraHeaders = {}) {
       return json(statusCode, { success: false, message, requestId }, extraHeaders);
     }
     __name(publicError, "publicError");
+    __name2(publicError, "publicError");
     function requireEnv(name) {
       const value = runtimeEnv(name);
       if (!value || !String(value).trim()) throw new Error(`Missing required server environment variable: ${name}`);
       return String(value).trim();
     }
     __name(requireEnv, "requireEnv");
+    __name2(requireEnv, "requireEnv");
     function checkoutSigningSecret() {
       const secret = requireEnv("CHECKOUT_SIGNING_SECRET");
       if (Buffer.byteLength(secret, "utf8") < 32) {
@@ -1444,12 +1588,14 @@ If you received this email, Worker owner alerts are operational.`
       return secret;
     }
     __name(checkoutSigningSecret, "checkoutSigningSecret");
+    __name2(checkoutSigningSecret, "checkoutSigningSecret");
     function safeEqual(a, b) {
       const left = Buffer.from(String(a || ""), "utf8");
       const right = Buffer.from(String(b || ""), "utf8");
       return left.length === right.length && timingSafeEqual(left, right);
     }
     __name(safeEqual, "safeEqual");
+    __name2(safeEqual, "safeEqual");
     function getAccountsUrl() {
       const raw = runtimeEnv("ZOHO_ACCOUNTS_URL") || "https://accounts.zoho.com";
       const url = new URL(raw);
@@ -1457,6 +1603,7 @@ If you received this email, Worker owner alerts are operational.`
       return `${url.protocol}//${url.hostname}`;
     }
     __name(getAccountsUrl, "getAccountsUrl");
+    __name2(getAccountsUrl, "getAccountsUrl");
     function getExpectedBrowserOrigins(event) {
       const origins = /* @__PURE__ */ new Set();
       for (const raw of [runtimeEnv("ALLOWED_ORIGIN"), runtimeEnv("URL"), runtimeEnv("DEPLOY_PRIME_URL"), runtimeEnv("DEPLOY_URL")]) {
@@ -1471,6 +1618,7 @@ If you received this email, Worker owner alerts are operational.`
       return origins;
     }
     __name(getExpectedBrowserOrigins, "getExpectedBrowserOrigins");
+    __name2(getExpectedBrowserOrigins, "getExpectedBrowserOrigins");
     function isAllowedBrowserOrigin(event) {
       const origin = event.headers?.origin || event.headers?.Origin;
       if (!origin) return true;
@@ -1482,6 +1630,7 @@ If you received this email, Worker owner alerts are operational.`
       }
     }
     __name(isAllowedBrowserOrigin, "isAllowedBrowserOrigin");
+    __name2(isAllowedBrowserOrigin, "isAllowedBrowserOrigin");
     function parseJsonBody(event) {
       if (!event.body) throw new TypeError("Request body is required.");
       if (Buffer.byteLength(event.body, "utf8") > MAX_BODY_BYTES) {
@@ -1498,14 +1647,17 @@ If you received this email, Worker owner alerts are operational.`
       }
     }
     __name(parseJsonBody, "parseJsonBody");
+    __name2(parseJsonBody, "parseJsonBody");
     function cleanText(value, maxLength) {
       return typeof value === "string" ? value.trim().replace(/\s+/g, " ").slice(0, maxLength) : "";
     }
     __name(cleanText, "cleanText");
+    __name2(cleanText, "cleanText");
     function cleanMultiline(value, maxLength) {
       return typeof value === "string" ? value.trim().replace(/\r/g, "").slice(0, maxLength) : "";
     }
     __name(cleanMultiline, "cleanMultiline");
+    __name2(cleanMultiline, "cleanMultiline");
     function validateCourierLocker(value) {
       const locker = cleanText(value, 120);
       if (locker.length < 2 || !/^[A-Za-z0-9 ]+$/.test(locker)) {
@@ -1514,12 +1666,14 @@ If you received this email, Worker owner alerts are operational.`
       return locker;
     }
     __name(validateCourierLocker, "validateCourierLocker");
+    __name2(validateCourierLocker, "validateCourierLocker");
     function validateCheckoutId(value) {
       const id = cleanText(value, 64);
       if (!/^[A-Za-z0-9-]{16,64}$/.test(id)) throw new TypeError("Invalid checkout request identifier.");
       return id;
     }
     __name(validateCheckoutId, "validateCheckoutId");
+    __name2(validateCheckoutId, "validateCheckoutId");
     function validateOrder(input) {
       const customerName = cleanText(input.customerName ?? input.name, 100);
       const email = cleanText(input.email, 100).toLowerCase();
@@ -1554,6 +1708,7 @@ If you received this email, Worker owner alerts are operational.`
       return { customerName, email, mobile, addressLine1, addressLine2, city, province, postalCode, country, courierLocker, checkoutId, flavour, itemId, quantity, amount };
     }
     __name(validateOrder, "validateOrder");
+    __name2(validateOrder, "validateOrder");
     function validateBankCartOrder(input, { trustedStored = false } = {}) {
       const customerName = cleanText(input.customerName ?? input.name, 100);
       const email = cleanText(input.email, 100).toLowerCase();
@@ -1577,47 +1732,64 @@ If you received this email, Worker owner alerts are operational.`
       if (addressLine1.length < 3) throw new TypeError("A valid billing street address is required.");
       if (addressLine2.length < 2 || city.length < 2 || province.length < 2 || postalCode.length < 3 || country.length < 2) throw new TypeError("A complete billing/contact address is required.");
       const rawItems = Array.isArray(input.items) ? input.items : [];
-      if (rawItems.length < 1 || rawItems.length > ALLOWED_FLAVOURS.size) throw new TypeError("Add at least one valid flavour to the basket.");
-      const seenFlavours = /* @__PURE__ */ new Set();
+      if (rawItems.length < 1 || rawItems.length > CHECKOUT_PRODUCT_KEYS.length) throw new TypeError("Add at least one valid product to the basket.");
+      const seenProductKeys = /* @__PURE__ */ new Set();
       const seenItemIds = /* @__PURE__ */ new Set();
       const items = rawItems.map((raw) => {
-        const flavour = cleanText(raw?.flavour, 100);
+        const productKey = checkoutProductKeyFromInput(raw);
+        const spec = checkoutProductDefinition(productKey);
         const requestedItemId = cleanText(raw?.itemId, 40);
         const itemId = /^\d+$/.test(requestedItemId) ? requestedItemId : "";
         const quantity = Number(raw?.quantity);
-        if (!ALLOWED_FLAVOURS.has(flavour)) throw new TypeError("A valid BC10000 flavour is required.");
+        if (!spec || !checkoutProductEnabled(spec)) throw new TypeError("Select a valid product that is enabled for checkout.");
         if (!itemId) throw new TypeError("A verified Zoho item identifier is required. Please reload the shop and rebuild the basket.");
-        if (!Number.isInteger(quantity) || quantity < 1 || quantity > MAX_QUANTITY) throw new TypeError("Each flavour quantity must be between 1 and 5.");
-        if (seenFlavours.has(flavour) || seenItemIds.has(itemId)) throw new TypeError("Each flavour may appear only once in the basket.");
-        seenFlavours.add(flavour);
+        if (!Number.isInteger(quantity) || quantity < 1 || quantity > MAX_QUANTITY) throw new TypeError("Each product quantity must be between 1 and 5.");
+        if (seenProductKeys.has(productKey) || seenItemIds.has(itemId)) throw new TypeError("Each product variant may appear only once in the basket.");
+        seenProductKeys.add(productKey);
         seenItemIds.add(itemId);
-        return { flavour, itemId, quantity };
+        const unitPrice = Number(spec.unitPrice);
+        return {
+          productKey,
+          productFamily: spec.family,
+          variant: spec.variant,
+          flavour: spec.variant,
+          displayName: spec.displayName,
+          itemId,
+          quantity,
+          unitPrice,
+          lineTotal: unitPrice * quantity
+        };
       });
       const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
-      const amount = totalQuantity * PRODUCT_PRICE_ZAR + deliveryCharge;
+      const productsTotal = items.reduce((sum, item) => sum + Number(item.lineTotal || 0), 0);
+      const amount = productsTotal + deliveryCharge;
       const submittedAmount = Number(input.amount);
       if (!Number.isFinite(submittedAmount) || Math.abs(submittedAmount - amount) > PAYMENT_EPSILON) {
         const e = new TypeError("The submitted total does not match server pricing.");
         e.statusCode = 400;
         throw e;
       }
-      return { customerName, email, mobile, addressLine1, addressLine2, city, province, postalCode, country, deliveryMethod, deliveryCharge, courierLocker, checkoutId, items, totalQuantity, amount };
+      return { customerName, email, mobile, addressLine1, addressLine2, city, province, postalCode, country, deliveryMethod, deliveryCharge, courierLocker, checkoutId, items, totalQuantity, productsTotal, amount };
     }
     __name(validateBankCartOrder, "validateBankCartOrder");
+    __name2(validateBankCartOrder, "validateBankCartOrder");
     function splitName(fullName) {
       const parts = fullName.trim().split(/\s+/);
       return { firstName: parts.shift() || fullName, lastName: parts.join(" ") };
     }
     __name(splitName, "splitName");
+    __name2(splitName, "splitName");
     function buildBillingAddress(order) {
       return { attention: order.customerName, address: order.addressLine1, street2: order.addressLine2, city: order.city, state: order.province, zip: order.postalCode, country: order.country, phone: order.mobile };
     }
     __name(buildBillingAddress, "buildBillingAddress");
+    __name2(buildBillingAddress, "buildBillingAddress");
     function buildPrimaryPerson(order, contactPersonId) {
       const { firstName, lastName } = splitName(order.customerName);
       return { ...contactPersonId ? { contact_person_id: String(contactPersonId) } : {}, first_name: firstName, last_name: lastName, email: order.email, phone: order.mobile, mobile: order.mobile, is_primary_contact: true };
     }
     __name(buildPrimaryPerson, "buildPrimaryPerson");
+    __name2(buildPrimaryPerson, "buildPrimaryPerson");
     async function fetchWithTimeout(url, options) {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
@@ -1628,6 +1800,7 @@ If you received this email, Worker owner alerts are operational.`
       }
     }
     __name(fetchWithTimeout, "fetchWithTimeout");
+    __name2(fetchWithTimeout, "fetchWithTimeout");
     async function withZohoSlot(work) {
       const started = Date.now();
       while (activeZohoRequests >= MAX_LOCAL_ZOHO_CONCURRENCY) {
@@ -1647,6 +1820,7 @@ If you received this email, Worker owner alerts are operational.`
       }
     }
     __name(withZohoSlot, "withZohoSlot");
+    __name2(withZohoSlot, "withZohoSlot");
     async function refreshAccessToken() {
       const form = new URLSearchParams({ refresh_token: requireEnv("ZOHO_REFRESH_TOKEN"), client_id: requireEnv("ZOHO_CLIENT_ID"), client_secret: requireEnv("ZOHO_CLIENT_SECRET"), grant_type: "refresh_token" });
       const response = await fetchWithTimeout(`${getAccountsUrl()}/oauth/v2/token`, { method: "POST", headers: { Accept: "application/json", "Content-Type": "application/x-www-form-urlencoded" }, body: form.toString() });
@@ -1668,6 +1842,7 @@ If you received this email, Worker owner alerts are operational.`
       return { accessToken: cachedAccessToken, apiDomain: cachedApiDomain };
     }
     __name(refreshAccessToken, "refreshAccessToken");
+    __name2(refreshAccessToken, "refreshAccessToken");
     async function getAccessToken() {
       if (cachedAccessToken && cachedApiDomain && Date.now() < accessTokenExpiresAt) return { accessToken: cachedAccessToken, apiDomain: cachedApiDomain };
       if (!tokenRefreshPromise) tokenRefreshPromise = refreshAccessToken().finally(() => {
@@ -1676,12 +1851,14 @@ If you received this email, Worker owner alerts are operational.`
       return tokenRefreshPromise;
     }
     __name(getAccessToken, "getAccessToken");
+    __name2(getAccessToken, "getAccessToken");
     function clearCachedAccessToken() {
       cachedAccessToken = null;
       cachedApiDomain = null;
       accessTokenExpiresAt = 0;
     }
     __name(clearCachedAccessToken, "clearCachedAccessToken");
+    __name2(clearCachedAccessToken, "clearCachedAccessToken");
     async function zohoRequest(path, { method = "GET", body } = {}) {
       return withZohoSlot(async () => {
         const normalizedMethod = String(method || "GET").toUpperCase();
@@ -1728,6 +1905,7 @@ If you received this email, Worker owner alerts are operational.`
       });
     }
     __name(zohoRequest, "zohoRequest");
+    __name2(zohoRequest, "zohoRequest");
     async function zohoPdf(path) {
       return withZohoSlot(async () => {
         for (let attempt = 0; attempt < 2; attempt += 1) {
@@ -1756,17 +1934,20 @@ If you received this email, Worker owner alerts are operational.`
       });
     }
     __name(zohoPdf, "zohoPdf");
+    __name2(zohoPdf, "zohoPdf");
     function organizationQuery(extra = {}) {
       const params = new URLSearchParams({ organization_id: requireEnv("ZOHO_ORGANIZATION_ID"), ...extra });
       return params.toString();
     }
     __name(organizationQuery, "organizationQuery");
+    __name2(organizationQuery, "organizationQuery");
     function asFiniteStock(value) {
       if (value === null || value === void 0 || value === "") return null;
       const n = Number(value);
       return Number.isFinite(n) ? n : null;
     }
     __name(asFiniteStock, "asFiniteStock");
+    __name2(asFiniteStock, "asFiniteStock");
     function firstFiniteStock(...values) {
       for (const value of values) {
         const n = asFiniteStock(value);
@@ -1775,10 +1956,12 @@ If you received this email, Worker owner alerts are operational.`
       return null;
     }
     __name(firstFiniteStock, "firstFiniteStock");
+    __name2(firstFiniteStock, "firstFiniteStock");
     function explicitItemAvailableStock(item) {
       return firstFiniteStock(item?.available_stock, item?.actual_available_stock);
     }
     __name(explicitItemAvailableStock, "explicitItemAvailableStock");
+    __name2(explicitItemAvailableStock, "explicitItemAvailableStock");
     function locationStockReading(location, item = null) {
       for (const field of ["location_available_stock", "location_actual_available_stock"]) {
         const value = asFiniteStock(location?.[field]);
@@ -1795,6 +1978,7 @@ If you received this email, Worker owner alerts are operational.`
       return { value: null, source: null, explicit: false };
     }
     __name(locationStockReading, "locationStockReading");
+    __name2(locationStockReading, "locationStockReading");
     function locationPhysicalStock(location) {
       return firstFiniteStock(
         location?.location_stock_on_hand,
@@ -1803,6 +1987,7 @@ If you received this email, Worker owner alerts are operational.`
       );
     }
     __name(locationPhysicalStock, "locationPhysicalStock");
+    __name2(locationPhysicalStock, "locationPhysicalStock");
     function collectStockSignals(item, locationId = "") {
       const signals = {};
       const locations = Array.isArray(item?.locations) ? item.locations : [];
@@ -1821,6 +2006,7 @@ If you received this email, Worker owner alerts are operational.`
       return signals;
     }
     __name(collectStockSignals, "collectStockSignals");
+    __name2(collectStockSignals, "collectStockSignals");
     function chooseStockLocation(item, requestedQuantity = 1) {
       const configuredLocationId = String(runtimeEnv(STOCK_LOCATION_ID_ENV) || "").trim();
       const locations = (Array.isArray(item?.locations) ? item.locations : []).filter((location) => String(location?.status || "active").toLowerCase() !== "inactive");
@@ -1879,14 +2065,17 @@ If you received this email, Worker owner alerts are operational.`
       return { location: null, locationId: "", available, stockSource, physical, isPrimary: false, explicitAvailable: stockSource !== "item_stock_on_hand" };
     }
     __name(chooseStockLocation, "chooseStockLocation");
+    __name2(chooseStockLocation, "chooseStockLocation");
     function normalizeItemName(value) {
       return String(value || "").normalize("NFKC").trim().replace(/[\u2010-\u2015]/g, "-").replace(/[^a-zA-Z0-9]+/g, " ").replace(/\s+/g, " ").toLowerCase();
     }
     __name(normalizeItemName, "normalizeItemName");
+    __name2(normalizeItemName, "normalizeItemName");
     function flavourTokens(flavour) {
       return normalizeItemName(flavour).split(" ").filter(Boolean);
     }
     __name(flavourTokens, "flavourTokens");
+    __name2(flavourTokens, "flavourTokens");
     function itemMatchScore(item, flavour) {
       const n = normalizeItemName(item?.name);
       if (!n) return -1;
@@ -1904,11 +2093,13 @@ If you received this email, Worker owner alerts are operational.`
       return score;
     }
     __name(itemMatchScore, "itemMatchScore");
+    __name2(itemMatchScore, "itemMatchScore");
     async function getItemById(itemId) {
       const data = await zohoRequest(`/items/${encodeURIComponent(String(itemId))}?${organizationQuery()}`);
       return data.item || null;
     }
     __name(getItemById, "getItemById");
+    __name2(getItemById, "getItemById");
     async function listItems(query = {}) {
       const all = [];
       let page = 1;
@@ -1922,6 +2113,7 @@ If you received this email, Worker owner alerts are operational.`
       return all;
     }
     __name(listItems, "listItems");
+    __name2(listItems, "listItems");
     async function getItemsByIds(itemIds) {
       const ids = [...new Set((itemIds || []).map(String).filter((id) => /^\d+$/.test(id)))];
       if (!ids.length) return [];
@@ -1935,6 +2127,7 @@ If you received this email, Worker owner alerts are operational.`
       }
     }
     __name(getItemsByIds, "getItemsByIds");
+    __name2(getItemsByIds, "getItemsByIds");
     async function findExactItemByName(name) {
       const items = await listItems({ name });
       const target = normalizeItemName(name);
@@ -1948,6 +2141,248 @@ If you received this email, Worker owner alerts are operational.`
       return item.item_id ? await getItemById(item.item_id) || item : item;
     }
     __name(findExactItemByName, "findExactItemByName");
+    __name2(findExactItemByName, "findExactItemByName");
+    function ownerInventoryItemMatchScore(item, spec) {
+      if (!item || String(item.status || "active").toLowerCase() === "inactive") return -1;
+      const targetSku = normalizeItemName(spec?.sku).replace(/\s+/g, "");
+      const candidateSkuValues = [item?.sku, item?.item_code, item?.cf_sku, item?.name].map((value) => normalizeItemName(value).replace(/\s+/g, "")).filter(Boolean);
+      if (targetSku && candidateSkuValues.some((value) => value === targetSku || value.includes(targetSku))) return 300;
+      const itemName = normalizeItemName(item?.name);
+      for (const hint of spec?.nameHints || []) {
+        if (itemName && itemName === normalizeItemName(hint)) return 250;
+      }
+      const familyTokens = normalizeItemName(spec?.family).split(" ").filter(Boolean);
+      const variantTokens = normalizeItemName(spec?.variant).split(" ").filter(Boolean);
+      if (itemName && familyTokens.every((token) => itemName.includes(token)) && variantTokens.every((token) => itemName.includes(token))) return 180;
+      return -1;
+    }
+    __name(ownerInventoryItemMatchScore, "ownerInventoryItemMatchScore");
+    __name2(ownerInventoryItemMatchScore, "ownerInventoryItemMatchScore");
+    async function discoverOwnerInventoryCatalog(force = false) {
+      const labels = Object.keys(OWNER_INVENTORY_PRODUCTS);
+      const allResolved = labels.every((label) => resolvedOwnerInventoryItemIds.has(label));
+      if (!force && allResolved && Date.now() < cachedOwnerInventoryCatalogUntil) return;
+      if (!force && Date.now() < cachedOwnerInventoryCatalogUntil && resolvedOwnerInventoryItemIds.size) return;
+      const candidates = (await listItems()).filter((item) => String(item.status || "active").toLowerCase() !== "inactive");
+      ownerInventoryResolutionErrors.clear();
+      for (const label of labels) {
+        const spec = OWNER_INVENTORY_PRODUCTS[label];
+        const ranked = candidates.map((item) => ({ item, score: ownerInventoryItemMatchScore(item, spec) })).filter((entry) => entry.score >= 180).sort((a, b) => b.score - a.score);
+        if (!ranked.length) {
+          resolvedOwnerInventoryItemIds.delete(label);
+          ownerInventoryResolutionErrors.set(label, `Active Zoho item for ${spec.sku} (${label}) was not found.`);
+          continue;
+        }
+        if (ranked.length > 1 && ranked[0].score === ranked[1].score) {
+          resolvedOwnerInventoryItemIds.delete(label);
+          ownerInventoryResolutionErrors.set(label, `Multiple active Zoho items match ${spec.sku} (${label}).`);
+          continue;
+        }
+        resolvedOwnerInventoryItemIds.set(label, String(ranked[0].item.item_id));
+      }
+      cachedOwnerInventoryCatalogUntil = Date.now() + (resolvedOwnerInventoryItemIds.size === labels.length ? PRODUCT_CATALOG_CACHE_MS : 5 * 60 * 1e3);
+    }
+    __name(discoverOwnerInventoryCatalog, "discoverOwnerInventoryCatalog");
+    __name2(discoverOwnerInventoryCatalog, "discoverOwnerInventoryCatalog");
+    function buildOwnerInventorySnapshot(label, spec, item) {
+      let locationState;
+      try {
+        locationState = chooseStockLocation(item, 1);
+      } catch (error) {
+        return {
+          available: false,
+          stock: 0,
+          reason: cleanText(error?.message, 180) || "Zoho stock location could not be verified.",
+          itemId: item?.item_id ? String(item.item_id) : null,
+          itemName: item?.name || null,
+          price: Number.isFinite(Number(item?.rate)) ? Number(item.rate) : null,
+          locationId: null,
+          locationName: null,
+          stockSource: null,
+          physicalStock: null,
+          productFamily: spec.family,
+          variant: spec.variant,
+          sku: spec.sku,
+          checkoutEnabled: spec.checkoutEnabled === true,
+          expectedRetailPrice: spec.expectedRetailPrice
+        };
+      }
+      const configured = Number.isFinite(Number(locationState?.available));
+      const stock = configured ? Math.max(0, Math.floor(Number(locationState.available))) : 0;
+      const active = String(item?.status || "active").toLowerCase() === "active";
+      const physicalStock = Number.isFinite(Number(locationState?.physical)) ? Math.max(0, Math.floor(Number(locationState.physical))) : null;
+      let reason = null;
+      if (!active) reason = "Zoho item is inactive";
+      else if (!configured) reason = "Stock quantity is not configured in Zoho Books";
+      else if (stock <= 0) reason = "Out of stock";
+      return {
+        available: active && configured && stock > 0,
+        stock,
+        reason,
+        itemId: item?.item_id ? String(item.item_id) : null,
+        itemName: item?.name || null,
+        price: Number.isFinite(Number(item?.rate)) ? Number(item.rate) : null,
+        locationId: locationState?.locationId || null,
+        locationName: locationState?.location?.location_name || locationState?.location?.name || null,
+        stockSource: locationState?.stockSource || null,
+        physicalStock,
+        productFamily: spec.family,
+        variant: spec.variant,
+        sku: spec.sku,
+        checkoutEnabled: spec.checkoutEnabled === true,
+        expectedRetailPrice: spec.expectedRetailPrice
+      };
+    }
+    __name(buildOwnerInventorySnapshot, "buildOwnerInventorySnapshot");
+    __name2(buildOwnerInventorySnapshot, "buildOwnerInventorySnapshot");
+    async function getOwnerInventoryAvailability(forceStockRefresh = false, forceCatalogRefresh = false) {
+      if (forceCatalogRefresh) {
+        cachedProductCatalogUntil = 0;
+        cachedOwnerInventoryCatalogUntil = 0;
+      }
+      try {
+        await discoverProductCatalog(forceCatalogRefresh);
+      } catch (error) {
+        console.error("Zoho BC10000 catalogue discovery failed for owner inventory", { message: error.message });
+      }
+      try {
+        await discoverOwnerInventoryCatalog(forceCatalogRefresh);
+      } catch (error) {
+        console.error("Zoho ELFA catalogue discovery failed for owner inventory", { message: error.message });
+      }
+      const bcFlavours = Object.keys(PRODUCT_NAMES);
+      const ownerLabels = Object.keys(OWNER_INVENTORY_PRODUCTS);
+      const allIds = [
+        ...bcFlavours.map((flavour) => resolvedProductItemIds.get(flavour)),
+        ...ownerLabels.map((label) => resolvedOwnerInventoryItemIds.get(label))
+      ].filter(Boolean);
+      let detailedItems = [];
+      try {
+        detailedItems = await getItemsByIds(allIds);
+      } catch (error) {
+        console.error("Zoho combined inventory detail lookup failed", { message: error.message });
+      }
+      const byId = new Map(detailedItems.filter(Boolean).map((item) => [String(item.item_id || ""), item]));
+      const result = {};
+      for (const flavour of bcFlavours) {
+        const label = `BC10000 \xB7 ${flavour}`;
+        try {
+          const mappedId = resolvedProductItemIds.get(flavour);
+          let item = mappedId ? byId.get(String(mappedId)) : null;
+          if (!item) item = await resolveProductItem(flavour, false);
+          if (!item?.item_id || itemMatchScore(item, flavour) < 60) throw Object.assign(new Error(`Zoho item mapping for ${flavour} could not be verified.`), { statusCode: 409 });
+          resolvedProductItemIds.set(flavour, String(item.item_id));
+          let snapshot = buildStockSnapshot(flavour, item, 1);
+          if (snapshot.reason === "Stock quantity is not configured in Zoho Books") {
+            const fullItem = await getItemById(item.item_id);
+            if (fullItem) {
+              item = fullItem;
+              snapshot = buildStockSnapshot(flavour, item, 1);
+            }
+          }
+          result[label] = {
+            available: snapshot.available,
+            stock: snapshot.stock,
+            reason: snapshot.reason || (snapshot.available ? null : "Out of stock"),
+            itemId: snapshot.itemId,
+            itemName: snapshot.itemName,
+            price: snapshot.price,
+            locationId: snapshot.locationId,
+            locationName: snapshot.locationName,
+            stockSource: snapshot.stockSource || null,
+            physicalStock: snapshot.physicalStock,
+            productFamily: "BC10000",
+            variant: flavour,
+            sku: cleanText(item?.sku || item?.item_code, 80) || null,
+            checkoutEnabled: true,
+            expectedRetailPrice: PRODUCT_PRICE_ZAR
+          };
+        } catch (error) {
+          result[label] = { available: false, stock: 0, reason: error.statusCode === 409 ? error.message : "Zoho stock lookup failed", itemId: resolvedProductItemIds.get(flavour) || null, itemName: null, price: null, productFamily: "BC10000", variant: flavour, sku: null, checkoutEnabled: true, expectedRetailPrice: PRODUCT_PRICE_ZAR };
+        }
+      }
+      for (const label of ownerLabels) {
+        const spec = OWNER_INVENTORY_PRODUCTS[label];
+        try {
+          const mappedId = resolvedOwnerInventoryItemIds.get(label);
+          if (!mappedId) throw Object.assign(new Error(ownerInventoryResolutionErrors.get(label) || `Zoho item mapping for ${label} is not available.`), { statusCode: 409 });
+          let item = byId.get(String(mappedId));
+          if (!item) item = await getItemById(mappedId);
+          if (!item?.item_id || ownerInventoryItemMatchScore(item, spec) < 180) throw Object.assign(new Error(`Zoho item mapping for ${label} could not be verified.`), { statusCode: 409 });
+          resolvedOwnerInventoryItemIds.set(label, String(item.item_id));
+          let snapshot = buildOwnerInventorySnapshot(label, spec, item);
+          if (snapshot.reason === "Stock quantity is not configured in Zoho Books") {
+            const fullItem = await getItemById(item.item_id);
+            if (fullItem) snapshot = buildOwnerInventorySnapshot(label, spec, fullItem);
+          }
+          result[label] = snapshot;
+        } catch (error) {
+          result[label] = { available: false, stock: 0, reason: cleanText(error?.message, 180) || "Zoho stock lookup failed", itemId: resolvedOwnerInventoryItemIds.get(label) || null, itemName: null, price: null, productFamily: spec.family, variant: spec.variant, sku: spec.sku, checkoutEnabled: false, expectedRetailPrice: spec.expectedRetailPrice };
+        }
+      }
+      return result;
+    }
+    __name(getOwnerInventoryAvailability, "getOwnerInventoryAvailability");
+    __name2(getOwnerInventoryAvailability, "getOwnerInventoryAvailability");
+    async function getPublicInventoryCatalogue(forceStockRefresh = false, forceCatalogRefresh = false) {
+      const [bcAvailability, elfaAvailability] = await Promise.all([
+        getProductAvailability(forceStockRefresh, forceCatalogRefresh, true),
+        getOwnerInventoryAvailability(forceStockRefresh, forceCatalogRefresh)
+      ]);
+      const catalogue = {};
+      for (const [flavour, state] of Object.entries(bcAvailability || {})) {
+        const productKey = BC_CHECKOUT_KEYS_BY_FLAVOUR[flavour];
+        const spec = CHECKOUT_PRODUCTS[productKey];
+        if (!spec) continue;
+        catalogue[productKey] = {
+          productKey,
+          productFamily: spec.family,
+          variant: spec.variant,
+          displayName: spec.displayName,
+          unitPrice: Number(spec.unitPrice),
+          available: state?.available === true,
+          stock: Math.max(0, Math.floor(Number(state?.stock || 0))),
+          itemId: cleanText(state?.itemId || state?.item_id, 80) || null,
+          reason: cleanText(state?.reason, 180) || null,
+          checkoutEnabled: true
+        };
+      }
+      for (const [label, state] of Object.entries(elfaAvailability || {})) {
+        const ownerSpec = OWNER_INVENTORY_PRODUCTS[label];
+        const productKey = CHECKOUT_PRODUCT_KEYS.find((key) => CHECKOUT_PRODUCTS[key]?.inventoryLabel === label);
+        const spec = productKey ? CHECKOUT_PRODUCTS[productKey] : null;
+        if (!ownerSpec || !spec) continue;
+        const itemId = cleanText(state?.itemId || state?.item_id, 80) || null;
+        let adjusted = state;
+        if (itemId && Number.isFinite(Number(state?.stock))) {
+          try {
+            adjusted = await applyWebsiteReservationOverlay({
+              ...state,
+              requestedQuantity: 1,
+              canFulfil: state?.available === true && Number(state?.stock || 0) >= 1
+            }, itemId);
+          } catch (_) {
+            adjusted = { ...state, available: false, stock: 0, reason: "Website stock reservation state could not be verified." };
+          }
+        }
+        const priceMatches = Number.isFinite(Number(adjusted?.price)) && Math.abs(Number(adjusted.price) - Number(spec.unitPrice)) <= PAYMENT_EPSILON;
+        catalogue[productKey] = {
+          productKey,
+          productFamily: spec.family,
+          variant: spec.variant,
+          displayName: spec.displayName,
+          unitPrice: Number(spec.unitPrice),
+          available: adjusted?.available === true && priceMatches && ownerSpec.checkoutEnabled === true,
+          stock: Math.max(0, Math.floor(Number(adjusted?.stock || 0))),
+          itemId,
+          reason: !priceMatches ? `Zoho item price does not match R${Number(spec.unitPrice).toFixed(2)}` : cleanText(adjusted?.reason, 180) || null,
+          checkoutEnabled: ownerSpec.checkoutEnabled === true && priceMatches
+        };
+      }
+      return catalogue;
+    }
+    __name(getPublicInventoryCatalogue, "getPublicInventoryCatalogue");
+    __name2(getPublicInventoryCatalogue, "getPublicInventoryCatalogue");
     async function discoverProductCatalog(force = false) {
       const allResolved = Object.keys(PRODUCT_NAMES).every((f) => resolvedProductItemIds.has(f));
       if (!force && allResolved && Date.now() < cachedProductCatalogUntil) return;
@@ -1987,6 +2422,7 @@ If you received this email, Worker owner alerts are operational.`
       cachedProductCatalogUntil = Date.now() + PRODUCT_CATALOG_CACHE_MS;
     }
     __name(discoverProductCatalog, "discoverProductCatalog");
+    __name2(discoverProductCatalog, "discoverProductCatalog");
     async function resolveProductItem(flavour, forceDiscovery = false) {
       if (!PRODUCT_NAMES[flavour]) {
         const e = new Error("Unknown BC10000 flavour.");
@@ -2030,6 +2466,7 @@ If you received this email, Worker owner alerts are operational.`
       return item;
     }
     __name(resolveProductItem, "resolveProductItem");
+    __name2(resolveProductItem, "resolveProductItem");
     async function getProductAvailability(forceStockRefresh = false, forceCatalogRefresh = false, includeWebsiteReservations = false) {
       if (!forceStockRefresh && cachedAvailability && Date.now() < cachedAvailabilityUntil) {
         return includeWebsiteReservations ? applyAvailabilityReservations(cachedAvailability) : cachedAvailability;
@@ -2094,6 +2531,7 @@ If you received this email, Worker owner alerts are operational.`
       return includeWebsiteReservations ? applyAvailabilityReservations(result) : result;
     }
     __name(getProductAvailability, "getProductAvailability");
+    __name2(getProductAvailability, "getProductAvailability");
     async function applyAvailabilityReservations(availability) {
       const output = {};
       for (const [flavour, state] of Object.entries(availability || {})) {
@@ -2125,6 +2563,7 @@ If you received this email, Worker owner alerts are operational.`
       return output;
     }
     __name(applyAvailabilityReservations, "applyAvailabilityReservations");
+    __name2(applyAvailabilityReservations, "applyAvailabilityReservations");
     function buildStockSnapshot(flavour, item, quantity = 1) {
       const requestedQuantity = Number.isInteger(Number(quantity)) && Number(quantity) > 0 ? Number(quantity) : 1;
       let locationState;
@@ -2177,6 +2616,7 @@ If you received this email, Worker owner alerts are operational.`
       };
     }
     __name(buildStockSnapshot, "buildStockSnapshot");
+    __name2(buildStockSnapshot, "buildStockSnapshot");
     async function resolveSelectedProductItem(flavour, expectedItemId = "", forceFresh = false) {
       const supplied = String(expectedItemId || "").trim();
       if (supplied) {
@@ -2205,6 +2645,7 @@ If you received this email, Worker owner alerts are operational.`
       return resolveProductItem(flavour, forceFresh);
     }
     __name(resolveSelectedProductItem, "resolveSelectedProductItem");
+    __name2(resolveSelectedProductItem, "resolveSelectedProductItem");
     async function checkExactStock(flavour, quantity, forceFresh = false, expectedItemId = "") {
       if (!ALLOWED_FLAVOURS.has(flavour)) {
         const e = new TypeError("A valid BC10000 flavour is required.");
@@ -2227,6 +2668,7 @@ If you received this email, Worker owner alerts are operational.`
       return { item, snapshot };
     }
     __name(checkExactStock, "checkExactStock");
+    __name2(checkExactStock, "checkExactStock");
     async function requireStockState(flavour, quantity, expectedItemId = "") {
       const { item, snapshot } = await checkExactStock(flavour, quantity, true, expectedItemId);
       if (!snapshot.canFulfil) {
@@ -2240,6 +2682,136 @@ If you received this email, Worker owner alerts are operational.`
       return { item, snapshot };
     }
     __name(requireStockState, "requireStockState");
+    __name2(requireStockState, "requireStockState");
+    function buildCheckoutStockSnapshot(spec, item, quantity = 1) {
+      const requestedQuantity = Number.isInteger(Number(quantity)) && Number(quantity) > 0 ? Number(quantity) : 1;
+      let locationState;
+      try {
+        locationState = chooseStockLocation(item, requestedQuantity);
+      } catch (error) {
+        return {
+          productKey: null,
+          productFamily: spec.family,
+          variant: spec.variant,
+          displayName: spec.displayName,
+          flavour: spec.variant,
+          itemId: item?.item_id ? String(item.item_id) : null,
+          itemName: item?.name || null,
+          available: false,
+          canFulfil: false,
+          stock: 0,
+          physicalStock: null,
+          stockSignals: {},
+          stockSource: null,
+          requestedQuantity,
+          price: Number(item?.rate),
+          unitPrice: Number(spec.unitPrice),
+          locationId: null,
+          locationName: null,
+          reason: error.message
+        };
+      }
+      const stock = locationState.available;
+      const active = String(item?.status || "").toLowerCase() === "active";
+      const priceMatches = Number.isFinite(Number(item?.rate)) && Math.abs(Number(item.rate) - Number(spec.unitPrice)) <= PAYMENT_EPSILON;
+      const configured = stock !== null;
+      const wholeStock = configured ? Math.max(0, Math.floor(Number(stock))) : 0;
+      const physicalStock = locationState.physical === null ? null : Math.max(0, Math.floor(Number(locationState.physical)));
+      let reason = null;
+      if (!active) reason = "Item inactive in Zoho Books";
+      else if (!priceMatches) reason = `Zoho item price does not match R${Number(spec.unitPrice).toFixed(2)}`;
+      else if (!configured) reason = "Stock quantity is not configured in Zoho Books";
+      else if (wholeStock < requestedQuantity) reason = `Only ${wholeStock} unit(s) are currently available.`;
+      return {
+        productKey: null,
+        productFamily: spec.family,
+        variant: spec.variant,
+        displayName: spec.displayName,
+        flavour: spec.variant,
+        itemId: item?.item_id ? String(item.item_id) : null,
+        itemName: item?.name || null,
+        available: active && priceMatches && configured && wholeStock > 0,
+        canFulfil: active && priceMatches && configured && wholeStock >= requestedQuantity,
+        stock: wholeStock,
+        physicalStock,
+        stockSignals: collectStockSignals(item, locationState.locationId || ""),
+        stockSource: locationState.stockSource || null,
+        requestedQuantity,
+        price: Number(item?.rate),
+        unitPrice: Number(spec.unitPrice),
+        locationId: locationState.locationId || null,
+        locationName: locationState.location?.location_name || locationState.location?.name || null,
+        reason
+      };
+    }
+    __name(buildCheckoutStockSnapshot, "buildCheckoutStockSnapshot");
+    __name2(buildCheckoutStockSnapshot, "buildCheckoutStockSnapshot");
+    async function requireCheckoutStockState(line) {
+      const productKey = checkoutProductKeyFromInput(line);
+      const spec = checkoutProductDefinition(productKey);
+      if (!spec || !checkoutProductEnabled(spec)) {
+        const e = new TypeError("This product is not enabled for checkout.");
+        e.statusCode = 400;
+        throw e;
+      }
+      if (spec.family === "BC10000") {
+        const result = await requireStockState(spec.variant, line.quantity, line.itemId);
+        return {
+          item: result.item,
+          snapshot: {
+            ...result.snapshot,
+            productKey,
+            productFamily: spec.family,
+            variant: spec.variant,
+            displayName: spec.displayName,
+            unitPrice: Number(spec.unitPrice)
+          }
+        };
+      }
+      const ownerSpec = OWNER_INVENTORY_PRODUCTS[spec.inventoryLabel];
+      if (!ownerSpec || ownerSpec.checkoutEnabled !== true) {
+        const e = new Error("This ELFA product has not been enabled for checkout.");
+        e.statusCode = 409;
+        throw e;
+      }
+      await discoverOwnerInventoryCatalog(false);
+      const mappedId = String(resolvedOwnerInventoryItemIds.get(spec.inventoryLabel) || "");
+      const expectedItemId = String(line.itemId || "").trim();
+      if (!mappedId || !/^\d+$/.test(mappedId)) {
+        const e = new Error(`Zoho item mapping for ${spec.displayName} is not available.`);
+        e.statusCode = 409;
+        e.freshAvailabilityNeeded = true;
+        throw e;
+      }
+      if (!/^\d+$/.test(expectedItemId) || expectedItemId !== mappedId) {
+        const e = new Error(`${spec.displayName} no longer matches the verified Zoho item catalogue. Please refresh the shop.`);
+        e.statusCode = 409;
+        e.freshAvailabilityNeeded = true;
+        throw e;
+      }
+      const item = await getItemById(mappedId);
+      if (!item?.item_id || ownerInventoryItemMatchScore(item, ownerSpec) < 180) {
+        const e = new Error(`Zoho item mapping for ${spec.displayName} could not be verified.`);
+        e.statusCode = 409;
+        e.freshAvailabilityNeeded = true;
+        throw e;
+      }
+      const snapshot = {
+        ...buildCheckoutStockSnapshot(spec, item, line.quantity),
+        productKey
+      };
+      if (!snapshot.canFulfil) {
+        const detail = snapshot.reason || "This product is not currently available.";
+        const message = snapshot.stock === 0 ? `${spec.displayName} is now out of stock.` : Number(snapshot.stock) < Number(line.quantity) ? `Only ${snapshot.stock} unit(s) of ${spec.displayName} remain. Please lower the quantity.` : detail;
+        const e = new Error(message);
+        e.statusCode = 409;
+        e.freshAvailabilityNeeded = true;
+        throw e;
+      }
+      return { item, snapshot };
+    }
+    __name(requireCheckoutStockState, "requireCheckoutStockState");
+    __name2(requireCheckoutStockState, "requireCheckoutStockState");
     async function findCustomerByEmail(email) {
       const data = await zohoRequest(`/contacts?${organizationQuery({ contact_type: "customer", email, per_page: "2" })}`);
       const contacts = Array.isArray(data.contacts) ? data.contacts : [];
@@ -2252,11 +2824,13 @@ If you received this email, Worker owner alerts are operational.`
       return exact[0] || null;
     }
     __name(findCustomerByEmail, "findCustomerByEmail");
+    __name2(findCustomerByEmail, "findCustomerByEmail");
     async function createCustomer(order) {
       const data = await zohoRequest(`/contacts?${organizationQuery()}`, { method: "POST", body: { contact_name: order.customerName, contact_type: "customer", billing_address: buildBillingAddress(order), contact_persons: [buildPrimaryPerson(order)] } });
       return data.contact;
     }
     __name(createCustomer, "createCustomer");
+    __name2(createCustomer, "createCustomer");
     async function updateCustomer(existing, order) {
       const contactId = String(existing.contact_id || "");
       const currentData = await zohoRequest(`/contacts/${encodeURIComponent(contactId)}?${organizationQuery()}`);
@@ -2270,29 +2844,35 @@ If you received this email, Worker owner alerts are operational.`
       return data.contact || current;
     }
     __name(updateCustomer, "updateCustomer");
+    __name2(updateCustomer, "updateCustomer");
     async function syncCustomer(order) {
       const existing = await findCustomerByEmail(order.email);
       return existing ? updateCustomer(existing, order) : createCustomer(order);
     }
     __name(syncCustomer, "syncCustomer");
+    __name2(syncCustomer, "syncCustomer");
     function todayISO() {
       return (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
     }
     __name(todayISO, "todayISO");
+    __name2(todayISO, "todayISO");
     function futureDateISO(days) {
       const d = /* @__PURE__ */ new Date();
       d.setUTCDate(d.getUTCDate() + days);
       return d.toISOString().slice(0, 10);
     }
     __name(futureDateISO, "futureDateISO");
+    __name2(futureDateISO, "futureDateISO");
     function webReference(checkoutId) {
       return `WEB-${checkoutId}`.slice(0, 100);
     }
     __name(webReference, "webReference");
+    __name2(webReference, "webReference");
     function isVoidedStatus(status) {
       return ["void", "voided", "cancelled", "canceled"].includes(String(status || "").toLowerCase());
     }
     __name(isVoidedStatus, "isVoidedStatus");
+    __name2(isVoidedStatus, "isVoidedStatus");
     function assertDirectInvoiceMatches(invoice, order, customer, reference) {
       if (!invoice?.invoice_id) {
         const e = new Error("Recovered Zoho invoice is incomplete.");
@@ -2329,6 +2909,7 @@ If you received this email, Worker owner alerts are operational.`
       return invoice;
     }
     __name(assertDirectInvoiceMatches, "assertDirectInvoiceMatches");
+    __name2(assertDirectInvoiceMatches, "assertDirectInvoiceMatches");
     async function findRecoverableDirectInvoice(order, customer, reference, progress = {}) {
       if (progress.invoiceId) {
         try {
@@ -2351,6 +2932,7 @@ If you received this email, Worker owner alerts are operational.`
       return assertDirectInvoiceMatches(await getInvoice(summaries[0].invoice_id), order, customer, reference);
     }
     __name(findRecoverableDirectInvoice, "findRecoverableDirectInvoice");
+    __name2(findRecoverableDirectInvoice, "findRecoverableDirectInvoice");
     async function createDirectInvoice(order, customer, productItem, reference, stockSnapshot) {
       const locationId = String(stockSnapshot?.locationId || "").trim();
       const productLine = { item_id: String(productItem.item_id), rate: PRODUCT_PRICE_ZAR, quantity: order.quantity };
@@ -2371,6 +2953,7 @@ If you received this email, Worker owner alerts are operational.`
       return data.invoice;
     }
     __name(createDirectInvoice, "createDirectInvoice");
+    __name2(createDirectInvoice, "createDirectInvoice");
     async function updateInvoiceControls(invoiceId, reference, courierLocker) {
       const expiresAt = new Date(Date.now() + CHECKOUT_TOKEN_LIFETIME_MS).toISOString();
       const body = {
@@ -2382,6 +2965,7 @@ If you received this email, Worker owner alerts are operational.`
       return data.invoice;
     }
     __name(updateInvoiceControls, "updateInvoiceControls");
+    __name2(updateInvoiceControls, "updateInvoiceControls");
     async function voidInvoice(invoiceId) {
       try {
         await zohoRequest(`/invoices/${encodeURIComponent(invoiceId)}/status/void?${organizationQuery()}`, { method: "POST" });
@@ -2390,6 +2974,7 @@ If you received this email, Worker owner alerts are operational.`
       }
     }
     __name(voidInvoice, "voidInvoice");
+    __name2(voidInvoice, "voidInvoice");
     async function markInvoiceSent(invoiceId) {
       await zohoRequest(`/invoices/${encodeURIComponent(invoiceId)}/status/sent?${organizationQuery()}`, { method: "POST" });
       const invoice = await getInvoice(invoiceId);
@@ -2402,11 +2987,13 @@ If you received this email, Worker owner alerts are operational.`
       return invoice;
     }
     __name(markInvoiceSent, "markInvoiceSent");
+    __name2(markInvoiceSent, "markInvoiceSent");
     function isPaypalConfigured(invoice) {
       const gateways = Array.isArray(invoice?.payment_options?.payment_gateways) ? invoice.payment_options.payment_gateways : [];
       return gateways.some((g) => String(g.gateway_name || "").toLowerCase() === "paypal" && g.configured === true);
     }
     __name(isPaypalConfigured, "isPaypalConfigured");
+    __name2(isPaypalConfigured, "isPaypalConfigured");
     function isAllowedPaymentHostname(hostname) {
       const host = String(hostname || "").toLowerCase();
       if (!host) return false;
@@ -2417,6 +3004,7 @@ If you received this email, Worker owner alerts are operational.`
       return false;
     }
     __name(isAllowedPaymentHostname, "isAllowedPaymentHostname");
+    __name2(isAllowedPaymentHostname, "isAllowedPaymentHostname");
     function validatePaymentUrl(raw) {
       let url;
       try {
@@ -2432,16 +3020,19 @@ If you received this email, Worker owner alerts are operational.`
       return url.toString();
     }
     __name(validatePaymentUrl, "validatePaymentUrl");
+    __name2(validatePaymentUrl, "validatePaymentUrl");
     async function getInvoice(invoiceId) {
       const data = await zohoRequest(`/invoices/${encodeURIComponent(invoiceId)}?${organizationQuery()}`);
       return data.invoice || {};
     }
     __name(getInvoice, "getInvoice");
+    __name2(getInvoice, "getInvoice");
     async function generatePaymentLink(invoiceId) {
       const data = await zohoRequest(`/share/paymentlink?${organizationQuery({ transaction_id: String(invoiceId), transaction_type: "invoice", link_type: "public", expiry_time: futureDateISO(1) })}`);
       return data.data?.share_link || null;
     }
     __name(generatePaymentLink, "generatePaymentLink");
+    __name2(generatePaymentLink, "generatePaymentLink");
     async function allocateBankPaymentReference() {
       const store = getD1Store("vestige-order-sequence");
       const key = "bank-order";
@@ -2473,8 +3064,9 @@ If you received this email, Worker owner alerts are operational.`
       throw e;
     }
     __name(allocateBankPaymentReference, "allocateBankPaymentReference");
+    __name2(allocateBankPaymentReference, "allocateBankPaymentReference");
     function publicEftDetails() {
-      const pick = /* @__PURE__ */ __name((name) => cleanText(runtimeEnv(name), 120), "pick");
+      const pick = /* @__PURE__ */ __name2((name) => cleanText(runtimeEnv(name), 120), "pick");
       const details = {
         bankName: pick("EFT_BANK_NAME"),
         accountHolder: pick("EFT_ACCOUNT_HOLDER"),
@@ -2489,6 +3081,7 @@ If you received this email, Worker owner alerts are operational.`
       };
     }
     __name(publicEftDetails, "publicEftDetails");
+    __name2(publicEftDetails, "publicEftDetails");
     function paymentAdminSecret() {
       const secret = requireEnv("VESTIGE_PAYMENT_ADMIN_KEY");
       if (Buffer.byteLength(secret, "utf8") < 32) {
@@ -2499,6 +3092,7 @@ If you received this email, Worker owner alerts are operational.`
       return secret;
     }
     __name(paymentAdminSecret, "paymentAdminSecret");
+    __name2(paymentAdminSecret, "paymentAdminSecret");
     function requirePaymentAdmin(event) {
       const supplied = event.headers?.["x-vestige-payment-admin-key"] || event.headers?.["X-Vestige-Payment-Admin-Key"];
       if (!safeEqual(supplied, paymentAdminSecret())) {
@@ -2508,6 +3102,7 @@ If you received this email, Worker owner alerts are operational.`
       }
     }
     __name(requirePaymentAdmin, "requirePaymentAdmin");
+    __name2(requirePaymentAdmin, "requirePaymentAdmin");
     function validatePaymentReference(value) {
       const ref = cleanText(value, 24).toUpperCase();
       if (!/^V\d{4,8}$/.test(ref)) {
@@ -2518,6 +3113,7 @@ If you received this email, Worker owner alerts are operational.`
       return ref;
     }
     __name(validatePaymentReference, "validatePaymentReference");
+    __name2(validatePaymentReference, "validatePaymentReference");
     function validatePaymentDate(value) {
       const date = cleanText(value, 10);
       if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
@@ -2542,6 +3138,7 @@ If you received this email, Worker owner alerts are operational.`
       return date;
     }
     __name(validatePaymentDate, "validatePaymentDate");
+    __name2(validatePaymentDate, "validatePaymentDate");
     async function indexBankPaymentReference(paymentReference, checkoutId) {
       const store = getD1Store("vestige-bank-payment-reference-index");
       const key = String(paymentReference);
@@ -2555,6 +3152,7 @@ If you received this email, Worker owner alerts are operational.`
       throw e;
     }
     __name(indexBankPaymentReference, "indexBankPaymentReference");
+    __name2(indexBankPaymentReference, "indexBankPaymentReference");
     async function locateBankCheckoutByReference(paymentReference) {
       const ref = validatePaymentReference(paymentReference);
       const indexStore = getD1Store("vestige-bank-payment-reference-index");
@@ -2604,6 +3202,7 @@ If you received this email, Worker owner alerts are operational.`
       };
     }
     __name(locateBankCheckoutByReference, "locateBankCheckoutByReference");
+    __name2(locateBankCheckoutByReference, "locateBankCheckoutByReference");
     async function acquirePaymentConfirmationLock(paymentReference) {
       const store = getD1Store("vestige-payment-confirmation-locks");
       const key = String(paymentReference);
@@ -2622,6 +3221,7 @@ If you received this email, Worker owner alerts are operational.`
       throw e;
     }
     __name(acquirePaymentConfirmationLock, "acquirePaymentConfirmationLock");
+    __name2(acquirePaymentConfirmationLock, "acquirePaymentConfirmationLock");
     async function releasePaymentConfirmationLock(lock) {
       if (!lock?.store || !lock?.key || !lock?.ownerId) return;
       try {
@@ -2633,6 +3233,7 @@ If you received this email, Worker owner alerts are operational.`
       }
     }
     __name(releasePaymentConfirmationLock, "releasePaymentConfirmationLock");
+    __name2(releasePaymentConfirmationLock, "releasePaymentConfirmationLock");
     function storedBankOrderFromCheckout(checkoutId, data) {
       const progress = data?.progress || {};
       const customer = progress.customer || {};
@@ -2654,6 +3255,7 @@ If you received this email, Worker owner alerts are operational.`
       }, { trustedStored: true });
     }
     __name(storedBankOrderFromCheckout, "storedBankOrderFromCheckout");
+    __name2(storedBankOrderFromCheckout, "storedBankOrderFromCheckout");
     async function requireActiveCheckoutReservation(itemId, checkoutId, quantity) {
       const { reservations } = await readWebsiteReservations(itemId);
       const row = reservations.find((entry) => String(entry.checkoutId) === String(checkoutId));
@@ -2665,6 +3267,7 @@ If you received this email, Worker owner alerts are operational.`
       return row;
     }
     __name(requireActiveCheckoutReservation, "requireActiveCheckoutReservation");
+    __name2(requireActiveCheckoutReservation, "requireActiveCheckoutReservation");
     function bankInvoiceLineSignature(lines) {
       return (Array.isArray(lines) ? lines : []).map((line) => ({
         itemId: String(line.item_id || ""),
@@ -2673,6 +3276,7 @@ If you received this email, Worker owner alerts are operational.`
       })).sort((a, b) => a.itemId.localeCompare(b.itemId));
     }
     __name(bankInvoiceLineSignature, "bankInvoiceLineSignature");
+    __name2(bankInvoiceLineSignature, "bankInvoiceLineSignature");
     function assertBankInvoiceMatches(invoice, order, customer, paymentReference) {
       if (!invoice?.invoice_id) {
         const e = new Error("Recovered Zoho invoice is incomplete.");
@@ -2694,7 +3298,7 @@ If you received this email, Worker owner alerts are operational.`
         e.statusCode = 409;
         throw e;
       }
-      const expected = order.items.map((line) => ({ itemId: String(line.itemId), quantity: Number(line.quantity), rate: PRODUCT_PRICE_ZAR })).sort((a, b) => a.itemId.localeCompare(b.itemId));
+      const expected = order.items.map((line) => ({ itemId: String(line.itemId), quantity: Number(line.quantity), rate: Number(line.unitPrice) })).sort((a, b) => a.itemId.localeCompare(b.itemId));
       const actual = bankInvoiceLineSignature(invoice.line_items);
       if (JSON.stringify(actual) !== JSON.stringify(expected)) {
         const e = new Error("Recovered invoice basket does not match this checkout. Manual review is required.");
@@ -2714,6 +3318,7 @@ If you received this email, Worker owner alerts are operational.`
       return invoice;
     }
     __name(assertBankInvoiceMatches, "assertBankInvoiceMatches");
+    __name2(assertBankInvoiceMatches, "assertBankInvoiceMatches");
     async function findBankInvoice(order, customer, paymentReference, progress = {}) {
       if (progress.bankInvoiceId) {
         try {
@@ -2734,10 +3339,11 @@ If you received this email, Worker owner alerts are operational.`
       return assertBankInvoiceMatches(await getInvoice(matches[0].invoice_id), order, customer, paymentReference);
     }
     __name(findBankInvoice, "findBankInvoice");
+    __name2(findBankInvoice, "findBankInvoice");
     async function createBankInvoice(order, customer, paymentReference, paymentDate, stockLines) {
       const line_items = stockLines.map(({ line, item, snapshot }) => ({
         item_id: String(item.item_id),
-        rate: PRODUCT_PRICE_ZAR,
+        rate: Number(line.unitPrice),
         quantity: Number(line.quantity),
         ...String(snapshot?.locationId || "").trim() ? { location_id: String(snapshot.locationId).trim() } : {}
       }));
@@ -2754,6 +3360,7 @@ If you received this email, Worker owner alerts are operational.`
       return data.invoice || {};
     }
     __name(createBankInvoice, "createBankInvoice");
+    __name2(createBankInvoice, "createBankInvoice");
     async function emailPaidBankInvoice(invoiceId, order, paymentReference) {
       const email = cleanText(order?.email, 160).toLowerCase();
       if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -2778,6 +3385,7 @@ If you received this email, Worker owner alerts are operational.`
       return { sent: true, message: cleanText(data?.message, 240) || "Zoho invoice email scheduled." };
     }
     __name(emailPaidBankInvoice, "emailPaidBankInvoice");
+    __name2(emailPaidBankInvoice, "emailPaidBankInvoice");
     function assertBankPaymentMatches(payment, customer, invoice, paymentReference, amount) {
       if (!payment?.payment_id) {
         const e = new Error("Recovered Zoho customer payment is incomplete.");
@@ -2814,11 +3422,13 @@ If you received this email, Worker owner alerts are operational.`
       return payment;
     }
     __name(assertBankPaymentMatches, "assertBankPaymentMatches");
+    __name2(assertBankPaymentMatches, "assertBankPaymentMatches");
     async function getCustomerPayment(paymentId) {
       const data = await zohoRequest(`/customerpayments/${encodeURIComponent(paymentId)}?${organizationQuery()}`);
       return data.payment || {};
     }
     __name(getCustomerPayment, "getCustomerPayment");
+    __name2(getCustomerPayment, "getCustomerPayment");
     async function findBankCustomerPayment(customer, invoice, paymentReference, amount, progress = {}) {
       if (progress.bankPaymentId) {
         try {
@@ -2838,6 +3448,7 @@ If you received this email, Worker owner alerts are operational.`
       return assertBankPaymentMatches(await getCustomerPayment(matches[0].payment_id), customer, invoice, paymentReference, amount);
     }
     __name(findBankCustomerPayment, "findBankCustomerPayment");
+    __name2(findBankCustomerPayment, "findBankCustomerPayment");
     async function createBankCustomerPayment(customer, invoice, paymentReference, amount, paymentDate) {
       const body = {
         customer_id: String(customer.contact_id),
@@ -2861,6 +3472,7 @@ If you received this email, Worker owner alerts are operational.`
       return data.payment || {};
     }
     __name(createBankCustomerPayment, "createBankCustomerPayment");
+    __name2(createBankCustomerPayment, "createBankCustomerPayment");
     async function beginBankConfirmationState(located) {
       const latest = await located.store.getWithMetadata(located.key, { type: "json", consistency: "strong" });
       if (!latest) {
@@ -2896,6 +3508,7 @@ If you received this email, Worker owner alerts are operational.`
       return record;
     }
     __name(beginBankConfirmationState, "beginBankConfirmationState");
+    __name2(beginBankConfirmationState, "beginBankConfirmationState");
     async function strictlyConfirmBankCheckout(located, invoice, payment, paymentDate, amount) {
       const latest = await located.store.getWithMetadata(located.key, { type: "json", consistency: "strong" });
       if (!latest) {
@@ -2940,6 +3553,7 @@ If you received this email, Worker owner alerts are operational.`
       return record;
     }
     __name(strictlyConfirmBankCheckout, "strictlyConfirmBankCheckout");
+    __name2(strictlyConfirmBankCheckout, "strictlyConfirmBankCheckout");
     var VESTIGE_FULFILMENT_STATES = /* @__PURE__ */ new Set(["confirmed", "preparing", "ready_for_collection", "dispatched", "completed"]);
     function normaliseFulfilmentRecord(data, deliveryMethod) {
       const raw = data?.fulfilment && typeof data.fulfilment === "object" ? data.fulfilment : {};
@@ -2957,6 +3571,7 @@ If you received this email, Worker owner alerts are operational.`
       };
     }
     __name(normaliseFulfilmentRecord, "normaliseFulfilmentRecord");
+    __name2(normaliseFulfilmentRecord, "normaliseFulfilmentRecord");
     function fulfilmentLabel(state, deliveryMethod) {
       const value = String(state || "confirmed");
       if (value === "preparing") return "Preparing order";
@@ -2966,6 +3581,7 @@ If you received this email, Worker owner alerts are operational.`
       return "Payment confirmed";
     }
     __name(fulfilmentLabel, "fulfilmentLabel");
+    __name2(fulfilmentLabel, "fulfilmentLabel");
     function validateFulfilmentTransition(currentState, nextState, deliveryMethod) {
       const current = VESTIGE_FULFILMENT_STATES.has(String(currentState || "")) ? String(currentState) : "confirmed";
       const next = cleanText(nextState, 40);
@@ -2992,6 +3608,7 @@ If you received this email, Worker owner alerts are operational.`
       return { current, next, replayed: false };
     }
     __name(validateFulfilmentTransition, "validateFulfilmentTransition");
+    __name2(validateFulfilmentTransition, "validateFulfilmentTransition");
     async function adminUpdateFulfilment(input, requestId) {
       const ref = validatePaymentReference(input?.paymentReference);
       const located = await locateBankCheckoutByReference(ref);
@@ -3052,7 +3669,7 @@ If you received this email, Worker owner alerts are operational.`
         paymentReference: ref,
         outcome: "success",
         requestId,
-        message: `${fulfilmentLabel(transition.next, deliveryMethod)}${next.trackingReference && transition.next === "dispatched" ? ` · Tracking ${next.trackingReference}` : ""}.`
+        message: `${fulfilmentLabel(transition.next, deliveryMethod)}${next.trackingReference && transition.next === "dispatched" ? ` \xB7 Tracking ${next.trackingReference}` : ""}.`
       });
       let customerNotification = { sent: false, configured: false };
       try {
@@ -3080,19 +3697,30 @@ If you received this email, Worker owner alerts are operational.`
       return { success: true, replayed: false, order: await adminLookupBankOrder(ref), customerNotification, message: `${fulfilmentLabel(transition.next, deliveryMethod)} recorded.${notificationNote}` };
     }
     __name(adminUpdateFulfilment, "adminUpdateFulfilment");
+    __name2(adminUpdateFulfilment, "adminUpdateFulfilment");
     function publicAdminOrderSummary(located, current) {
       const data = current?.data || {};
       const progress = data.progress || {};
       const verified = data.verified || {};
       const response = data.response || {};
       const customer = progress.customer || {};
-      const items = Array.isArray(progress.items) ? progress.items.map((line) => ({
-        flavour: cleanText(line.flavour, 80),
-        itemId: cleanText(line.itemId, 80),
-        quantity: Number(line.quantity || 0),
-        unitPrice: PRODUCT_PRICE_ZAR,
-        lineTotal: Number(line.quantity || 0) * PRODUCT_PRICE_ZAR
-      })) : [];
+      const items = Array.isArray(progress.items) ? progress.items.map((line) => {
+        const productKey = checkoutProductKeyFromInput(line);
+        const spec = checkoutProductDefinition(productKey);
+        const quantity = Number(line.quantity || 0);
+        const unitPrice = Number(spec?.unitPrice ?? line.unitPrice ?? PRODUCT_PRICE_ZAR);
+        return {
+          productKey: productKey || null,
+          productFamily: spec?.family || cleanText(line.productFamily, 80) || "BC10000",
+          variant: spec?.variant || cleanText(line.variant ?? line.flavour, 80),
+          flavour: spec?.variant || cleanText(line.flavour, 80),
+          displayName: spec?.displayName || cleanText(line.displayName, 160) || cleanText(line.flavour, 80),
+          itemId: cleanText(line.itemId, 80),
+          quantity,
+          unitPrice,
+          lineTotal: quantity * unitPrice
+        };
+      }) : [];
       const paymentReference = cleanText(
         progress.paymentReference || response.paymentReference || located?.paymentReference,
         24
@@ -3128,6 +3756,7 @@ If you received this email, Worker owner alerts are operational.`
       };
     }
     __name(publicAdminOrderSummary, "publicAdminOrderSummary");
+    __name2(publicAdminOrderSummary, "publicAdminOrderSummary");
     async function adminLookupBankOrder(paymentReference) {
       const ref = validatePaymentReference(paymentReference);
       const located = await locateBankCheckoutByReference(ref);
@@ -3164,6 +3793,7 @@ If you received this email, Worker owner alerts are operational.`
       };
     }
     __name(adminLookupBankOrder, "adminLookupBankOrder");
+    __name2(adminLookupBankOrder, "adminLookupBankOrder");
     async function adminRecentBankOrders(limit = 25) {
       const safeLimit = Math.min(Math.max(Number(limit || 25), 1), 50);
       const db = requireDatabase();
@@ -3192,6 +3822,7 @@ If you received this email, Worker owner alerts are operational.`
       return orders;
     }
     __name(adminRecentBankOrders, "adminRecentBankOrders");
+    __name2(adminRecentBankOrders, "adminRecentBankOrders");
     async function adminCancelUnpaidBankOrder(paymentReference) {
       const ref = validatePaymentReference(paymentReference);
       const lock = await acquirePaymentConfirmationLock(ref);
@@ -3312,8 +3943,9 @@ If you received this email, Worker owner alerts are operational.`
       }
     }
     __name(adminCancelUnpaidBankOrder, "adminCancelUnpaidBankOrder");
+    __name2(adminCancelUnpaidBankOrder, "adminCancelUnpaidBankOrder");
     async function adminStockDashboard() {
-      const availability = await getProductAvailability(true, false);
+      const availability = await getOwnerInventoryAvailability(true, false);
       const result = {};
       for (const [flavour, item] of Object.entries(availability)) {
         const itemId = cleanText(item.itemId || item.item_id, 80) || null;
@@ -3348,12 +3980,20 @@ If you received this email, Worker owner alerts are operational.`
           sellableStock,
           alertLevel,
           itemId,
-          reason: cleanText(item.reason, 180) || null
+          reason: cleanText(item.reason, 180) || null,
+          productFamily: cleanText(item.productFamily, 80) || "BC10000",
+          variant: cleanText(item.variant, 100) || flavour,
+          sku: cleanText(item.sku, 80) || null,
+          itemName: cleanText(item.itemName, 180) || null,
+          price: Number.isFinite(Number(item.price)) ? Number(item.price) : null,
+          expectedRetailPrice: Number.isFinite(Number(item.expectedRetailPrice)) ? Number(item.expectedRetailPrice) : null,
+          checkoutEnabled: item.checkoutEnabled === true
         };
       }
       return result;
     }
     __name(adminStockDashboard, "adminStockDashboard");
+    __name2(adminStockDashboard, "adminStockDashboard");
     function validateOwnerStockAdjustmentInput(input) {
       const flavour = cleanText(input?.flavour, 80);
       if (!ALLOWED_FLAVOURS.has(flavour)) {
@@ -3383,6 +4023,7 @@ If you received this email, Worker owner alerts are operational.`
       return { flavour, operation, quantity, reason, note };
     }
     __name(validateOwnerStockAdjustmentInput, "validateOwnerStockAdjustmentInput");
+    __name2(validateOwnerStockAdjustmentInput, "validateOwnerStockAdjustmentInput");
     function ownerStockAdjustmentFingerprint(plan) {
       return createHash("sha256").update(JSON.stringify({
         flavour: plan.flavour,
@@ -3399,6 +4040,7 @@ If you received this email, Worker owner alerts are operational.`
       })).digest("hex");
     }
     __name(ownerStockAdjustmentFingerprint, "ownerStockAdjustmentFingerprint");
+    __name2(ownerStockAdjustmentFingerprint, "ownerStockAdjustmentFingerprint");
     async function buildOwnerStockAdjustmentPlan(input, forceFresh = true) {
       const clean = validateOwnerStockAdjustmentInput(input);
       const item = await resolveSelectedProductItem(clean.flavour, "", forceFresh);
@@ -3454,11 +4096,13 @@ If you received this email, Worker owner alerts are operational.`
       return plan;
     }
     __name(buildOwnerStockAdjustmentPlan, "buildOwnerStockAdjustmentPlan");
+    __name2(buildOwnerStockAdjustmentPlan, "buildOwnerStockAdjustmentPlan");
     async function adminPreviewStockAdjustment(input) {
       const plan = await buildOwnerStockAdjustmentPlan(input, true);
       return { ...plan, zohoBooksChanged: false, ledger: "vestige-owner-stock-adjustments" };
     }
     __name(adminPreviewStockAdjustment, "adminPreviewStockAdjustment");
+    __name2(adminPreviewStockAdjustment, "adminPreviewStockAdjustment");
     async function adminApplyStockAdjustment(input, requestId) {
       const suppliedFingerprint = cleanText(input?.previewFingerprint, 80).toLowerCase();
       const confirmation = cleanText(input?.confirmation, 100).toUpperCase();
@@ -3508,6 +4152,7 @@ If you received this email, Worker owner alerts are operational.`
       }
     }
     __name(adminApplyStockAdjustment, "adminApplyStockAdjustment");
+    __name2(adminApplyStockAdjustment, "adminApplyStockAdjustment");
     async function confirmBankPaymentManually(input) {
       const paymentReference = validatePaymentReference(input.paymentReference);
       const actualAmount = Number(input.actualAmount ?? input.amount);
@@ -3553,7 +4198,7 @@ If you received this email, Worker owner alerts are operational.`
         for (const line of lockLines) itemLocks.push(await acquireStockLock(line.itemId, `bank-confirm-${located.checkoutId}`));
         const stockLines = [];
         for (const line of order.items) {
-          const stock = await requireStockState(line.flavour, line.quantity, line.itemId);
+          const stock = await requireCheckoutStockState(line);
           const snapshot = await applyWebsiteReservationOverlay(stock.snapshot, line.itemId, located.checkoutId);
           if (!snapshot.canFulfil) {
             const e = new Error(
@@ -3659,10 +4304,12 @@ If you received this email, Worker owner alerts are operational.`
       }
     }
     __name(confirmBankPaymentManually, "confirmBankPaymentManually");
+    __name2(confirmBankPaymentManually, "confirmBankPaymentManually");
     function moneyForError(value) {
       return `R${Number(value || 0).toFixed(2)}`;
     }
     __name(moneyForError, "moneyForError");
+    __name2(moneyForError, "moneyForError");
     async function cancelBankCheckoutByCustomer(token) {
       const checkout = verifyCheckout(token);
       if (checkout.paymentMode !== "bank_transfer") {
@@ -3778,6 +4425,7 @@ If you received this email, Worker owner alerts are operational.`
       }
     }
     __name(cancelBankCheckoutByCustomer, "cancelBankCheckoutByCustomer");
+    __name2(cancelBankCheckoutByCustomer, "cancelBankCheckoutByCustomer");
     function customerOrderStatusMessage(state) {
       const value = String(state || "");
       if (value === "confirmed") return { status: "confirmed", title: "Order confirmed", message: "Your payment has been verified and your order is confirmed." };
@@ -3789,6 +4437,7 @@ If you received this email, Worker owner alerts are operational.`
       return { status: "pending", title: "Order being reviewed", message: "This order is being reviewed. Please check again shortly." };
     }
     __name(customerOrderStatusMessage, "customerOrderStatusMessage");
+    __name2(customerOrderStatusMessage, "customerOrderStatusMessage");
     async function publicBankOrderStatus(paymentReference, email) {
       const ref = validatePaymentReference(paymentReference);
       const normalizedEmail = cleanText(email, 160).toLowerCase();
@@ -3823,8 +4472,8 @@ If you received this email, Worker owner alerts are operational.`
         else if (fulfilment.state === "dispatched") display = { status: "dispatched", title: "Order dispatched", message: "Your order has been handed to The Courier Guy for locker-to-locker delivery." };
         else if (fulfilment.state === "completed") display = { status: "completed", title: deliveryMethod === DELIVERY_METHOD_COLLECTION ? "Order collected" : "Order completed", message: deliveryMethod === DELIVERY_METHOD_COLLECTION ? "Your order has been collected and is complete." : "Your order has been marked delivered and complete." };
       }
-      const methodLabel = deliveryMethod === DELIVERY_METHOD_COLLECTION ? "Collection from Vestige Ltd" : "The Courier Guy — Locker to Locker";
-      const fulfilmentLabelText = state === "confirmed" ? `${fulfilmentLabel(fulfilment.state, deliveryMethod)} · ${methodLabel}` : methodLabel;
+      const methodLabel = deliveryMethod === DELIVERY_METHOD_COLLECTION ? "Collection from Vestige Ltd" : "The Courier Guy \u2014 Locker to Locker";
+      const fulfilmentLabelText = state === "confirmed" ? `${fulfilmentLabel(fulfilment.state, deliveryMethod)} \xB7 ${methodLabel}` : methodLabel;
       return {
         paymentReference: ref,
         status: display.status,
@@ -3840,6 +4489,7 @@ If you received this email, Worker owner alerts are operational.`
       };
     }
     __name(publicBankOrderStatus, "publicBankOrderStatus");
+    __name2(publicBankOrderStatus, "publicBankOrderStatus");
     async function getBankCheckoutStatus(token) {
       const checkout = verifyCheckout(token, { allowPaidVerificationGrace: true });
       if (checkout.paymentMode !== "bank_transfer") {
@@ -3874,6 +4524,7 @@ If you received this email, Worker owner alerts are operational.`
       };
     }
     __name(getBankCheckoutStatus, "getBankCheckoutStatus");
+    __name2(getBankCheckoutStatus, "getBankCheckoutStatus");
     async function claimBankPayment(checkoutToken, requestId) {
       const checkout = verifyCheckout(checkoutToken, { allowPaidVerificationGrace: true });
       if (checkout.paymentMode !== "bank_transfer") {
@@ -4008,6 +4659,7 @@ ${ownerConsoleUrl()}`
       };
     }
     __name(claimBankPayment, "claimBankPayment");
+    __name2(claimBankPayment, "claimBankPayment");
     async function prepareBankOrder(order, requestId) {
       checkoutSigningSecret();
       const checkoutAttempt = await beginCheckoutAttempt(order);
@@ -4016,7 +4668,7 @@ ${ownerConsoleUrl()}`
       const reservedItemIds = [];
       try {
         for (const line of order.items) {
-          const preflight = await requireStockState(line.flavour, line.quantity, line.itemId);
+          const preflight = await requireCheckoutStockState(line);
           if (String(preflight.item.item_id) !== String(line.itemId)) {
             const e = new Error(`${line.flavour} no longer matches the Zoho Books item catalogue. Please refresh the shop.`);
             e.statusCode = 409;
@@ -4031,7 +4683,7 @@ ${ownerConsoleUrl()}`
         for (const lock of locks) await renewDistributedLock(lock);
         const finalLines = [];
         for (const line of order.items) {
-          const finalStock = await requireStockState(line.flavour, line.quantity, line.itemId);
+          const finalStock = await requireCheckoutStockState(line);
           const snapshot = await applyWebsiteReservationOverlay(finalStock.snapshot, line.itemId, order.checkoutId);
           if (!snapshot.canFulfil) {
             const e = new Error(snapshot.stock === 0 ? `${line.flavour} has just been reserved by another customer and is now unavailable.` : `Only ${snapshot.stock} unit(s) of ${line.flavour} remain after active website reservations. Please lower that quantity or remove the flavour.`);
@@ -4152,6 +4804,7 @@ ${ownerConsoleUrl()}`
       }
     }
     __name(prepareBankOrder, "prepareBankOrder");
+    __name2(prepareBankOrder, "prepareBankOrder");
     function signCheckout(payload) {
       const secret = checkoutSigningSecret();
       const encoded = Buffer.from(JSON.stringify(payload)).toString("base64url");
@@ -4159,6 +4812,7 @@ ${ownerConsoleUrl()}`
       return `${encoded}.${sig}`;
     }
     __name(signCheckout, "signCheckout");
+    __name2(signCheckout, "signCheckout");
     function verifyCheckout(token, { allowPaidVerificationGrace = false } = {}) {
       const [encoded, supplied] = String(token || "").split(".");
       if (!encoded || !supplied) {
@@ -4197,6 +4851,7 @@ ${ownerConsoleUrl()}`
       return payload;
     }
     __name(verifyCheckout, "verifyCheckout");
+    __name2(verifyCheckout, "verifyCheckout");
     async function verifiedSuccessfulPayments(invoiceId, expectedAmount) {
       const paymentData = await zohoRequest(`/invoices/${encodeURIComponent(invoiceId)}/payments?${organizationQuery()}`);
       const summaries = Array.isArray(paymentData.payments) ? paymentData.payments : [];
@@ -4250,6 +4905,7 @@ ${ownerConsoleUrl()}`
       };
     }
     __name(verifiedSuccessfulPayments, "verifiedSuccessfulPayments");
+    __name2(verifiedSuccessfulPayments, "verifiedSuccessfulPayments");
     async function verifyDirectInvoiceAtPayment(checkout) {
       const invoice = await getInvoice(checkout.invoiceId);
       if (!invoice || String(invoice.invoice_id || "") !== String(checkout.invoiceId)) {
@@ -4282,6 +4938,7 @@ ${ownerConsoleUrl()}`
       return invoice;
     }
     __name(verifyDirectInvoiceAtPayment, "verifyDirectInvoiceAtPayment");
+    __name2(verifyDirectInvoiceAtPayment, "verifyDirectInvoiceAtPayment");
     async function verifyPaymentAndOrder(token) {
       const checkout = verifyCheckout(token, { allowPaidVerificationGrace: true });
       const invoice = await verifyDirectInvoiceAtPayment(checkout);
@@ -4323,6 +4980,7 @@ ${ownerConsoleUrl()}`
       return verified;
     }
     __name(verifyPaymentAndOrder, "verifyPaymentAndOrder");
+    __name2(verifyPaymentAndOrder, "verifyPaymentAndOrder");
     async function buildReceiptResponse(token, requestId) {
       const verified = await verifyPaymentAndOrder(token);
       const pdf = await zohoPdf(`/customerpayments/${encodeURIComponent(verified.paymentId)}?${organizationQuery({ accept: "pdf" })}`);
@@ -4341,7 +4999,8 @@ ${ownerConsoleUrl()}`
       };
     }
     __name(buildReceiptResponse, "buildReceiptResponse");
-    exports.handler = /* @__PURE__ */ __name(async function handler(event) {
+    __name2(buildReceiptResponse, "buildReceiptResponse");
+    exports.handler = /* @__PURE__ */ __name2(/* @__PURE__ */ __name(async function handler(event) {
       const requestId = randomUUID();
       let diagnosticStage = null;
       if (event.path && event.path !== "/api/zoho") return publicError(404, "Not found.", requestId);
@@ -4356,8 +5015,11 @@ ${ownerConsoleUrl()}`
         requireEnv("ZOHO_ORGANIZATION_ID");
         const body = parseJsonBody(event);
         if (body.action === "availability") {
-          const availability = await getProductAvailability(false, false, true);
-          return json(200, { success: true, availability, verifiedAt: (/* @__PURE__ */ new Date()).toISOString(), requestId });
+          const [availability, catalogue] = await Promise.all([
+            getProductAvailability(false, false, true),
+            getPublicInventoryCatalogue(false, false)
+          ]);
+          return json(200, { success: true, availability, catalogue, verifiedAt: (/* @__PURE__ */ new Date()).toISOString(), requestId });
         }
         if (body.action === "connection_test") {
           const expected = requireEnv("ZOHO_ADMIN_TEST_KEY");
@@ -4857,17 +5519,15 @@ ${ownerConsoleUrl()}`
         }
         return publicError(statusCode, error.message, requestId, retryHeaders);
       }
-    }, "handler");
+    }, "handler"), "handler");
     exports.__test = { buildOwnerTestResetPlan };
     exports.bindCloudflareRuntime = bindCloudflareRuntime;
-    exports.getGoogleFacingAvailability = /* @__PURE__ */ __name(async function getGoogleFacingAvailability2(env) {
+    exports.getGoogleFacingAvailability = /* @__PURE__ */ __name2(/* @__PURE__ */ __name(async function getGoogleFacingAvailability2(env) {
       bindCloudflareRuntime(env);
       return getProductAvailability(false, false, true);
-    }, "getGoogleFacingAvailability");
+    }, "getGoogleFacingAvailability2"), "getGoogleFacingAvailability");
   }
 });
-
-// src/cleanup-expired-checkouts.cjs
 var require_cleanup_expired_checkouts = __commonJS({
   "src/cleanup-expired-checkouts.cjs"(exports) {
     "use strict";
@@ -4889,23 +5549,27 @@ var require_cleanup_expired_checkouts = __commonJS({
       globalThis.__VESTIGE_ENV = e || {};
     }
     __name(bindCloudflareRuntime, "bindCloudflareRuntime");
+    __name2(bindCloudflareRuntime, "bindCloudflareRuntime");
     function runtimeEnv(name) {
       const e = globalThis.__VESTIGE_ENV || {};
       const v = e[name] ?? (typeof process !== "undefined" && process.env ? process.env[name] : void 0);
       return v;
     }
     __name(runtimeEnv, "runtimeEnv");
+    __name2(runtimeEnv, "runtimeEnv");
     function env(name) {
       const v = runtimeEnv(name);
       if (!v || !String(v).trim()) throw new Error(`Missing ${name}`);
       return String(v).trim();
     }
     __name(env, "env");
+    __name2(env, "env");
     function requireDatabase() {
       if (!d1Database) throw new Error("Cloudflare D1 checkout storage is not bound.");
       return d1Database;
     }
     __name(requireDatabase, "requireDatabase");
+    __name2(requireDatabase, "requireDatabase");
     async function timedFetch(url, options = {}) {
       const c = new AbortController();
       const t = setTimeout(() => c.abort(), REQUEST_TIMEOUT_MS);
@@ -4916,12 +5580,14 @@ var require_cleanup_expired_checkouts = __commonJS({
       }
     }
     __name(timedFetch, "timedFetch");
+    __name2(timedFetch, "timedFetch");
     function accountsUrl() {
       const u = new URL(runtimeEnv("ZOHO_ACCOUNTS_URL") || "https://accounts.zoho.com");
       if (u.protocol !== "https:" || !ALLOWED_ACCOUNTS_HOSTS.has(u.hostname)) throw new Error("Unapproved Zoho Accounts host");
       return `${u.protocol}//${u.hostname}`;
     }
     __name(accountsUrl, "accountsUrl");
+    __name2(accountsUrl, "accountsUrl");
     async function access() {
       const form = new URLSearchParams({ refresh_token: env("ZOHO_REFRESH_TOKEN"), client_id: env("ZOHO_CLIENT_ID"), client_secret: env("ZOHO_CLIENT_SECRET"), grant_type: "refresh_token" });
       const r = await timedFetch(`${accountsUrl()}/oauth/v2/token`, { method: "POST", headers: { Accept: "application/json", "Content-Type": "application/x-www-form-urlencoded" }, body: form.toString() });
@@ -4932,10 +5598,12 @@ var require_cleanup_expired_checkouts = __commonJS({
       return { token: d.access_token, api: `${api.protocol}//${api.hostname}` };
     }
     __name(access, "access");
+    __name2(access, "access");
     function query(extra = {}) {
       return new URLSearchParams({ organization_id: env("ZOHO_ORGANIZATION_ID"), ...extra }).toString();
     }
     __name(query, "query");
+    __name2(query, "query");
     async function zoho(auth, path, { method = "GET", body } = {}) {
       const r = await timedFetch(`${auth.api}/books/${BOOKS_API_VERSION}${path}`, { method, headers: { Authorization: `Zoho-oauthtoken ${auth.token}`, Accept: "application/json", ...body === void 0 ? {} : { "Content-Type": "application/json" } }, ...body === void 0 ? {} : { body: JSON.stringify(body) } });
       let d = {};
@@ -4952,24 +5620,29 @@ var require_cleanup_expired_checkouts = __commonJS({
       return d;
     }
     __name(zoho, "zoho");
+    __name2(zoho, "zoho");
     function webReference(checkoutId) {
       return `WEB-${checkoutId}`.slice(0, 100);
     }
     __name(webReference, "webReference");
+    __name2(webReference, "webReference");
     function isVoidedStatus(status) {
       return ["void", "voided", "cancelled", "canceled"].includes(String(status || "").toLowerCase());
     }
     __name(isVoidedStatus, "isVoidedStatus");
+    __name2(isVoidedStatus, "isVoidedStatus");
     function isPaidInvoice(invoice) {
       const status = String(invoice?.status || "").toLowerCase();
       const balance = Number(invoice?.balance);
       return status === "paid" || Number.isFinite(balance) && Math.abs(balance) <= PAYMENT_EPSILON;
     }
     __name(isPaidInvoice, "isPaidInvoice");
+    __name2(isPaidInvoice, "isPaidInvoice");
     function hasPaymentEvidence(rows) {
       return (Array.isArray(rows) ? rows : []).some((p) => String(p.payment_id || "").trim() || String(p.online_transaction_id || "").trim() || Number(p.amount || p.amount_applied || 0) > 0);
     }
     __name(hasPaymentEvidence, "hasPaymentEvidence");
+    __name2(hasPaymentEvidence, "hasPaymentEvidence");
     async function listExpiredPendingCheckouts(now) {
       const cutoff = now - CHECKOUT_PAYMENT_WINDOW_MS;
       const result = await requireDatabase().prepare(
@@ -4984,6 +5657,7 @@ var require_cleanup_expired_checkouts = __commonJS({
       return Array.isArray(result?.results) ? result.results : [];
     }
     __name(listExpiredPendingCheckouts, "listExpiredPendingCheckouts");
+    __name2(listExpiredPendingCheckouts, "listExpiredPendingCheckouts");
     async function findReservations(checkoutId) {
       const result = await requireDatabase().prepare(
         `SELECT key, value_json, etag
@@ -5006,6 +5680,7 @@ var require_cleanup_expired_checkouts = __commonJS({
       return matches;
     }
     __name(findReservations, "findReservations");
+    __name2(findReservations, "findReservations");
     async function releaseReservation(checkoutId) {
       let releasedCount = 0;
       for (let pass = 0; pass < 6; pass += 1) {
@@ -5031,6 +5706,7 @@ var require_cleanup_expired_checkouts = __commonJS({
       throw new Error("Unable to release all website stock reservations safely after repeated D1 conflicts.");
     }
     __name(releaseReservation, "releaseReservation");
+    __name2(releaseReservation, "releaseReservation");
     async function markCheckoutExpired(row, checkoutId, invoice) {
       let current;
       try {
@@ -5060,24 +5736,29 @@ var require_cleanup_expired_checkouts = __commonJS({
       if (Number(result?.meta?.changes || 0) === 0) throw new Error("Checkout state changed during cleanup; leaving it for the next run.");
     }
     __name(markCheckoutExpired, "markCheckoutExpired");
+    __name2(markCheckoutExpired, "markCheckoutExpired");
     async function getInvoice(auth, invoiceId) {
       const data = await zoho(auth, `/invoices/${encodeURIComponent(invoiceId)}?${query()}`);
       return data.invoice || {};
     }
     __name(getInvoice, "getInvoice");
+    __name2(getInvoice, "getInvoice");
     async function getPayments(auth, invoiceId) {
       const data = await zoho(auth, `/invoices/${encodeURIComponent(invoiceId)}/payments?${query()}`);
       return Array.isArray(data.payments) ? data.payments : [];
     }
     __name(getPayments, "getPayments");
+    __name2(getPayments, "getPayments");
     function paymentReferenceFromCheckout(checkout) {
       return String(checkout?.progress?.paymentReference || checkout?.response?.paymentReference || "").trim().toUpperCase();
     }
     __name(paymentReferenceFromCheckout, "paymentReferenceFromCheckout");
+    __name2(paymentReferenceFromCheckout, "paymentReferenceFromCheckout");
     function isProtectedFinancialCheckout(checkout) {
       return PROTECTED_FINANCIAL_REFERENCES.has(paymentReferenceFromCheckout(checkout));
     }
     __name(isProtectedFinancialCheckout, "isProtectedFinancialCheckout");
+    __name2(isProtectedFinancialCheckout, "isProtectedFinancialCheckout");
     function minimisedConfirmedCheckout(checkout, now) {
       const progress = checkout?.progress && typeof checkout.progress === "object" ? checkout.progress : {};
       const verified = checkout?.verified && typeof checkout.verified === "object" ? checkout.verified : {};
@@ -5114,6 +5795,7 @@ var require_cleanup_expired_checkouts = __commonJS({
       };
     }
     __name(minimisedConfirmedCheckout, "minimisedConfirmedCheckout");
+    __name2(minimisedConfirmedCheckout, "minimisedConfirmedCheckout");
     async function enforceCheckoutRetention(now) {
       const cutoff = now - TERMINAL_CHECKOUT_RETENTION_MS;
       const result = await requireDatabase().prepare(
@@ -5161,6 +5843,7 @@ var require_cleanup_expired_checkouts = __commonJS({
       return stats;
     }
     __name(enforceCheckoutRetention, "enforceCheckoutRetention");
+    __name2(enforceCheckoutRetention, "enforceCheckoutRetention");
     exports.handler = async function() {
       const stats = { scanned: 0, voided: 0, alreadyVoided: 0, skippedPaid: 0, manualReview: 0, bankExpired: 0, reservationsReleased: 0, expiredMarked: 0, paymentReviewHeld: 0 };
       try {
@@ -5297,8 +5980,6 @@ var require_cleanup_expired_checkouts = __commonJS({
     exports.__retentionTest = { paymentReferenceFromCheckout, isProtectedFinancialCheckout, minimisedConfirmedCheckout };
   }
 });
-
-// src/worker.js
 var import_zoho_integration = __toESM(require_zoho_integration());
 var import_cleanup_expired_checkouts = __toESM(require_cleanup_expired_checkouts());
 var { handler: zohoHandler, bindCloudflareRuntime: bindZohoRuntime, getGoogleFacingAvailability } = import_zoho_integration.default;
@@ -5319,6 +6000,7 @@ function headersObject(headers) {
   return out;
 }
 __name(headersObject, "headersObject");
+__name2(headersObject, "headersObject");
 async function toNetlifyEvent(request) {
   const url = new URL(request.url);
   return {
@@ -5332,6 +6014,7 @@ async function toNetlifyEvent(request) {
   };
 }
 __name(toNetlifyEvent, "toNetlifyEvent");
+__name2(toNetlifyEvent, "toNetlifyEvent");
 function fromLambdaResult(result) {
   const headers = new Headers(result?.headers || {});
   return new Response(result?.body ?? "", {
@@ -5340,6 +6023,7 @@ function fromLambdaResult(result) {
   });
 }
 __name(fromLambdaResult, "fromLambdaResult");
+__name2(fromLambdaResult, "fromLambdaResult");
 async function apiResponse(request, env) {
   bindZohoRuntime(env);
   const event = await toNetlifyEvent(request);
@@ -5348,6 +6032,7 @@ async function apiResponse(request, env) {
   );
 }
 __name(apiResponse, "apiResponse");
+__name2(apiResponse, "apiResponse");
 function cachePolicyForPath(pathname) {
   const path = String(pathname || "").toLowerCase();
   if (path === "/api/zoho" || path === "/owner" || path === "/owner.html" || path === "/owner.js" || path === "/owner.css" || path === "/order-status" || path === "/order-status.html") {
@@ -5374,6 +6059,7 @@ function cachePolicyForPath(pathname) {
   return "public, max-age=300, s-maxage=3600, must-revalidate";
 }
 __name(cachePolicyForPath, "cachePolicyForPath");
+__name2(cachePolicyForPath, "cachePolicyForPath");
 function withSecurityHeaders(response, pathname = "") {
   const headers = new Headers(response.headers);
   for (const [name, value] of Object.entries(SECURITY_HEADERS)) {
@@ -5387,6 +6073,7 @@ function withSecurityHeaders(response, pathname = "") {
   });
 }
 __name(withSecurityHeaders, "withSecurityHeaders");
+__name2(withSecurityHeaders, "withSecurityHeaders");
 function canonicalRedirectResponse(request) {
   const url = new URL(request.url);
   let changed = false;
@@ -5434,6 +6121,7 @@ function canonicalRedirectResponse(request) {
   });
 }
 __name(canonicalRedirectResponse, "canonicalRedirectResponse");
+__name2(canonicalRedirectResponse, "canonicalRedirectResponse");
 var VESTIGE_ANALYTICS_NAMESPACE = "vestige-analytics";
 var VESTIGE_ANALYTICS_EVENTS = /* @__PURE__ */ new Set([
   "page_view",
@@ -5452,15 +6140,18 @@ function analyticsJson(data, status = 200) {
   });
 }
 __name(analyticsJson, "analyticsJson");
+__name2(analyticsJson, "analyticsJson");
 function cleanAnalyticsText(v, max = 80) {
   return String(v == null ? "" : v).trim().slice(0, max);
 }
 __name(cleanAnalyticsText, "cleanAnalyticsText");
+__name2(cleanAnalyticsText, "cleanAnalyticsText");
 function cleanAnalyticsNumber(v) {
   const n = Number(v);
   return Number.isFinite(n) && n >= 0 ? Math.round(n * 100) / 100 : null;
 }
 __name(cleanAnalyticsNumber, "cleanAnalyticsNumber");
+__name2(cleanAnalyticsNumber, "cleanAnalyticsNumber");
 async function analyticsWrite(env, payload) {
   if (!env.CHECKOUT_DB) throw new Error("Analytics database unavailable.");
   const event = cleanAnalyticsText(payload && payload.event, 40);
@@ -5486,6 +6177,7 @@ async function analyticsWrite(env, payload) {
   return analyticsJson({ success: true });
 }
 __name(analyticsWrite, "analyticsWrite");
+__name2(analyticsWrite, "analyticsWrite");
 async function analyticsSummary(env, days = 30) {
   if (!env.CHECKOUT_DB) throw new Error("Analytics database unavailable.");
   const safeDays = Math.min(365, Math.max(1, Number(days) || 30));
@@ -5540,6 +6232,7 @@ async function analyticsSummary(env, days = 30) {
   };
 }
 __name(analyticsSummary, "analyticsSummary");
+__name2(analyticsSummary, "analyticsSummary");
 async function handleVestigeAnalytics(request, env) {
   if (request.method !== "POST") return analyticsJson({ success: false, message: "Method not allowed." }, 405);
   let body = {};
@@ -5568,6 +6261,7 @@ async function handleVestigeAnalytics(request, env) {
   return analyticsWrite(env, body);
 }
 __name(handleVestigeAnalytics, "handleVestigeAnalytics");
+__name2(handleVestigeAnalytics, "handleVestigeAnalytics");
 var FLAVOUR_BY_SLUG = Object.freeze({
   "blueberry-mint": "Blueberry Mint",
   "miami-mint": "Miami Mint",
@@ -5579,6 +6273,7 @@ function availabilityUrl(stock) {
   return Number(stock) > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock";
 }
 __name(availabilityUrl, "availabilityUrl");
+__name2(availabilityUrl, "availabilityUrl");
 var VESTIGE_SHIPPING_DETAILS = Object.freeze({
   "@type": "OfferShippingDetails",
   shippingRate: { "@type": "MonetaryAmount", value: "60.00", currency: "ZAR" },
@@ -5602,6 +6297,7 @@ function cloneJson(value) {
   return JSON.parse(JSON.stringify(value));
 }
 __name(cloneJson, "cloneJson");
+__name2(cloneJson, "cloneJson");
 function enrichOfferForGoogle(offer, stock) {
   offer.availability = availabilityUrl(stock);
   offer.itemCondition = offer.itemCondition || "https://schema.org/NewCondition";
@@ -5610,6 +6306,7 @@ function enrichOfferForGoogle(offer, stock) {
   offer.hasMerchantReturnPolicy = cloneJson(VESTIGE_RETURN_POLICY);
 }
 __name(enrichOfferForGoogle, "enrichOfferForGoogle");
+__name2(enrichOfferForGoogle, "enrichOfferForGoogle");
 function enrichFirstProductJsonLd(html, stock) {
   const marker = '<script type="application/ld+json">';
   let cursor = 0;
@@ -5638,6 +6335,7 @@ function enrichFirstProductJsonLd(html, stock) {
   }
 }
 __name(enrichFirstProductJsonLd, "enrichFirstProductJsonLd");
+__name2(enrichFirstProductJsonLd, "enrichFirstProductJsonLd");
 async function injectGoogleAvailability(request, env, response, pathname) {
   if (!getGoogleFacingAvailability || !response.ok || request.method !== "GET") return response;
   const flavourMatch = pathname.match(/^\/flavours\/([^/]+)$/);
@@ -5667,6 +6365,7 @@ async function injectGoogleAvailability(request, env, response, pathname) {
   }
 }
 __name(injectGoogleAvailability, "injectGoogleAvailability");
+__name2(injectGoogleAvailability, "injectGoogleAvailability");
 var worker_default = {
   async fetch(request, env) {
     const url = new URL(request.url);
