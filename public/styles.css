@@ -793,6 +793,14 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
   transform:translateY(-1px);
 }
 @media(max-width:680px){
+  .master-tech-visual{padding:16px 10px 14px}
+ .master-tech-stage{padding:45px 0 0 68px}
+  .master-tech-summary{grid-template-columns:1.3fr .85fr 1.05fr;gap:7px;margin-top:12px}
+  .master-tech-summary-card{padding:10px 9px 11px}
+  .master-tech-summary-card span{font-size:8px;margin-bottom:4px}
+  .master-tech-summary-card strong{font-size:14px}
+  .master-tech-summary-dimensions strong{font-size:14px}
+
   .vestige-checkout-journey{
     grid-template-columns:1fr;
     gap:7px;
@@ -1141,7 +1149,7 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
 .brand-logo-partner img{width:38px;height:38px;object-fit:contain}.brand-logo-partner strong{font-family:Georgia,serif;color:#172231;font-weight:400;letter-spacing:2px}
 .brand-hero-v2 .evidence-links{display:flex;flex-wrap:wrap;gap:12px;margin-top:25px}.brand-hero-v2 .evidence-links a{padding:9px 12px;border:1px solid rgba(200,155,67,.45);color:#d8b05e;font-size:10px;letter-spacing:.4px}
 .brand-curated{padding:62px 0;background:#0b1727;border-top:1px solid rgba(200,155,67,.16);border-bottom:1px solid rgba(200,155,67,.16)}
-.brand-curated-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:70px;align-items:center}.brand-curated h2{font-size:clamp(36px,4.5vw,58px);margin:0 0 10px}.brand-curated-lede{font-family:Georgia,serif;color:#f5eee0;font-size:20px;margin:0}.brand-curated-grid>div:last-child>p{color:#aeb9c7;margin:0;max-width:700px}
+.brand-curated-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:70px;align-items:center}.brand-curated h2{font-size:clamp(36px,4.5vw,58px);margin:0 0 10px}.brand-curated-lede{font-family:Georgia,serif;color:#f5eee0;font-size:20px;margin:0}.brand-curated-grid>div:last-child>p{color:#aeb9c7;margin:0;max-width:700px}.brand-curated-copy-right{display:flex;flex-direction:column;justify-content:center}
 .model-choice .section-heading h2 span{display:inline-block;margin-top:7px;color:#7e5a1c}.model-media-white{position:relative;background:#fff!important}.model-brand-mark{position:absolute!important;z-index:3!important;top:18px!important;left:18px!important;width:108px!important;height:auto!important;object-fit:contain!important;opacity:.92}.model-product-image{position:relative;z-index:1}.model-card-media .bc-model-product{object-fit:contain;padding:0}.model-card-media.master-media .master-model-product{object-fit:contain;padding:2px;transform:scale(1.13)}
 .master-table-shell{overflow-x:auto}.master-table-unified{min-width:980px;table-layout:fixed}.master-table-unified caption{width:100%}.master-table-unified th{width:22%}.master-table-unified td{width:34%}.master-table-unified tbody tr{height:55px}.master-table-unified th,.master-table-unified td{padding:12px 18px}.master-device-cell{width:44%!important;padding:0!important;background:#fff!important;border-left:1px solid #d6d9dd;vertical-align:middle!important}.master-device-panel{height:100%;min-height:660px;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px}.master-device-panel img{width:100%;max-width:680px;height:auto;object-fit:contain}.master-device-panel p{margin:4px 0 0;color:#667181;font-size:10px;letter-spacing:1.6px;text-transform:uppercase}
 .master-package-note{padding:55px 0 90px}.package-note{max-width:900px}.package-note p:not(.eyebrow){margin-bottom:0}
@@ -1233,4 +1241,329 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
 .model-grid-v2 .model-status{display:none!important}
 @media(max-width:640px){
   .model-grid-v2 .approved-comparison-media{aspect-ratio:1122 / 1402}
+}
+
+/* ===== V35.29.2 WORKLOAD 1 — PRODUCT/UI CORRECTIONS =====
+   Scope: product presentation, technical-profile responsiveness, card spacing,
+   ELFA PRO pod visibility and shop perceived-load improvement only.
+   Commerce, payment, Zoho, fulfilment and Owner logic are intentionally unchanged. */
+
+/* Clear page/card separation and less compressed product cards. */
+.model-choice{background:#ece8df}
+.model-card{background:#fbfaf7;border-color:#d3cdbf;box-shadow:0 20px 48px rgba(16,28,42,.12)}
+.model-card-body{padding:40px 40px 38px}
+.model-card-body h3{margin:8px 0 16px}
+.model-card-body p:not(.eyebrow){min-height:0;color:#53606d;line-height:1.7}
+.model-facts{margin:29px 0 31px;border-top:1px solid #ddd8ce}
+.model-facts div{padding:13px 0;border-bottom:1px solid #ddd8ce}
+.model-facts dt{color:#65717e}
+.model-facts dd{color:#172231;font-weight:700}
+.brand-curated-grid{align-items:center}
+.finish-grid article{padding:36px;background:#102238;border-color:rgba(255,255,255,.13)}
+.finish-grid p{color:#c4ced8}
+.compatibility-card{padding:42px}
+.compatibility-card p{color:#c4ced8!important}
+.pod-fact-card{padding:34px}
+.pod-fact-card dt{color:#b5c0cb}
+.bc-build-grid article{padding:36px}
+
+/* Product comparison imagery: white-background presentation with proportional sizing. */
+.product-visual-surface{
+  position:relative;
+  min-height:430px;
+  height:auto;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  padding:28px;
+  background:#ffffff;
+  isolation:isolate;
+}
+.product-visual-surface::before{content:none}
+.product-visual-image{
+  position:relative!important;
+  z-index:1!important;
+  width:calc(100% - 125px)!important;
+  max-width:900px!important;
+  height:auto!important;
+  max-height:470px!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  padding:0!important;
+  transform:none!important;
+  filter:none!important;
+  mix-blend-mode:normal;
+}
+
+/* BC10000 hero: separate copy from range artwork instead of overlaying both. */
+.hero.bc10000-hero-v2{
+  min-height:auto;
+  display:block;
+  padding:88px 0;
+  background:linear-gradient(135deg,#071321 0%,#0b1c30 58%,#0b1727 100%);
+}
+.bc10000-hero-grid{
+  display:grid;
+  grid-template-columns:minmax(0,1.03fr) minmax(360px,.97fr);
+  gap:64px;
+  align-items:center;
+}
+.bc10000-hero-v2 .hero-copy{width:auto;padding:0}
+.bc10000-hero-v2 h1{font-size:clamp(52px,7vw,92px)}
+.bc10000-hero-media{
+  margin:0;
+  padding:12px;
+  background:#f6f3ed;
+  border:1px solid rgba(200,155,67,.28);
+  box-shadow:0 28px 70px rgba(0,0,0,.30);
+}
+.bc10000-hero-media img{width:100%;height:auto;display:block}
+.bc10000-hero-media figcaption{
+  padding:12px 8px 3px;
+  color:#55616e;
+  font-size:10px;
+  line-height:1.55;
+  letter-spacing:.7px;
+  text-align:center;
+  text-transform:uppercase;
+}
+
+/* Shared responsive technical-profile component. No horizontal scrolling. */
+.technical-profile-card{
+  width:100%;
+  display:grid;
+  grid-template-columns:minmax(0,1.03fr) minmax(360px,.97fr);
+  overflow:hidden;
+  background:#fff;
+  border:1px solid #d6d9dd;
+  box-shadow:0 18px 45px rgba(23,37,56,.09);
+}
+.technical-spec-list{margin:0;padding:0;min-width:0;background:#fff}
+.technical-spec-list>div{
+  display:grid;
+  grid-template-columns:minmax(145px,.72fr) minmax(0,1.28fr);
+  align-items:center;
+  min-height:52px;
+  border-bottom:1px solid #e4e6e9;
+}
+.technical-spec-list>div:last-child{border-bottom:0}
+.technical-spec-list dt,
+.technical-spec-list dd{margin:0;min-width:0;padding:12px 16px;overflow-wrap:anywhere}
+.technical-spec-list dt{
+  height:100%;
+  display:flex;
+  align-items:center;
+  background:#f8f7f3;
+  color:#263646;
+  border-right:1px solid #e4e6e9;
+  font-size:12px;
+  font-weight:800;
+  line-height:1.35;
+}
+.technical-spec-list dd{color:#101a26;font-size:14px;line-height:1.45;font-weight:500}
+.technical-device-visual{
+  position:relative;
+  min-width:0;
+  min-height:570px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  padding:58px 44px 40px;
+  border-left:1px solid #d6d9dd;
+  background:#ffffff;
+}
+.technical-device-visual img{
+  position:relative;
+  z-index:1;
+  display:block;
+  width:100%;
+  max-width:560px;
+  max-height:500px;
+  height:auto;
+  object-fit:contain;
+  mix-blend-mode:normal;
+}
+
+.dimension-chip{
+  position:absolute;
+  z-index:3;
+  min-width:104px;
+  padding:9px 12px;
+  border:1px solid #c89b43;
+  background:#0b1727;
+  color:#fff;
+  text-align:center;
+  box-shadow:0 7px 20px rgba(11,23,39,.13);
+}
+.dimension-chip b{display:block;color:#e1bd70;font:400 16px/1 Georgia,serif;white-space:nowrap}
+.dimension-chip small{display:block;margin-top:5px;color:#dbe2e9;font-size:8px;letter-spacing:1px;text-transform:uppercase;white-space:nowrap}
+.dimension-height{left:16px;top:50%;transform:translateY(-50%)}
+.dimension-width{left:50%;top:14px;transform:translateX(-50%)}
+.dimension-depth{right:16px;top:14px}
+
+/* ELFA PRO detail pages: show the supplied physical pod/range reference as well as flavour artwork. */
+.pod-detail-art{padding:30px 30px 24px;min-height:470px}
+.pod-detail-fruit{
+  position:relative;
+  z-index:1;
+  width:min(76%,430px);
+  transform:translateX(-7%);
+}
+
+.pod-detail-art>div{z-index:4;align-self:flex-start;margin:12px 0 0 10px;text-align:left}
+
+
+.bc-editorial-logo{display:flex;align-items:center;justify-content:center;width:min(100%,460px);min-height:0;margin:0 auto;padding:14px;background:#000;border:1px solid rgba(200,155,67,.24);box-shadow:0 20px 46px rgba(0,0,0,.22)}
+.bc-editorial-logo img{display:block;width:100%;height:auto;object-fit:contain;margin:0}
+.technical-visual-static{padding:28px;background:#fff}
+.technical-visual-static img{max-width:100%;max-height:520px;object-fit:contain}
+
+
+/* V35.29.7 — sharp ELFA MASTER technical measurement rendering */
+.master-tech-visual{
+  display:block;
+  min-height:0;
+  padding:22px 18px 18px;
+  background:#fff;
+  overflow:visible;
+}
+.master-tech-stage{
+  position:relative;
+  width:100%;
+  max-width:700px;
+  margin:0 auto;
+  padding:0;
+  background:#fff;
+}
+.master-tech-stage .master-tech-sharp-diagram{
+  display:block;
+  width:100%;
+  max-width:700px;
+  max-height:none;
+  height:auto;
+  object-fit:contain;
+  image-rendering:auto;
+}
+.master-measure-label{
+  position:absolute;
+  z-index:3;
+  min-width:76px;
+  padding:7px 10px 6px;
+  border:1px solid #c89b43;
+  background:#0b1727;
+  color:#fff;
+  text-align:center;
+  box-shadow:0 5px 14px rgba(11,23,39,.12);
+}
+.master-measure-label b{
+  display:block;
+  color:#e1bd70;
+  font:400 13px/1 Georgia,'Times New Roman',serif;
+  white-space:nowrap;
+}
+.master-measure-label small{
+  display:block;
+  margin-top:4px;
+  color:#dbe2e9;
+  font-size:7px;
+  line-height:1;
+  letter-spacing:.8px;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+/* Small labels sit beside/above the device image rather than covering its own measurement text. */
+.master-measure-height{left:0;top:47%;transform:translateY(-50%)}
+.master-measure-width{left:39%;top:5px;transform:translateX(-50%)}
+.master-measure-depth{left:76%;top:5px;transform:translateX(-50%)}
+.master-tech-summary{
+  display:grid;
+  grid-template-columns:1.35fr .9fr 1.1fr;
+  gap:12px;
+  width:100%;
+  max-width:700px;
+  margin:18px auto 0;
+}
+.master-tech-summary-card{
+  min-width:0;
+  padding:14px 16px 15px;
+  border:1px solid #dde1e5;
+  border-radius:7px;
+  background:#fafafa;
+  color:#172231;
+}
+.master-tech-summary-card span{
+  display:block;
+  margin-bottom:6px;
+  color:#9a722e;
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.5px;
+}
+.master-tech-summary-card strong{
+  display:block;
+  color:#172231;
+  font:600 18px/1.25 Arial,Helvetica,sans-serif;
+  white-space:nowrap;
+}
+.master-tech-summary-dimensions{min-width:0}
+.master-tech-summary-dimensions strong{font-size:18px;letter-spacing:.1px}
+
+/* Shop perceived performance: the known catalogue remains selectable while
+   live Zoho stock is verifying; basket/checkout remain verification-gated. */
+.stock-feedback{min-height:28px}
+.stock-status{display:inline-block;line-height:1.45}
+#flavourSelect[data-stock-pending="true"]{background-image:none}
+
+@media(max-width:980px){
+  .bc10000-hero-grid,
+  .technical-profile-card{grid-template-columns:1fr}
+  .bc10000-hero-media{max-width:700px}
+  .technical-device-visual{border-left:0;border-top:1px solid #d6d9dd;min-height:520px}
+  .product-visual-surface{min-height:390px}
+}
+
+@media(max-width:680px){
+  .model-card-body{padding:30px 28px}
+  .product-visual-surface{min-height:310px;padding:20px}
+  .product-visual-image{width:88%!important;max-height:330px!important}
+  .hero.bc10000-hero-v2{padding:68px 0}
+  .bc10000-hero-grid{gap:38px}
+  .bc10000-hero-media{padding:8px}
+  .technical-profile-card{border-left:0;border-right:0}
+  .technical-spec-list>div{grid-template-columns:minmax(112px,.65fr) minmax(0,1.35fr)}
+  .technical-spec-list dt,.technical-spec-list dd{padding:11px 12px}
+  .technical-spec-list dt{font-size:10px}
+  .technical-spec-list dd{font-size:12px}
+  .technical-device-visual{min-height:430px;padding:40px 24px 24px}
+  .technical-device-visual img{max-height:390px}
+
+  .dimension-chip{min-width:88px;padding:8px 9px}
+  .dimension-chip b{font-size:14px}
+  .dimension-height{left:6px}
+  .dimension-width{top:10px}
+  .dimension-depth{right:6px;top:10px}
+  .pod-detail-art{min-height:390px;padding:22px}
+  .pod-detail-fruit{width:74%;transform:translateX(-9%)}
+  .bc-editorial-logo{width:min(100%,320px);padding:10px}
+}
+
+@media(max-width:460px){
+ .master-tech-stage{padding-left:58px;padding-top:40px}
+  .master-measure-label{min-width:56px;padding:5px 6px}
+  .master-measure-label b{font-size:10px}
+  .master-measure-width{left:41%}
+  .master-measure-depth{left:78%}
+  .master-tech-summary{grid-template-columns:1fr;gap:7px}
+  .master-tech-summary-card strong,.master-tech-summary-dimensions strong{font-size:16px;white-space:normal}
+
+  .technical-spec-list>div{grid-template-columns:1fr;min-height:0}
+  .technical-spec-list dt{border-right:0;border-bottom:1px solid #eceae4;padding-bottom:7px}
+  .technical-spec-list dd{padding-top:8px;padding-bottom:13px}
+  .technical-device-visual{min-height:360px;padding:34px 12px 18px}
+  .technical-device-visual img{max-height:320px}
+
+  .dimension-chip{min-width:82px}
+  .pod-detail-art{min-height:340px}
 }

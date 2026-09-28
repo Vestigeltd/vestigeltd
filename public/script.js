@@ -20,7 +20,7 @@
   var deliveryMethodInputs=document.querySelectorAll('input[name="deliveryMethod"]'), courierLockerWrap=document.getElementById('courierLockerWrap'), collectionNote=document.getElementById('collectionNote'), courierLockerInput=form&&form.elements?form.elements.courierLocker:null;
   var collectionMethod=document.getElementById('collectionMethod'), collectionOption=document.getElementById('collectionOption'), collectionCodeInput=document.getElementById('collectionAccessCode'), validateCollectionButton=document.getElementById('validateCollectionAccess'), collectionAccessStatus=document.getElementById('collectionAccessStatus'), collectionLockLabel=document.getElementById('collectionLockLabel');
   var submitButton=document.getElementById('orderSubmit'), paymentPanel=document.getElementById('paymentPanel'), receiptPanel=document.getElementById('receiptPanel');
-  var PRODUCT_PRICE=300, DELIVERY_PRICE=60, API_URL='/api/zoho', availability={}, checkoutToken='', activeCheckout=null, cart=[], checkoutBusy=false, reservationTimer=null, collectionAccessToken='', draftCheckoutId=makeCheckoutId(), globalSoldOut=false;
+  var PRODUCT_PRICE=300, DELIVERY_PRICE=60, API_URL='/api/zoho', availability={}, availabilityLoading=false, availabilityResolved=false, checkoutToken='', activeCheckout=null, cart=[], checkoutBusy=false, reservationTimer=null, collectionAccessToken='', draftCheckoutId=makeCheckoutId(), globalSoldOut=false;
 
   // Flavour/quantity are basket-builder controls, not final form requirements.
   // Their validity is enforced before an item can be added to the basket.
@@ -447,6 +447,7 @@
     }
     if(!stockStatus)return;
     if(!name){stockStatus.className='stock-status';stockStatus.textContent=cart.length?'Select another flavour to add, or continue with your basket.':'Select an available flavour.';return;}
+    if(!item&&availabilityLoading){stockStatus.className='stock-status';stockStatus.textContent='Checking live stock for '+name+'… You can choose now; adding to basket unlocks after verification.';return;}
     if(!item||!item.available){stockStatus.className='stock-status warn';stockStatus.textContent=(item&&item.reason)||'This flavour is not currently available.';return;}
     if(qty<=0){stockStatus.className='stock-status';stockStatus.textContent='Select a quantity to add this flavour to your basket.';return;}
     if(!itemId){stockStatus.className='stock-status warn';stockStatus.textContent='This flavour could not be linked to its Zoho item. Please refresh and try again.';return;}
@@ -468,6 +469,7 @@
     var selection=currentSelection(),name=selection.name,qty=selection.qty,item=selection.item,itemId=selection.itemId;
     if(!name){if(orderStatus)orderStatus.textContent='Select a flavour first.';return;}
     if(qty<=0){if(orderStatus)orderStatus.textContent='Select a quantity first.';return;}
+    if(!item&&availabilityLoading){if(orderStatus)orderStatus.textContent='Live stock is still being verified. Your selection is ready and will unlock as soon as verification completes.';return;}
     if(!item||!item.available){if(orderStatus)orderStatus.textContent=(item&&item.reason)||'This flavour is not currently available.';return;}
     if(!itemId){if(orderStatus)orderStatus.textContent='This flavour could not be linked to its Zoho item. Refresh the page and try again.';return;}
     var existing=cart.find(function(x){return x.flavour===name;});var next=(existing?existing.quantity:0)+qty;
@@ -479,9 +481,17 @@
   async function loadAvailability(){
     if(!flavour)return;
     if(!bc10000Selected()){syncModelSelection();return;}
-    flavour.disabled=true;
-    try{var result=await apiRequest({action:'availability'});availability=result.availability||{};var allSoldOut=availabilityConfirmsSoldOut();Array.prototype.forEach.call(flavour.options,function(opt,index){if(index===0){opt.textContent='Select a flavour';return;}var item=availability[opt.value];opt.disabled=!(item&&item.available);opt.textContent=opt.value+(item&&item.available?' — '+item.stock+' in stock':' — unavailable');});flavour.disabled=allSoldOut;revalidateBasketAgainstAvailability();setShopSoldOut(allSoldOut);updateFlavourCardStockStates();if(stockStatus){stockStatus.className='stock-status ok';stockStatus.textContent=allSoldOut?'All BC10000 flavours are currently sold out.':(cart.length?'Live stock verified. Your saved basket is ready.':'Live stock verified with Zoho Books.');}}
-    catch(e){setShopSoldOut(false);Array.prototype.forEach.call(flavour.options,function(opt,index){if(index>0)opt.disabled=true;});flavour.disabled=true;updateFlavourCardStockStates();if(stockStatus){stockStatus.className='stock-status warn';stockStatus.textContent='Stock could not be verified. Ordering is disabled for safety.';}}
+    availabilityLoading=true;
+    availabilityResolved=false;
+    flavour.disabled=false;
+    flavour.setAttribute('data-stock-pending','true');
+    flavour.setAttribute('aria-busy','true');
+    Array.prototype.forEach.call(flavour.options,function(opt,index){if(index===0){opt.textContent='Select a flavour';return;}opt.disabled=false;opt.textContent=opt.value;});
+    if(stockStatus){stockStatus.className='stock-status';stockStatus.textContent='Choose a flavour while live stock verifies with Zoho Books…';}
+    validateSelectedStock();
+    try{var result=await apiRequest({action:'availability'});availability=result.availability||{};availabilityResolved=true;var allSoldOut=availabilityConfirmsSoldOut();Array.prototype.forEach.call(flavour.options,function(opt,index){if(index===0){opt.textContent='Select a flavour';return;}var item=availability[opt.value];opt.disabled=!(item&&item.available);opt.textContent=opt.value+(item&&item.available?' — '+item.stock+' in stock':' — unavailable');});flavour.disabled=allSoldOut;revalidateBasketAgainstAvailability();setShopSoldOut(allSoldOut);updateFlavourCardStockStates();if(stockStatus){stockStatus.className='stock-status ok';stockStatus.textContent=allSoldOut?'All BC10000 flavours are currently sold out.':(cart.length?'Live stock verified. Your saved basket is ready.':'Live stock verified with Zoho Books.');}}
+    catch(e){availability={};availabilityResolved=false;setShopSoldOut(false);Array.prototype.forEach.call(flavour.options,function(opt,index){if(index>0)opt.disabled=true;});flavour.disabled=true;updateFlavourCardStockStates();if(stockStatus){stockStatus.className='stock-status warn';stockStatus.textContent='Stock could not be verified. Ordering is disabled for safety.';}}
+    finally{availabilityLoading=false;flavour.removeAttribute('data-stock-pending');flavour.setAttribute('aria-busy','false');}
     validateSelectedStock();
   }
   async function clipboardMatches(value){
