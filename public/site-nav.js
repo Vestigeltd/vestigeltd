@@ -165,3 +165,79 @@
       if (detailProductKey) updateDetailStatus(null, detailBadge);
     });
 })();
+
+/* V35.30.4 corporate presentation refinement only. */
+(() => {
+  if (!document.body.classList.contains('corporate-home')) return;
+
+  if (!document.querySelector('link[href*="site-refinement-v35.30.4.css"]')) {
+    const refinement = document.createElement('link');
+    refinement.rel = 'stylesheet';
+    refinement.href = '/site-refinement-v35.30.4.css?v=35.30.4';
+    document.head.appendChild(refinement);
+  }
+
+  const title = document.getElementById('corporateTitle');
+  if (title) {
+    title.innerHTML = '<span>Superior delivery</span><span>begins with how</span><span>requirements are handled.</span>';
+  }
+
+  const brandMark = document.querySelector('.corporate-brand-mark');
+  if (brandMark) {
+    brandMark.src = '/assets/vestige-logo-optimized.png';
+    brandMark.alt = 'Vestige Limited logo';
+    brandMark.width = 1254;
+    brandMark.height = 1254;
+  }
+
+  const artwork = document.querySelector('.vestige-standard-artwork');
+  if (artwork) {
+    artwork.src = '/assets/vestige-standard-approved.webp';
+    artwork.removeAttribute('srcset');
+    artwork.removeAttribute('sizes');
+  }
+
+  document.querySelectorAll('.capability-card').forEach(card => {
+    if (card.querySelector(':scope > .capability-kicker')) return;
+    const index = card.querySelector(':scope > .capability-index');
+    const eyebrow = card.querySelector(':scope > .eyebrow');
+    if (!index || !eyebrow) return;
+    const kicker = document.createElement('div');
+    kicker.className = 'capability-kicker';
+    card.insertBefore(kicker, index);
+    kicker.append(index, eyebrow);
+  });
+
+  const fulcrum = document.querySelector('.avenue-fulcrum');
+  if (fulcrum && !fulcrum.querySelector('.avenue-symbol-label')) {
+    const label = document.createElement('span');
+    label.className = 'avenue-symbol-label';
+    label.textContent = 'DISCIPLINE · PRECISION';
+    fulcrum.appendChild(label);
+  }
+
+  const experience = document.querySelector('.experience-visual');
+  if (experience) {
+    experience.className = 'experience-visual experience-map-visual';
+    experience.setAttribute('role', 'img');
+    experience.setAttribute('aria-label', "Flat world map representing Vestige's international professional experience");
+    experience.innerHTML = `
+      <svg class="experience-map" viewBox="0 0 1000 520" aria-hidden="true">
+        <g class="experience-map-land">
+          <polygon points="64,143 92,108 139,82 198,84 246,111 255,143 289,173 268,204 232,198 207,226 162,216 125,192 92,185 65,162"></polygon>
+          <polygon points="231,225 269,245 290,286 281,324 302,358 290,401 261,452 239,420 224,376 232,333 216,286"></polygon>
+          <polygon points="441,118 470,101 504,104 528,120 517,145 481,151 453,137"></polygon>
+          <polygon points="456,160 504,152 546,171 568,210 556,260 528,321 493,306 466,269 451,218"></polygon>
+          <polygon points="528,118 589,91 660,88 708,107 750,103 808,119 862,116 916,149 902,182 861,202 813,196 773,222 723,215 686,194 642,186 594,188 557,160"></polygon>
+          <polygon points="785,333 829,314 872,322 904,347 898,378 872,398 826,394 792,373"></polygon>
+          <polygon points="308,93 326,65 354,61 372,82 358,104 329,111"></polygon>
+        </g>
+        <g class="experience-map-routes">
+          <path d="M486 138 C520 205 525 250 520 286"></path>
+          <circle cx="486" cy="138" r="6"></circle>
+          <circle cx="520" cy="286" r="6"></circle>
+        </g>
+      </svg>
+      <span class="experience-coordinate">INTERNATIONAL PROFESSIONAL EXPERIENCE</span>`;
+  }
+})();
