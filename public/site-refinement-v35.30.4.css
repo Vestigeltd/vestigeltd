@@ -1,57 +1,146 @@
-/* Vestige V35.30.4 — exact presentation corrections from owner review
+/* Vestige V35.30.6 — owner-directed presentation finalisation
    Presentation only. No stock, Zoho, checkout, payment, fulfilment, age-gate or Owner logic changes. */
 
-/* Retail header consistency — restore the original approved white Vestige logo wherever this refinement is loaded. */
-body:not(.corporate-home) .site-header .brand-logo{
-  content:url('/assets/vestige-logo-optimized.png');
-  width:52px;
-  height:52px;
-  object-fit:contain;
-  background:#fff;
+:root{
+  --vestige-blue-0:#00101f;
+  --vestige-blue-1:#03182d;
+  --vestige-blue-2:#082844;
+  --vestige-blue-3:#0d3557;
+  --vestige-gold:#d8ad59;
+  --vestige-gold-soft:#e0bb73;
+  --heading-gap-hero:32px;
+  --heading-gap-section:24px;
+  --heading-gap-card:18px;
+  --heading-h1:clamp(44px,5vw,72px);
+  --heading-h2:clamp(32px,3.6vw,48px);
+  --heading-h3:clamp(20px,2vw,24px);
 }
 
-/* ---------- Corporate header: restore original white Vestige logo treatment ---------- */
-.corporate-home .corporate-brand-mark{
-  width:52px;
-  height:52px;
-  object-fit:contain;
-  object-position:center;
-  flex:0 0 52px;
-  background:#fff;
+/* ---------- Header logo: supplied darker-wordmark artwork, one size system everywhere ---------- */
+.site-header .brand-logo,
+.corporate-home .corporate-brand-mark,
+.elfbar-page .brand-logo{
+  content:url('/assets/vestige-header-logo-dark-v35.30.6.webp')!important;
+  width:56px!important;
+  height:56px!important;
+  flex:0 0 56px!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  background:#fff!important;
+  padding:0!important;
 }
 
-/* ---------- Hero: exact approved artwork, visible as-is, framed in restrained gold ---------- */
+/* ---------- Unified heading scale and spacing ---------- */
+.corporate-home .corporate-hero h1,
+.elfbar-page .brand-hero h1,
+.bc10000-hero-v2 h1{
+  font-size:var(--heading-h1)!important;
+  line-height:1.02!important;
+  margin-bottom:var(--heading-gap-hero)!important;
+}
+
+.corporate-home .corporate-heading h2,
+.corporate-home .experience-copy h2,
+.corporate-home .corporate-vapes h2,
+.corporate-home .corporate-contact h2,
+.elfbar-page .brand-curated h2,
+.elfbar-page .model-choice .section-heading h2,
+.elfbar-page .brand-decision h2,
+.elfbar-page .information h2,
+.bc10000-hero-v2~section .section-heading h2,
+.bc10000-hero-v2~section h2{
+  font-size:var(--heading-h2)!important;
+  line-height:1.08!important;
+  margin-bottom:var(--heading-gap-section)!important;
+}
+
+.corporate-home .corporate-standard-grid h3,
+.corporate-home .direction-card h3,
+.corporate-home .capability-card h3,
+.elfbar-page .model-card-body h3,
+.bc10000-hero-v2~section h3{
+  font-size:var(--heading-h3)!important;
+  line-height:1.16!important;
+  margin-bottom:var(--heading-gap-card)!important;
+}
+
+.corporate-home .corporate-heading>p:not(.eyebrow),
+.elfbar-page .section-heading>p:not(.eyebrow),
+.bc10000-hero-v2~section .section-heading>p:not(.eyebrow){
+  margin-top:0!important;
+}
+
+/* ---------- Graded Vestige blue carried through hero environments ---------- */
+.corporate-home .corporate-hero,
+.elfbar-page .brand-hero,
+.bc10000-hero-v2{
+  background:
+    radial-gradient(circle at 76% 30%,rgba(34,83,126,.34),transparent 34%),
+    radial-gradient(circle at 18% 78%,rgba(15,55,91,.32),transparent 38%),
+    linear-gradient(135deg,var(--vestige-blue-0) 0%,var(--vestige-blue-1) 42%,var(--vestige-blue-2) 72%,var(--vestige-blue-3) 100%)!important;
+}
+
+/* ---------- Home hero artwork: real supplied image inside the frame ---------- */
 .corporate-home .vestige-standard-artwork-wrap{
   position:relative;
   width:min(100%,620px);
+  aspect-ratio:1/1;
   padding:9px;
-  border:1px solid rgba(224,187,115,.88);
-  background:rgba(0,15,30,.24);
-  box-shadow:0 0 0 1px rgba(224,187,115,.12),0 28px 48px rgba(0,0,0,.26);
-  filter:none;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid rgba(224,187,115,.92);
+  background:rgba(0,15,30,.42);
+  box-shadow:0 0 0 1px rgba(224,187,115,.14),0 28px 48px rgba(0,0,0,.28);
+  overflow:hidden;
   opacity:1!important;
+  visibility:visible!important;
 }
 .corporate-home .vestige-standard-artwork-wrap:before,
 .corporate-home .vestige-standard-artwork-wrap:after{
   content:"";
   position:absolute;
   pointer-events:none;
+  z-index:3;
   inset:5px;
-  border:1px solid rgba(224,187,115,.16);
+  border:1px solid rgba(224,187,115,.18);
 }
 .corporate-home .vestige-standard-artwork-wrap:after{
   inset:-5px;
-  border-color:rgba(224,187,115,.08);
+  border-color:rgba(224,187,115,.10);
 }
 .corporate-home .vestige-standard-artwork{
-  width:100%;
-  height:auto;
-  display:block;
-  object-fit:contain;
+  position:relative!important;
+  z-index:2!important;
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:none!important;
+  object-fit:contain!important;
   opacity:1!important;
+  visibility:visible!important;
+  filter:none!important;
 }
 
-/* ---------- Capabilities: unmistakable balance scale, connected suspension lines ---------- */
+/* ---------- Standard cards: restrained numbers, dominant words ---------- */
+.corporate-home .corporate-standard-grid article{
+  padding-top:28px;
+}
+.corporate-home .corporate-standard-grid .corporate-number{
+  font-size:11px!important;
+  letter-spacing:.28em!important;
+}
+.corporate-home .corporate-standard-grid .eyebrow{
+  margin-top:12px!important;
+  margin-bottom:var(--heading-gap-card)!important;
+  color:var(--vestige-gold)!important;
+  font-family:Georgia,'Times New Roman',serif!important;
+  font-size:clamp(24px,2.2vw,34px)!important;
+  line-height:1!important;
+  letter-spacing:-.01em!important;
+}
+
+/* ---------- Capabilities: unmistakable connected balance ---------- */
 .corporate-home .avenue-balance{
   width:min(100%,1080px);
   margin:0 auto 58px;
@@ -66,7 +155,6 @@ body:not(.corporate-home) .site-header .brand-logo{
   min-height:270px;
   padding-top:24px;
 }
-/* horizontal scale beam */
 .corporate-home .avenue-balance-axis:before{
   content:"";
   position:absolute;
@@ -74,11 +162,10 @@ body:not(.corporate-home) .site-header .brand-logo{
   right:8%;
   top:67px;
   height:2px;
-  background:linear-gradient(90deg,rgba(224,187,115,.3),#e0bb73 12%,#e0bb73 88%,rgba(224,187,115,.3));
-  box-shadow:0 0 12px rgba(224,187,115,.12);
+  background:linear-gradient(90deg,rgba(224,187,115,.3),var(--vestige-gold-soft) 12%,var(--vestige-gold-soft) 88%,rgba(224,187,115,.3));
+  box-shadow:0 0 12px rgba(224,187,115,.15);
   z-index:1;
 }
-/* central beam pivot */
 .corporate-home .avenue-balance-axis:after{
   content:"";
   position:absolute;
@@ -88,10 +175,10 @@ body:not(.corporate-home) .site-header .brand-logo{
   height:14px;
   translate:-50% 0;
   rotate:45deg;
-  background:#d8ad59;
+  background:var(--vestige-gold);
   border:2px solid #071b30;
   box-shadow:0 0 0 1px rgba(224,187,115,.55);
-  z-index:4;
+  z-index:6;
 }
 .corporate-home .avenue-node{
   position:relative;
@@ -111,35 +198,33 @@ body:not(.corporate-home) .site-header .brand-logo{
   text-align:center;
   letter-spacing:.18em;
 }
-/* two cables, visibly connected from beam to each delivery box */
 .corporate-home .avenue-node:before{
   content:"";
   position:absolute;
-  left:10%;
-  right:10%;
-  top:-94px;
-  height:94px;
-  background:
-    linear-gradient(to bottom right,transparent 49.25%,rgba(224,187,115,.88) 49.6%,rgba(224,187,115,.88) 50.4%,transparent 50.75%) left/50% 100% no-repeat,
-    linear-gradient(to bottom left,transparent 49.25%,rgba(224,187,115,.88) 49.6%,rgba(224,187,115,.88) 50.4%,transparent 50.75%) right/50% 100% no-repeat;
+  left:50%;
+  top:-89px;
+  width:2px;
+  height:89px;
+  translate:-50% 0;
+  background:linear-gradient(to bottom,var(--vestige-gold-soft),var(--vestige-gold));
+  box-shadow:0 0 8px rgba(224,187,115,.18);
   pointer-events:none;
 }
 .corporate-home .avenue-node:after{
   content:"";
   position:absolute;
-  top:-96px;
+  top:-94px;
   left:50%;
-  width:8px;
-  height:8px;
+  width:9px;
+  height:9px;
   translate:-50% 0;
   border-radius:50%;
-  background:#d8ad59;
-  box-shadow:0 0 0 3px rgba(216,173,89,.14);
+  background:var(--vestige-gold);
+  box-shadow:0 0 0 3px rgba(216,173,89,.15);
 }
-.corporate-home .avenue-node span{font-size:10px;color:#d8ad59;font-weight:700}
+.corporate-home .avenue-node span{font-size:10px;color:var(--vestige-gold);font-weight:700}
 .corporate-home .avenue-node b{font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:400;letter-spacing:.14em}
 
-/* shield + precision crosshair occupy the actual fulcrum */
 .corporate-home .avenue-fulcrum{
   position:relative;
   z-index:5;
@@ -148,7 +233,17 @@ body:not(.corporate-home) .site-header .brand-logo{
   margin:0 auto;
   display:grid;
   place-items:center;
-  translate:0 0;
+}
+.corporate-home .avenue-fulcrum:before{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:-18px;
+  width:2px;
+  height:250px;
+  translate:-50% 0;
+  background:linear-gradient(to bottom,rgba(224,187,115,.85),var(--vestige-gold),rgba(224,187,115,.42));
+  z-index:0;
 }
 .corporate-home .avenue-crosshair{
   position:absolute;
@@ -156,10 +251,10 @@ body:not(.corporate-home) .site-header .brand-logo{
   width:100%;
   height:100%;
   fill:none;
-  stroke:#d8ad59;
+  stroke:var(--vestige-gold);
   stroke-width:1.55;
-  opacity:.96;
-  filter:drop-shadow(0 0 9px rgba(200,155,67,.15));
+  opacity:.98;
+  filter:drop-shadow(0 0 9px rgba(200,155,67,.18));
 }
 .corporate-home .avenue-shield{
   position:relative;
@@ -167,7 +262,7 @@ body:not(.corporate-home) .site-header .brand-logo{
   width:72px;
   height:83px;
   fill:rgba(0,15,30,.95);
-  stroke:#e0bb73;
+  stroke:var(--vestige-gold-soft);
   stroke-width:1.8;
   stroke-linecap:round;
   stroke-linejoin:round;
@@ -175,11 +270,12 @@ body:not(.corporate-home) .site-header .brand-logo{
 }
 .corporate-home .avenue-symbol-label{
   position:absolute;
+  z-index:3;
   top:142px;
   left:50%;
   translate:-50% 0;
   width:max-content;
-  color:#d8ad59;
+  color:var(--vestige-gold);
   font-size:8px;
   font-weight:700;
   letter-spacing:.22em;
@@ -193,7 +289,6 @@ body:not(.corporate-home) .site-header .brand-logo{
   height:0;
   border-left:38px solid transparent;
   border-right:38px solid transparent;
-  border-top:0;
   border-bottom:72px solid rgba(224,187,115,.13);
   z-index:-1;
 }
@@ -208,7 +303,6 @@ body:not(.corporate-home) .site-header .brand-logo{
 }
 .corporate-home .avenue-balance-caption{margin-top:9px}
 
-/* ---------- Capability card hierarchy: gold title level with sequence number ---------- */
 .corporate-home .capability-kicker{
   display:flex;
   align-items:baseline;
@@ -220,7 +314,7 @@ body:not(.corporate-home) .site-header .brand-logo{
   flex:0 0 auto;
   display:block;
   margin:0;
-  color:#d8ad59;
+  color:var(--vestige-gold);
   font-family:Arial,Helvetica,sans-serif;
   font-size:12px;
   font-weight:700;
@@ -230,7 +324,7 @@ body:not(.corporate-home) .site-header .brand-logo{
 .corporate-home .capability-kicker .eyebrow{
   margin:0;
   max-width:none;
-  color:#d8ad59;
+  color:var(--vestige-gold);
   font-family:Georgia,'Times New Roman',serif;
   font-size:clamp(28px,2.4vw,38px);
   font-weight:400;
@@ -239,49 +333,41 @@ body:not(.corporate-home) .site-header .brand-logo{
 }
 .corporate-home .capability-card h3{margin-top:0}
 
-/* ---------- Experience: replace abstract V panel with a flat international map ---------- */
+/* ---------- Experience: supplied world map image, scaled and gold-framed ---------- */
 .corporate-home .experience-map-visual{
   position:relative;
-  min-height:520px;
+  min-height:0;
   overflow:hidden;
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:38px 34px 62px;
-  background:linear-gradient(145deg,#f3efe5,#e9e2d5 72%,#ded3bf);
-  border:1px solid rgba(11,37,61,.14);
-  box-shadow:0 22px 46px rgba(5,18,31,.12);
+  padding:9px 9px 48px;
+  background:#f3efe5;
+  border:1px solid rgba(224,187,115,.92);
+  box-shadow:0 0 0 1px rgba(224,187,115,.14),0 22px 46px rgba(5,18,31,.16);
 }
-.corporate-home .experience-map{
-  width:100%;
-  max-width:640px;
-  height:auto;
-  display:block;
+.corporate-home .experience-map-visual:before{
+  content:"";
+  position:absolute;
+  inset:5px 5px 44px;
+  border:1px solid rgba(224,187,115,.24);
+  pointer-events:none;
+  z-index:2;
 }
-.corporate-home .experience-map-land polygon{
-  fill:#08233c;
-  stroke:#0d3151;
-  stroke-width:2;
-  vector-effect:non-scaling-stroke;
-}
-.corporate-home .experience-map-routes path{
-  fill:none;
-  stroke:#c89b43;
-  stroke-width:3;
-  stroke-dasharray:8 9;
-  vector-effect:non-scaling-stroke;
-}
-.corporate-home .experience-map-routes circle{
-  fill:#c89b43;
-  stroke:#f3efe5;
-  stroke-width:2;
-  vector-effect:non-scaling-stroke;
+.corporate-home .experience-map{display:none!important}
+.corporate-home .experience-map-owner{
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  max-height:520px!important;
+  object-fit:contain!important;
+  background:#dff5fb;
 }
 .corporate-home .experience-map-visual .experience-coordinate{
   position:absolute;
-  left:34px;
-  right:34px;
-  bottom:24px;
+  left:18px;
+  right:18px;
+  bottom:17px;
   color:#8d6b2c;
   font-size:10px;
   font-weight:700;
@@ -289,39 +375,43 @@ body:not(.corporate-home) .site-header .brand-logo{
   text-transform:uppercase;
 }
 
-/* ---------- Carry the layered blue system through the corporate Vestige Vapes transition ---------- */
+/* ---------- Corporate Vestige Vapes transition: same graded blue family ---------- */
 .corporate-home .corporate-vapes{
   background:
-    radial-gradient(circle at 18% 24%,rgba(36,77,114,.22),transparent 30%),
-    linear-gradient(140deg,#000f1e 0%,#03182d 52%,#0d243b 100%);
+    radial-gradient(circle at 18% 24%,rgba(36,77,114,.24),transparent 30%),
+    linear-gradient(140deg,var(--vestige-blue-0) 0%,var(--vestige-blue-1) 52%,var(--vestige-blue-3) 100%)!important;
   color:#f4efe5;
 }
 .corporate-home .corporate-vapes .vapes-transition-grid>div:first-child>p:not(.eyebrow){color:#b8c4d0}
-.corporate-home .corporate-vapes h2{color:#f7f1e7;font-size:clamp(44px,4.5vw,64px)}
 .corporate-home .vapes-action-card{
   background:linear-gradient(145deg,rgba(0,16,31,.98),rgba(10,38,64,.94));
   border:1px solid rgba(224,187,115,.22);
   border-top:2px solid #c89b43;
 }
 
-/* ---------- ELFBAR: keep approved previous product-card header art; moderate oversized headings ---------- */
-.elfbar-page .brand-logo{
-  width:52px;
-  height:52px;
-  object-fit:contain;
-  background:#fff;
+/* ---------- ELFBAR refinements ---------- */
+.elfbar-page .brand-logo-stage{
+  background:linear-gradient(160deg,#f8f5ed,#efe8dc)!important;
 }
-.elfbar-page .brand-hero h1{font-size:clamp(48px,5.7vw,76px);line-height:1.02}
-.elfbar-page .brand-curated h2{font-size:clamp(38px,4.3vw,58px);line-height:1.06}
-.elfbar-page .model-choice .section-heading h2{font-size:clamp(40px,4.6vw,62px);line-height:1.05}
-.elfbar-page .model-card-body h3{font-size:clamp(30px,2.8vw,40px);line-height:1.08}
-.elfbar-page .brand-decision h2{font-size:clamp(38px,4.2vw,56px);line-height:1.08}
-.elfbar-page .information h2{font-size:clamp(36px,4vw,54px);line-height:1.08}
-/* Prevent the V35.30.3 overlay from altering the approved embedded card-header art. */
+.elfbar-page .brand-hero-copy:before,
+.elfbar-page .brand-hero-copy:after,
+.elfbar-page .brand-hero-copy p:before,
+.elfbar-page .brand-hero-copy p:after{
+  display:none!important;
+  content:none!important;
+}
+.elfbar-page .brand-hero-copy,
+.elfbar-page .brand-hero-copy p{
+  border-top:0!important;
+  border-bottom:0!important;
+  text-decoration:none!important;
+}
+.elfbar-page .brand-hero-copy .hero-lede{margin-bottom:30px!important}
+.elfbar-page .evidence-links{margin-top:26px!important}
 .elfbar-page .model-brand-row{display:none!important}
 .elfbar-page .model-card-media{background:#fff}
 
-/* ---------- BC10000 flavour cards: match ELFA stock badge placement and lower flavour identity ---------- */
+/* ---------- BC10000 flavour-card continuity ---------- */
 .flavours .flavour{position:relative}
 .flavours .flavour-stock-state{
   position:absolute!important;
@@ -339,14 +429,19 @@ body:not(.corporate-home) .site-header .brand-logo{
 .flavours .flavour>p{translate:0 18px}
 .flavours .flavour-card-action{translate:0 0}
 
-/* ---------- Responsive control ---------- */
 @media(max-width:980px){
+  .site-header .brand-logo,.corporate-home .corporate-brand-mark,.elfbar-page .brand-logo{
+    width:50px!important;height:50px!important;flex-basis:50px!important;
+  }
   .corporate-home .avenue-balance-axis{grid-template-columns:1fr 170px 1fr;gap:20px}
   .corporate-home .avenue-fulcrum{width:160px;height:160px}
   .corporate-home .avenue-node{padding:18px 16px}
-  .corporate-home .experience-map-visual{min-height:430px}
 }
+
 @media(max-width:760px){
+  .site-header .brand-logo,.corporate-home .corporate-brand-mark,.elfbar-page .brand-logo{
+    width:44px!important;height:44px!important;flex-basis:44px!important;
+  }
   .corporate-home .vestige-standard-artwork-wrap{width:min(94vw,570px);padding:7px}
   .corporate-home .avenue-balance-axis{
     grid-template-columns:1fr;
@@ -368,16 +463,11 @@ body:not(.corporate-home) .site-header .brand-logo{
   .corporate-home .avenue-node:before,
   .corporate-home .avenue-node:after{display:none}
   .corporate-home .avenue-fulcrum{width:150px;height:150px;margin:2px auto 6px}
+  .corporate-home .avenue-fulcrum:before{height:190px}
   .corporate-home .avenue-symbol-label{top:112px}
   .corporate-home .avenue-fulcrum-pedestal{top:123px}
   .corporate-home .capability-kicker{gap:13px;margin-bottom:20px}
   .corporate-home .capability-kicker .eyebrow{font-size:clamp(27px,7.8vw,35px)}
-  .corporate-home .experience-map-visual{min-height:360px;padding:24px 22px 54px}
-  .corporate-home .experience-map-visual .experience-coordinate{left:22px;right:22px;bottom:19px;font-size:9px;letter-spacing:.18em}
-  .elfbar-page .brand-hero h1{font-size:clamp(42px,11vw,58px)}
-  .elfbar-page .model-choice .section-heading h2{font-size:clamp(36px,9vw,50px)}
-  .flavours .flavour-stock-state{top:14px!important;left:14px!important;max-width:calc(100% - 28px)}
-  .flavours .flavour-icon{translate:0 30px}
-  .flavours .flavour>h3{translate:0 17px}
-  .flavours .flavour>p{translate:0 14px}
+  .corporate-home .experience-map-visual{padding:7px 7px 45px}
+  .corporate-home .experience-map-visual .experience-coordinate{left:14px;right:14px;bottom:15px;font-size:8px;letter-spacing:.16em}
 }

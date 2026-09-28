@@ -1,4 +1,5 @@
 'use strict';
+
 (() => {
   const toggle = document.getElementById('navToggle');
   const nav = document.getElementById('mainNav');
@@ -76,9 +77,7 @@
       const slug = match ? String(match[1] || '').toLowerCase() : '';
       const key = ELFA_PRO_KEYS[slug] || '';
       if (!key) return;
-
       card.dataset.productKey = key;
-
       const badge = card.querySelector('.pod-status, .flavour-stock-state');
       if (badge) {
         badge.classList.remove('pod-status');
@@ -90,24 +89,20 @@
 
   function prepareDetailPage() {
     if (!detailProductKey) return null;
-
     const heroCopy = document.querySelector('.pod-detail-grid > div:first-child');
     const lede = heroCopy && heroCopy.querySelector('.hero-lede');
     let badge = heroCopy && heroCopy.querySelector('.flavour-page-stock');
-
     if (!badge && heroCopy && lede) {
       badge = document.createElement('span');
       badge.className = 'flavour-page-stock unavailable';
       badge.textContent = 'CHECKING STOCK…';
       lede.insertAdjacentElement('afterend', badge);
     }
-
     return badge;
   }
 
   function updateDetailStatus(item, badge) {
     if (!detailProductKey) return;
-
     applyBadgeState(badge, item);
     const state = stockState(item);
 
@@ -148,34 +143,22 @@
     })
     .then(result => {
       const catalogue = result && result.catalogue ? result.catalogue : {};
-
       rangeCards.forEach(card => {
         const key = card.dataset.productKey || '';
         const badge = card.querySelector('.flavour-stock-state');
         applyBadgeState(badge, catalogue[key]);
       });
-
       if (detailProductKey) updateDetailStatus(catalogue[detailProductKey], detailBadge);
     })
     .catch(() => {
-      rangeCards.forEach(card => {
-        const badge = card.querySelector('.flavour-stock-state');
-        applyBadgeState(badge, null);
-      });
+      rangeCards.forEach(card => applyBadgeState(card.querySelector('.flavour-stock-state'), null));
       if (detailProductKey) updateDetailStatus(null, detailBadge);
     });
 })();
 
-/* V35.30.4 corporate presentation refinement only. */
+/* V35.30.6 corporate source-fidelity refinements. */
 (() => {
   if (!document.body.classList.contains('corporate-home')) return;
-
-  if (!document.querySelector('link[href*="site-refinement-v35.30.4.css"]')) {
-    const refinement = document.createElement('link');
-    refinement.rel = 'stylesheet';
-    refinement.href = '/site-refinement-v35.30.4.css?v=35.30.4';
-    document.head.appendChild(refinement);
-  }
 
   const title = document.getElementById('corporateTitle');
   if (title) {
@@ -184,10 +167,10 @@
 
   const brandMark = document.querySelector('.corporate-brand-mark');
   if (brandMark) {
-    brandMark.src = '/assets/vestige-logo-optimized.png';
+    brandMark.src = '/assets/vestige-header-logo-dark-v35.30.6.webp';
     brandMark.alt = 'Vestige Limited logo';
-    brandMark.width = 1254;
-    brandMark.height = 1254;
+    brandMark.width = 471;
+    brandMark.height = 361;
   }
 
   const artwork = document.querySelector('.vestige-standard-artwork');
@@ -195,7 +178,19 @@
     artwork.src = '/assets/vestige-standard-approved.webp';
     artwork.removeAttribute('srcset');
     artwork.removeAttribute('sizes');
+    artwork.width = 556;
+    artwork.height = 556;
   }
+
+  const cardHeadings = [
+    'Understanding the requirements.',
+    'Utilising controlled processes',
+    'Exact details matter',
+    'Client consideration'
+  ];
+  document.querySelectorAll('.corporate-standard-grid article h3').forEach((heading, index) => {
+    if (cardHeadings[index]) heading.textContent = cardHeadings[index];
+  });
 
   document.querySelectorAll('.capability-card').forEach(card => {
     if (card.querySelector(':scope > .capability-kicker')) return;
@@ -220,24 +215,7 @@
   if (experience) {
     experience.className = 'experience-visual experience-map-visual';
     experience.setAttribute('role', 'img');
-    experience.setAttribute('aria-label', "Flat world map representing Vestige's international professional experience");
-    experience.innerHTML = `
-      <svg class="experience-map" viewBox="0 0 1000 520" aria-hidden="true">
-        <g class="experience-map-land">
-          <polygon points="64,143 92,108 139,82 198,84 246,111 255,143 289,173 268,204 232,198 207,226 162,216 125,192 92,185 65,162"></polygon>
-          <polygon points="231,225 269,245 290,286 281,324 302,358 290,401 261,452 239,420 224,376 232,333 216,286"></polygon>
-          <polygon points="441,118 470,101 504,104 528,120 517,145 481,151 453,137"></polygon>
-          <polygon points="456,160 504,152 546,171 568,210 556,260 528,321 493,306 466,269 451,218"></polygon>
-          <polygon points="528,118 589,91 660,88 708,107 750,103 808,119 862,116 916,149 902,182 861,202 813,196 773,222 723,215 686,194 642,186 594,188 557,160"></polygon>
-          <polygon points="785,333 829,314 872,322 904,347 898,378 872,398 826,394 792,373"></polygon>
-          <polygon points="308,93 326,65 354,61 372,82 358,104 329,111"></polygon>
-        </g>
-        <g class="experience-map-routes">
-          <path d="M486 138 C520 205 525 250 520 286"></path>
-          <circle cx="486" cy="138" r="6"></circle>
-          <circle cx="520" cy="286" r="6"></circle>
-        </g>
-      </svg>
-      <span class="experience-coordinate">INTERNATIONAL PROFESSIONAL EXPERIENCE</span>`;
+    experience.setAttribute('aria-label', "World map representing Vestige's international professional experience");
+    experience.innerHTML = '<img class="experience-map-owner" src="/assets/world-map-owner-v35.30.6.webp" alt="Political world map showing countries and regions across the globe" width="797" height="510" loading="lazy" decoding="async"><span class="experience-coordinate">INTERNATIONAL PROFESSIONAL EXPERIENCE</span>';
   }
 })();
