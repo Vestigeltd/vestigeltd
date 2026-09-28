@@ -39,6 +39,17 @@
 
   if (!rangeCards.length && !detailProductKey) return;
 
+  if (rangeCards.length && !document.getElementById('elfaProUniformStockLayout')) {
+    const style = document.createElement('style');
+    style.id = 'elfaProUniformStockLayout';
+    style.textContent = [
+      '.pod-flavour-card>.flavour-stock-state{position:absolute;top:14px;left:14px;right:auto;z-index:5;margin:0;max-width:calc(100% - 28px);}',
+      '.pod-flavour-card .pod-card-meta{display:block;width:100%;}',
+      '.pod-flavour-card .pod-card-copy>em{display:block;width:100%;margin-top:12px;padding-top:2px;text-align:right;line-height:1.45;}'
+    ].join('');
+    document.head.appendChild(style);
+  }
+
   function stockState(item) {
     if (!item || !Number.isFinite(Number(item.stock))) {
       return { text: 'STOCK STATUS UNAVAILABLE', className: 'unavailable' };
@@ -69,14 +80,10 @@
       card.dataset.productKey = key;
 
       const badge = card.querySelector('.pod-status, .flavour-stock-state');
-      const copy = card.querySelector('.pod-card-copy');
-      const meta = copy && copy.querySelector('.pod-card-meta');
-
       if (badge) {
         badge.classList.remove('pod-status');
         badge.classList.add('flavour-stock-state', 'unavailable');
         badge.textContent = 'CHECKING STOCK…';
-        if (copy && meta) copy.insertBefore(badge, meta);
       }
     });
   }
