@@ -19,7 +19,7 @@
   --vestige-gap-card:18px;
 }
 
-.site-header .brand-logo{width:56px;height:56px;flex:0 0 56px;object-fit:contain;background:#fff}
+.site-header .brand-logo{content:url('/assets/vestige-header-logo-dark-v35.30.6.webp');width:56px;height:56px;flex:0 0 56px;object-fit:contain;background:#fff}
 .status-header .status-brand img{width:56px;height:56px;object-fit:contain;background:#fff}
 
 .corporate-home .corporate-hero h1,.elfbar-page .brand-hero h1,.bc10000-hero-v2 h1,.master-hero h1,.pod-range-hero h1,.pod-detail-hero h1,.contact-hero h1,.status-intro h1{font-size:var(--vestige-h1);line-height:1.02;margin-bottom:var(--vestige-gap-hero)}
