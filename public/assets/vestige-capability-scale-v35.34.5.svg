@@ -1,0 +1,192 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 1044 310"
+     preserveAspectRatio="xMidYMid meet"
+     role="img"
+     aria-labelledby="scaleTitle scaleDesc">
+  <title id="scaleTitle">The Vestige Standard balance</title>
+  <desc id="scaleDesc">Product Delivery and Service Delivery suspended in equal balance from one gold beam around the central Vestige Standard fulcrum.</desc>
+
+  <defs>
+    <linearGradient id="beamGradient" gradientUnits="userSpaceOnUse" x1="83.52" y1="67" x2="960.48" y2="67">
+      <stop offset="0" stop-color="#e0bb73" stop-opacity=".30"/>
+      <stop offset=".12" stop-color="#e0bb73" stop-opacity="1"/>
+      <stop offset=".88" stop-color="#e0bb73" stop-opacity="1"/>
+      <stop offset="1" stop-color="#e0bb73" stop-opacity=".30"/>
+    </linearGradient>
+
+    <linearGradient id="nodeGradient" gradientUnits="objectBoundingBox" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d243b" stop-opacity=".97"/>
+      <stop offset="1" stop-color="#00101f" stop-opacity=".98"/>
+    </linearGradient>
+
+    <linearGradient id="centreDatumGradient" gradientUnits="userSpaceOnUse" x1="522" y1="6" x2="522" y2="256">
+      <stop offset="0" stop-color="#e0bb73" stop-opacity=".85"/>
+      <stop offset=".50" stop-color="#d8ad59" stop-opacity="1"/>
+      <stop offset="1" stop-color="#e0bb73" stop-opacity=".42"/>
+    </linearGradient>
+
+    <filter id="nodeShadow" x="-10%" y="-20%" width="120%" height="150%">
+      <feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#000000" flood-opacity=".18"/>
+    </filter>
+
+    <filter id="fulcrumGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#c89b43" flood-opacity=".16"/>
+    </filter>
+  </defs>
+
+  <g id="vestigeScaleAssembly">
+    <!-- 1. CONTINUOUS BALANCE BEAM -->
+    <line id="balanceBeam"
+          x1="83.52" y1="67"
+          x2="960.48" y2="67"
+          stroke="url(#beamGradient)"
+          stroke-width="2"/>
+
+    <!-- 2. LEFT SUSPENSION: joint + cable + Product node -->
+    <g id="productLoad">
+      <circle cx="191.5" cy="66.5" r="4.5"
+              fill="#d8ad59"
+              stroke="#d8ad59"
+              stroke-opacity=".15"
+              stroke-width="6"/>
+      <line x1="191.5" y1="67" x2="191.5" y2="156"
+            stroke="#d8ad59" stroke-width="2"/>
+      <rect x="0" y="156" width="383" height="98"
+            fill="url(#nodeGradient)"
+            stroke="#e0bb73"
+            stroke-opacity=".62"
+            stroke-width="1"
+            filter="url(#nodeShadow)"/>
+      <text x="191.5" y="191"
+            text-anchor="middle"
+            fill="#d8ad59"
+            font-family="Arial, Helvetica, sans-serif"
+            font-size="10"
+            font-weight="700"
+            letter-spacing="1.8">PRODUCT</text>
+      <text x="191.5" y="222"
+            text-anchor="middle"
+            fill="#f5efe2"
+            font-family="Georgia, 'Times New Roman', serif"
+            font-size="22"
+            font-weight="400"
+            letter-spacing="3.08">DELIVERY</text>
+    </g>
+
+    <!-- 3. RIGHT SUSPENSION: joint + cable + Service node -->
+    <g id="serviceLoad">
+      <circle cx="852.5" cy="66.5" r="4.5"
+              fill="#d8ad59"
+              stroke="#d8ad59"
+              stroke-opacity=".15"
+              stroke-width="6"/>
+      <line x1="852.5" y1="67" x2="852.5" y2="156"
+            stroke="#d8ad59" stroke-width="2"/>
+      <rect x="661" y="156" width="383" height="98"
+            fill="url(#nodeGradient)"
+            stroke="#e0bb73"
+            stroke-opacity=".62"
+            stroke-width="1"
+            filter="url(#nodeShadow)"/>
+      <text x="852.5" y="191"
+            text-anchor="middle"
+            fill="#d8ad59"
+            font-family="Arial, Helvetica, sans-serif"
+            font-size="10"
+            font-weight="700"
+            letter-spacing="1.8">SERVICE</text>
+      <text x="852.5" y="222"
+            text-anchor="middle"
+            fill="#f5efe2"
+            font-family="Georgia, 'Times New Roman', serif"
+            font-size="22"
+            font-weight="400"
+            letter-spacing="3.08">DELIVERY</text>
+    </g>
+
+    <!-- 4. CENTRE DATUM AND BEAM REGISTRATION DIAMOND -->
+    <line id="centreDatum"
+          x1="522" y1="6"
+          x2="522" y2="256"
+          stroke="url(#centreDatumGradient)"
+          stroke-width="2"/>
+
+    <rect id="beamRegistrationDiamond"
+          x="515" y="60"
+          width="14" height="14"
+          fill="#d8ad59"
+          stroke="#071b30"
+          stroke-width="2"
+          transform="rotate(45 522 67)"/>
+
+    <!-- 5. FULCRUM / CROSSHAIR -->
+    <g id="vestigeFulcrum" filter="url(#fulcrumGlow)">
+      <g transform="translate(427 24) scale(1.1875)">
+        <circle cx="80" cy="80" r="58"
+                fill="none" stroke="#d8ad59" stroke-width="1.55"/>
+        <circle cx="80" cy="80" r="34"
+                fill="none" stroke="#d8ad59" stroke-width="1.55"/>
+        <circle cx="80" cy="80" r="8"
+                fill="none" stroke="#d8ad59" stroke-width="1.55"/>
+        <path d="M80 4v38 M80 118v38 M4 80h38 M118 80h38
+                 M80 16v12 M80 132v12 M16 80h12 M132 80h12"
+              fill="none"
+              stroke="#d8ad59"
+              stroke-width="1.55"
+              stroke-linecap="round"/>
+      </g>
+
+      <!-- Production shield: 72 x 83 centred in the 190px fulcrum -->
+      <svg x="486" y="77.5" width="72" height="83" viewBox="0 0 80 92" preserveAspectRatio="xMidYMid meet">
+        <path d="M40 6 66 15v22c0 22-10 38-26 49C24 75 14 59 14 37V15Z"
+              fill="#000f1e"
+              stroke="#e0bb73"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"/>
+        <path d="M40 15 57 21v17c0 15-6 27-17 35-11-8-17-20-17-35V21Z"
+              fill="none"
+              stroke="#e0bb73"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"/>
+        <path d="M31 43 38 50 51 34"
+              fill="none"
+              stroke="#e0bb73"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"/>
+      </svg>
+    </g>
+
+    <!--
+      6. PEDESTAL
+      The production cascade contains BOTH a border-top triangle inherited
+      from corporate-v35.30.2.css and a border-bottom triangle added by
+      site-system-v35.30.17.css. That cascade creates the approved hourglass.
+      It is reproduced explicitly here instead of relying on CSS side effects.
+    -->
+    <g id="vestigePedestal">
+      <path d="M484 177 L560 177 L522 239 Z"
+            fill="#e0bb73"
+            fill-opacity=".18"/>
+      <path d="M522 239 L484 311 L560 311 Z"
+            fill="#e0bb73"
+            fill-opacity=".13"/>
+      <line x1="474" y1="305" x2="570" y2="305"
+            stroke="#e0bb73"
+            stroke-opacity=".72"
+            stroke-width="1"/>
+    </g>
+
+    <!-- 7. VISIBLE CAPTION: registered inside the same master assembly -->
+    <text id="scaleCaption"
+          x="522" y="292"
+          text-anchor="middle"
+          fill="#d8ad59"
+          font-family="Arial, Helvetica, sans-serif"
+          font-size="10"
+          font-weight="700"
+          letter-spacing="3.2">THE VESTIGE STANDARD</text>
+  </g>
+</svg>

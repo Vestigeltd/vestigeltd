@@ -111,7 +111,17 @@
 .corporate-home .corporate-standard{padding:clamp(104px,8vw,140px) 0;background:linear-gradient(135deg,#081522,#0a1a2a 54%,#0c2135)}
 .corporate-home .corporate-heading{margin-bottom:52px}
 .corporate-home .corporate-heading h2,.corporate-home .corporate-section-intro h2,.corporate-home .experience-copy h2,.corporate-home .corporate-vapes h2{font-size:clamp(44px,4.4vw,62px);line-height:1.05;letter-spacing:-.7px}
-.corporate-home .corporate-editorial-grid{grid-template-columns:minmax(260px,.68fr) minmax(0,1.32fr);gap:clamp(60px,7vw,102px)}
+.corporate-home .corporate-editorial-grid{
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  gap:clamp(30px,5vw,48px);
+}
+.corporate-home .corporate-section-intro,
+.corporate-home .corporate-editorial-copy{
+  min-width:0;
+  width:100%;
+  max-width:100%;
+}
 .corporate-home .corporate-editorial-copy>p{font-size:16.5px;line-height:1.82}
 .corporate-home .corporate-editorial-copy .lead-copy{font-size:22px;line-height:1.62}
 .corporate-home .matters-sequence{margin:38px 0;padding-left:30px}
@@ -215,3 +225,14 @@
   .vestige-standard-emblem{animation:vestigeEmblemReveal .72s cubic-bezier(.2,.7,.2,1) .08s both}
 }
 @keyframes vestigeEmblemReveal{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+/* V35.34.0 â€” Discover Vestige desktop enhancement.
+   Narrow/medium widths remain one reading column by default. */
+@media(min-width:1200px){
+  .corporate-home .corporate-editorial-grid{
+    grid-template-columns:minmax(260px,.68fr) minmax(0,1.32fr);
+    gap:clamp(60px,7vw,102px);
+  }
+  .corporate-home .corporate-section-intro{
+    max-width:520px;
+  }
+}

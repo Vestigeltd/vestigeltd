@@ -267,7 +267,7 @@
 /* V35.30.15 â€” geometric Standard diamonds and final two-card Contact layout. */
 .corporate-home .corporate-values-line{
   display:grid;
-  grid-template-columns:max-content 7px max-content 7px max-content 7px max-content;
+  grid-template-columns:max-content 14px max-content 14px max-content 14px max-content;
   align-items:center;
   justify-content:center;
   column-gap:18px;
@@ -285,21 +285,36 @@
   white-space:nowrap;
 }
 .corporate-home .corporate-values-line i{
+  position:relative;
   display:block;
-  width:7px;
-  height:7px;
+  width:14px;
+  height:14px;
   margin:0;
-  background:var(--vestige-gold);
-  clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);
+  padding:0;
+  background:none;
+  clip-path:none;
   transform:none;
-  box-shadow:0 0 8px rgba(216,173,89,.16);
+  box-shadow:none;
+}
+.corporate-home .corporate-values-line i::before{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:10px;
+  height:10px;
+  box-sizing:border-box;
+  background:#00101f;
+  border:2px solid var(--vestige-gold);
+  transform:translate(-50%,-50%) rotate(45deg);
+  box-shadow:0 0 7px rgba(216,173,89,.16);
 }
 
 
 
 @media(max-width:760px){
   .corporate-home .corporate-values-line{
-    grid-template-columns:max-content 6px max-content 6px max-content 6px max-content;
+    grid-template-columns:max-content 12px max-content 12px max-content 12px max-content;
     column-gap:10px;
   }
   .corporate-home .corporate-values-line span{
@@ -307,8 +322,13 @@
     letter-spacing:.1em;
   }
   .corporate-home .corporate-values-line i{
-    width:6px;
-    height:6px;
+    width:12px;
+    height:12px;
+  }
+  .corporate-home .corporate-values-line i::before{
+    width:8px;
+    height:8px;
+    border-width:1.5px;
   }
 }
 /* V35.30.16 â€” contact cards use matched content stages for exact visual alignment. */
