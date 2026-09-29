@@ -492,17 +492,54 @@
 
   function renderCart(){
     if(!cartBox)return;
-    if(!cart.length){cartBox.hidden=true;cartBox.innerHTML='';updateTotals();saveBasketSession();publishCartSummary();return;}
+    if(!cart.length){
+      cartBox.hidden=true;
+      cartBox.innerHTML='';
+      updateTotals();
+      saveBasketSession();
+      publishCartSummary();
+      return;
+    }
+
     cartBox.hidden=false;
+
     var rows=cart.map(function(item,index){
-      return '<div class="cart-row"><div><strong>'+esc(item.displayName||item.variant||item.flavour)+'</strong><small>'+money(item.unitPrice)+' each</small></div><span>Qty '+item.quantity+'</span><strong>'+money(Number(item.quantity)*Number(item.unitPrice||0))+'</strong><button type="button" class="cart-remove" data-cart-index="'+index+'" aria-label="Remove '+esc(item.displayName||item.variant||item.flavour)+'">Remove</button></div>';
+      var family=esc(item.productFamily||'');
+      var variant=esc(item.variant||item.flavour||'');
+      var qty=Number(item.quantity||0);
+      var unit=Number(item.unitPrice||0);
+      var lineTotal=qty*unit;
+
+      return '<div class="cart-row">'+
+        '<span class="cart-model">'+family+'</span>'+
+        '<span class="cart-flavour">'+variant+'</span>'+
+        '<span class="cart-qty">'+qty+'</span>'+
+        '<span class="cart-price">'+money(unit)+'</span>'+
+        '<strong class="cart-line-total">'+money(lineTotal)+'</strong>'+
+        '<button type="button" class="cart-remove" data-cart-index="'+index+'" aria-label="Remove '+esc(item.displayName||item.variant||item.flavour)+'">Remove</button>'+
+      '</div>';
     }).join('');
-    cartBox.innerHTML='<div class="cart-head"><strong>YOUR BASKET</strong><span>'+cartQuantity()+' item'+(cartQuantity()===1?'':'s')+'</span></div>'+rows+'<div class="cart-foot"><span>Products '+money(cartProductsTotal())+' + '+(selectedDeliveryMethod()==='collection'?'collection ':'delivery ')+money(currentDeliveryPrice())+'</span><strong>'+money(cartGrandTotal())+'</strong></div>';
+
+    var deliveryLabel=selectedDeliveryMethod()==='collection'?'Collection':'Courier Guy Locker';
+    var deliveryPrice=currentDeliveryPrice();
+
+    cartBox.innerHTML=
+      '<div class="cart-head"><strong>Basket Items</strong></div>'+
+      '<div class="cart-columns" aria-hidden="true">'+
+        '<span>Model</span><span>Flavour</span><span>Qty</span><span>Price</span><span>Total</span><span></span>'+
+      '</div>'+
+      rows+
+      '<div class="cart-delivery-row">'+
+        '<strong>'+deliveryLabel+'</strong><span></span><span></span><span>'+money(deliveryPrice)+'</span><span></span><span></span>'+
+      '</div>'+
+      '<div class="cart-foot">'+
+        '<strong>Total</strong><strong>'+money(cartGrandTotal())+'</strong>'+
+      '</div>';
+
     updateTotals();
     saveBasketSession();
     publishCartSummary();
   }
-
   function addSelectionToCart(){
     if(globalSoldOut){if(orderStatus)orderStatus.textContent='All currently listed ELFBAR products are sold out.';return;}
     var selection=currentSelection(),key=selection.productKey,spec=selection.spec,qty=selection.qty,item=selection.item,itemId=selection.itemId;

@@ -24,17 +24,18 @@
 
 .corporate-home .corporate-hero h1,.elfbar-page .brand-hero h1,.bc10000-hero-v2 h1,.master-hero h1,.pod-range-hero h1,.pod-detail-hero h1,.contact-hero h1,.status-intro h1,.legal-page h1{font-size:var(--vestige-h1);line-height:1.02;margin-bottom:var(--vestige-gap-hero)}
 .corporate-home .corporate-heading h2,.corporate-home .experience-copy h2,.corporate-home .corporate-vapes h2,.corporate-home .corporate-contact h2,.elfbar-page .brand-curated h2,.elfbar-page .model-choice .section-heading h2,.elfbar-page .brand-decision h2,.elfbar-page .information h2,.bc10000-hero-v2~section .section-heading h2,.bc10000-hero-v2~section h2,.master-hero~section .section-heading h2,.master-hero~section h2,.pod-range .section-heading h2,.pod-detail-info h2,.pod-related h2,.contact-section h2,.status-result h2,.legal-page h2{font-size:var(--vestige-h2);line-height:1.08;margin-bottom:var(--vestige-gap-section)}
-.corporate-home .corporate-standard-grid h3,.corporate-home .direction-card h3,.corporate-home .capability-card h3,.elfbar-page .model-card-body h3,.bc10000-hero-v2~section h3,.master-hero~section h3,.pod-flavour-card h3,.pod-detail-info h3{font-size:var(--vestige-h3);line-height:1.16;margin-bottom:var(--vestige-gap-card)}
+.corporate-home .corporate-standard-grid h3,.corporate-home .direction-card h3,.elfbar-page .model-card-body h3,.bc10000-hero-v2~section h3,.master-hero~section h3,.pod-flavour-card h3,.pod-detail-info h3{font-size:var(--vestige-h3);line-height:1.16;margin-bottom:var(--vestige-gap-card)}
 .section-heading h2 + p,.corporate-heading h2 + p,.experience-copy h2 + p,.brand-hero h1 + p,.bc10000-hero-v2 h1 + p,.master-hero h1 + p,.pod-range-hero h1 + p,.pod-detail-hero h1 + p,.contact-hero h1 + p,.status-intro h1 + p,.legal-page h1 + .legal-lead{margin-top:0}
 
-.corporate-home .corporate-hero,.elfbar-page .brand-hero,.bc10000-hero-v2,.master-hero,.pod-range-hero,.pod-detail-hero{background:radial-gradient(circle at 76% 30%,rgba(34,83,126,.34),transparent 34%),radial-gradient(circle at 18% 78%,rgba(15,55,91,.30),transparent 38%),linear-gradient(135deg,var(--vestige-blue-0) 0%,var(--vestige-blue-1) 42%,var(--vestige-blue-2) 72%,var(--vestige-blue-3) 100%)}
+.corporate-home .corporate-hero,.elfbar-page .brand-hero,.bc10000-hero-v2,.master-hero,.pod-range-hero,.pod-detail-hero{
+  position:relative;
+  background:radial-gradient(circle at 76% 30%,rgba(34,83,126,.34),transparent 34%),radial-gradient(circle at 18% 78%,rgba(15,55,91,.30),transparent 38%),linear-gradient(135deg,var(--vestige-blue-0) 0%,var(--vestige-blue-1) 42%,var(--vestige-blue-2) 72%,var(--vestige-blue-3) 100%);
+  border-bottom:1px solid rgba(224,187,115,.20);
+}
 
 /* Owner-approved Vestige Standard artwork, hard-coded in the hero source. */
 .corporate-home .vestige-standard-artwork-wrap{position:relative;width:min(100%,620px);aspect-ratio:1/1;margin:0;padding:9px;display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid rgba(224,187,115,.94);background:#00101f;box-shadow:0 0 0 1px rgba(224,187,115,.14),0 28px 48px rgba(0,0,0,.28)}
 .corporate-home .vestige-standard-artwork{position:relative;z-index:2;display:block;width:100%;height:100%;max-width:none;object-fit:contain;opacity:1;visibility:visible;filter:none}
-
-.corporate-home .corporate-standard-grid .corporate-number{font-size:11px;letter-spacing:.28em}
-.corporate-home .corporate-standard-grid .eyebrow{margin-top:12px;margin-bottom:var(--vestige-gap-card);color:var(--vestige-gold);font-family:Georgia,'Times New Roman',serif;font-size:clamp(24px,2.2vw,34px);line-height:1;letter-spacing:-.01em}
 
 /* Capabilities — restore the owner-approved V35.30.6 balance: beam above, cables down, centred fulcrum. */
 .corporate-home .avenue-balance{width:min(100%,1080px);margin:0 auto 58px;padding:16px 18px 0}
@@ -50,16 +51,73 @@
 .corporate-home .avenue-fulcrum:before{content:"";position:absolute;left:50%;top:-18px;width:2px;height:250px;translate:-50% 0;background:linear-gradient(to bottom,rgba(224,187,115,.85),var(--vestige-gold),rgba(224,187,115,.42));z-index:0}
 .corporate-home .avenue-crosshair{position:absolute;inset:0;width:100%;height:100%;fill:none;stroke:var(--vestige-gold);stroke-width:1.55;opacity:.98;filter:drop-shadow(0 0 9px rgba(200,155,67,.18))}
 .corporate-home .avenue-shield{position:relative;z-index:2;width:72px;height:83px;fill:rgba(0,15,30,.95);stroke:var(--vestige-gold-soft);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 8px 14px rgba(0,0,0,.32))}
-.corporate-home .avenue-symbol-label{position:absolute;z-index:3;top:142px;left:50%;translate:-50% 0;width:max-content;color:var(--vestige-gold);font-size:8px;font-weight:700;letter-spacing:.22em}
 .corporate-home .avenue-fulcrum-pedestal{position:absolute;left:50%;top:153px;translate:-50% 0;width:0;height:0;border-left:38px solid transparent;border-right:38px solid transparent;border-bottom:72px solid rgba(224,187,115,.13);z-index:-1}
 .corporate-home .avenue-fulcrum-pedestal:after{content:"";position:absolute;left:-48px;top:66px;width:96px;height:1px;background:rgba(224,187,115,.72)}
 .corporate-home .avenue-balance-caption{display:block;width:max-content;max-width:100%;margin:9px auto 0;padding:0 18px;color:var(--vestige-gold);font-size:10px;font-weight:700;letter-spacing:.32em;text-align:center}
 
 /* Experience — detailed owner-supplied political world map in the approved gold frame. */
+/* Experience â€” full-width heading followed by standard map/text spacing. */
+.corporate-home .experience-heading{
+  width:100%;
+  margin:0 0 clamp(42px,5vw,62px);
+}
+.corporate-home .experience-heading .eyebrow{
+  margin-bottom:14px;
+}
+.corporate-home .experience-heading h2{
+  width:100%;
+  max-width:1180px;
+  margin:0;
+  color:var(--vestige-ink,#111c29);
+  font-size:clamp(44px,4.4vw,62px);
+  line-height:1.05;
+  letter-spacing:-.7px;
+}
+.corporate-home .experience-grid{
+  display:grid;
+  grid-template-columns:minmax(360px,.88fr) minmax(0,1.12fr);
+  align-items:start;
+  gap:clamp(58px,7vw,96px);
+}
+.corporate-home .experience-copy{
+  padding-top:0;
+}
+.corporate-home .experience-copy>p:first-child{
+  margin-top:0;
+}
+.corporate-home .experience-copy>p:not(.corporate-closing-line){
+  font-size:16px;
+  line-height:1.82;
+}
 .corporate-home .experience-map-visual{position:relative;min-height:0;display:flex;align-items:center;justify-content:center;padding:9px 9px 48px;overflow:hidden;background:#f3efe5;border:1px solid rgba(224,187,115,.94);box-shadow:0 0 0 1px rgba(224,187,115,.14),0 22px 46px rgba(5,18,31,.16)}
 .corporate-home .experience-map-owner{display:block;width:100%;height:auto;max-height:520px;object-fit:contain;background:#dff5fb}
 .corporate-home .experience-coordinate{position:absolute;left:18px;right:18px;bottom:17px;color:#8d6b2c;font-size:10px;font-weight:700;letter-spacing:.24em;text-transform:uppercase}
 
+/* Shared hero rhythm â€” same blue/gold visual language across product families. */
+.elfbar-page .brand-hero-grid,
+.bc10000-hero-grid,
+.master-hero-grid,
+.pod-range-hero-grid,
+.pod-detail-grid{
+  min-height:clamp(560px,68vh,720px);
+  align-items:center;
+  padding-top:clamp(56px,6vw,86px);
+  padding-bottom:clamp(56px,6vw,86px);
+}
+.elfbar-page .brand-hero-copy,
+.bc10000-hero-v2 .hero-copy,
+.master-hero-grid>div:first-child,
+.pod-range-hero-grid>div:first-child,
+.pod-detail-grid>div:first-child{
+  max-width:720px;
+}
+.elfbar-page .brand-hero-copy>.eyebrow,
+.bc10000-hero-v2 .hero-copy>.eyebrow,
+.master-hero-grid>div:first-child>.eyebrow,
+.pod-range-hero-grid>div:first-child>.eyebrow,
+.pod-detail-grid>div:first-child>.eyebrow{
+  margin-bottom:18px;
+}
 .corporate-home .corporate-vapes{background:radial-gradient(circle at 18% 24%,rgba(36,77,114,.24),transparent 30%),linear-gradient(140deg,var(--vestige-blue-0) 0%,var(--vestige-blue-1) 52%,var(--vestige-blue-3) 100%);color:var(--vestige-ivory)}
 .corporate-home .corporate-vapes h2,.corporate-home .corporate-vapes .eyebrow{color:var(--vestige-ivory)}
 .corporate-home .corporate-vapes .gold-text{color:var(--vestige-gold-soft)}
@@ -104,9 +162,233 @@
   .corporate-home .avenue-node:before,.corporate-home .avenue-node:after{display:none}
   .corporate-home .avenue-fulcrum{width:132px;height:132px}
   .corporate-home .avenue-fulcrum:before{height:190px}
-  .corporate-home .avenue-symbol-label{top:104px}
   .corporate-home .avenue-fulcrum-pedestal{top:112px;scale:.82}
   .corporate-home .avenue-balance-caption{margin-top:12px;line-height:1.6}
-  .corporate-home .experience-map-visual{padding:7px 7px 45px}
+  /* Experience â€” full-width heading followed by standard map/text spacing. */
+.corporate-home .experience-heading{
+  width:100%;
+  margin:0 0 clamp(42px,5vw,62px);
+}
+.corporate-home .experience-heading .eyebrow{
+  margin-bottom:14px;
+}
+.corporate-home .experience-heading h2{
+  width:100%;
+  max-width:1180px;
+  margin:0;
+  color:var(--vestige-ink,#111c29);
+  font-size:clamp(44px,4.4vw,62px);
+  line-height:1.05;
+  letter-spacing:-.7px;
+}
+.corporate-home .experience-grid{
+  display:grid;
+  grid-template-columns:minmax(360px,.88fr) minmax(0,1.12fr);
+  align-items:start;
+  gap:clamp(58px,7vw,96px);
+}
+.corporate-home .experience-copy{
+  padding-top:0;
+}
+.corporate-home .experience-copy>p:first-child{
+  margin-top:0;
+}
+.corporate-home .experience-copy>p:not(.corporate-closing-line){
+  font-size:16px;
+  line-height:1.82;
+}
+.corporate-home .experience-map-visual{padding:7px 7px 45px}
   .corporate-home .experience-coordinate{left:14px;right:14px;bottom:15px;font-size:8px;letter-spacing:.16em}
+}
+@media(max-width:980px){
+  .corporate-home .experience-grid{
+    grid-template-columns:1fr;
+    gap:38px;
+  }
+  .corporate-home .experience-heading{
+    margin-bottom:40px;
+  }
+}
+@media(max-width:760px){
+  .corporate-home .corporate-standard-grid article{
+    grid-template-columns:36px minmax(0,1fr);
+    column-gap:12px;
+  }
+  .corporate-home .corporate-standard-grid .eyebrow{
+    font-size:clamp(24px,8vw,32px);
+  }
+  .corporate-home .capability-kicker{
+    grid-template-columns:36px minmax(0,1fr) 36px;
+    margin-bottom:24px;
+  }
+  .corporate-home .capability-kicker .eyebrow{
+    font-size:clamp(23px,7vw,30px);
+  }
+  .elfbar-page .brand-hero-grid,
+  .bc10000-hero-grid,
+  .master-hero-grid,
+  .pod-range-hero-grid,
+  .pod-detail-grid{
+    min-height:auto;
+    padding-top:54px;
+    padding-bottom:60px;
+  }
+}
+/* Contact â€” WhatsApp, Instagram and general enquiries in one coherent system. */
+.contact-grid{align-items:stretch;}
+.contact-card-whatsapp{
+  display:flex;
+  flex-direction:column;
+}
+.contact-whatsapp-qr{
+  width:min(100%,300px);
+  aspect-ratio:1/1;
+  object-fit:contain;
+  margin:18px auto 20px;
+  padding:12px;
+  background:#fff;
+  border:1px solid rgba(200,155,67,.35);
+  box-shadow:0 14px 30px rgba(23,37,56,.08);
+}
+.contact-whatsapp-note{
+  margin-top:auto;
+  font-size:13px;
+  line-height:1.65;
+}
+@media(max-width:980px){
+  .contact-grid{grid-template-columns:1fr 1fr}
+  .contact-card-whatsapp{grid-column:1 / -1}
+}
+@media(max-width:760px){
+  .contact-grid{grid-template-columns:1fr}
+  .contact-card-whatsapp{grid-column:auto}
+  .contact-whatsapp-qr{width:min(100%,280px)}
+}
+/* V35.30.15 â€” geometric Standard diamonds and final two-card Contact layout. */
+.corporate-home .corporate-values-line{
+  display:grid;
+  grid-template-columns:max-content 7px max-content 7px max-content 7px max-content;
+  align-items:center;
+  justify-content:center;
+  column-gap:18px;
+  margin-top:48px;
+  text-align:center;
+}
+.corporate-home .corporate-values-line span{
+  display:block;
+  margin:0;
+  color:#f5efe2;
+  font-size:11px;
+  font-weight:700;
+  line-height:1;
+  letter-spacing:.16em;
+  white-space:nowrap;
+}
+.corporate-home .corporate-values-line i{
+  display:block;
+  width:7px;
+  height:7px;
+  margin:0;
+  background:var(--vestige-gold);
+  clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);
+  transform:none;
+  box-shadow:0 0 8px rgba(216,173,89,.16);
+}
+
+
+
+@media(max-width:760px){
+  .corporate-home .corporate-values-line{
+    grid-template-columns:max-content 6px max-content 6px max-content 6px max-content;
+    column-gap:10px;
+  }
+  .corporate-home .corporate-values-line span{
+    font-size:10px;
+    letter-spacing:.1em;
+  }
+  .corporate-home .corporate-values-line i{
+    width:6px;
+    height:6px;
+  }
+}
+/* V35.30.16 â€” contact cards use matched content stages for exact visual alignment. */
+.contact-grid.contact-grid-two{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:32px;
+  align-items:stretch;
+}
+.contact-grid-two .contact-card{
+  min-width:0;
+  display:grid;
+  grid-template-rows:auto 1fr;
+}
+.contact-card-intro{
+  min-width:0;
+}
+.contact-card-stage{
+  min-height:470px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+.contact-whatsapp-stage{
+  gap:22px;
+}
+.contact-whatsapp-qr{
+  width:min(100%,300px);
+  aspect-ratio:1/1;
+  object-fit:contain;
+  margin:0;
+  padding:12px;
+  background:#fff;
+  border:1px solid rgba(200,155,67,.35);
+  box-shadow:0 14px 30px rgba(23,37,56,.08);
+}
+.contact-whatsapp-note{
+  width:100%;
+  margin:0;
+  text-align:left;
+  font-size:13px;
+  line-height:1.65;
+}
+.contact-actions-stage{
+  align-items:center;
+  justify-content:center;
+}
+.contact-action-stack{
+  width:min(100%,360px);
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+  justify-content:center;
+  gap:24px;
+  margin:0 auto;
+}
+.contact-action-stack .btn{
+  width:100%;
+  margin:0;
+  padding:16px 22px;
+  text-align:center;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:12px;
+  font-weight:700;
+  line-height:1.2;
+  letter-spacing:1.2px;
+  text-transform:none;
+}
+@media(max-width:760px){
+  .contact-grid.contact-grid-two{
+    grid-template-columns:1fr;
+  }
+  .contact-card-stage{
+    min-height:0;
+    padding-top:32px;
+  }
+  .contact-action-stack{
+    width:100%;
+    max-width:360px;
+    gap:18px;
+  }
 }
