@@ -2080,7 +2080,7 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
   gap:16px;
 }
 .information .info-card h3{
-  margin:0;
+  margin:0 0 16px;
   text-align:left;
   align-self:flex-start;
 }
