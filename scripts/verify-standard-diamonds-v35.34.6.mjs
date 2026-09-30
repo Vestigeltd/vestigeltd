@@ -16,8 +16,8 @@ need(index.includes('<span>PRECISION</span><i aria-hidden="true"></i>'),"PRECISI
 
 need(css.includes('grid-template-columns:max-content 14px max-content 14px max-content 14px max-content;'),"desktop separator columns are not registered");
 need(css.includes('.corporate-home .corporate-values-line i::before{'),"outlined diamond pseudo-element missing");
-need(css.includes('background:#00101f;'),"diamond navy centre missing");
-need(css.includes('border:2px solid var(--vestige-gold);'),"desktop gold diamond outline missing");
+need(css.includes('background:var(--vestige-gold);'),"filled gold diamond missing");
+need(css.includes('border:2px solid #00101f;'),"desktop navy diamond border missing");
 need(css.includes('rotate(45deg)'),"diamond rotation missing");
 need(css.includes('grid-template-columns:max-content 12px max-content 12px max-content 12px max-content;'),"mobile separator columns are not registered");
 need(css.includes('border-width:1.5px;'),"mobile diamond outline scaling missing");
@@ -25,7 +25,7 @@ need(css.includes('border-width:1.5px;'),"mobile diamond outline scaling missing
 const valuesRule = css.match(/\.corporate-home \.corporate-values-line i\{([\s\S]*?)\}/);
 need(Boolean(valuesRule),"values separator base rule missing");
 need(!valuesRule || !valuesRule[1].includes('clip-path:polygon'),"legacy filled clip-path diamond still active");
-need(!valuesRule || !valuesRule[1].includes('background:var(--vestige-gold)'),"legacy solid-gold separator still active");
+need(!valuesRule || !valuesRule[1].includes('background:#00101f'),"legacy empty navy separator still active");
 
 if(failures.length){
   console.error("V35.34.6 STANDARD DIAMONDS FAILED");
@@ -35,7 +35,7 @@ if(failures.length){
 
 console.log("V35.34.6 STANDARD DIAMONDS PASS");
 console.log("Existing semantic separator markup preserved: PASS");
-console.log("Scale-style navy-centre / gold-outline diamond: PASS");
+console.log("Filled gold / navy-border diamond: PASS");
 console.log("Desktop alignment: PASS");
 console.log("Mobile proportional sizing: PASS");
 console.log("V35.34.5 scale artwork untouched: PASS");
