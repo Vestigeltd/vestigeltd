@@ -1770,3 +1770,95 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
 #vestigeCart .cart-delivery-row>span:nth-of-type(3){grid-column:2;text-align:right}
 #vestigeCart .cart-foot{min-width:0;grid-template-columns:1fr auto;padding:13px 16px}
 }
+
+/* V35.34.10 — final layout repair: hero rhythm, checkout rails, basket visibility and contact proportions */
+@media(min-width:761px){
+  .corporate-home .corporate-hero-grid,
+  .elfbar-page .brand-hero-grid,
+  .bc10000-hero-grid,
+  .master-hero-grid,
+  .pod-range-hero-grid,
+  .pod-detail-grid,
+  .contact-hero{
+    padding-top:42px;
+  }
+  .corporate-home .corporate-hero-grid,
+  .elfbar-page .brand-hero-grid,
+  .bc10000-hero-grid,
+  .master-hero-grid,
+  .pod-range-hero-grid,
+  .pod-detail-grid{
+    min-height:clamp(520px,64vh,680px);
+  }
+}
+@media(min-width:900px){
+  .buy-now{
+    --vcjs-core-width:min(940px,calc(100vw - 240px));
+    --vcjs-rail-width:clamp(96px,calc((100vw - var(--vcjs-core-width) - 32px)/2),260px);
+  }
+  .checkout-shell{
+    width:100%;
+    max-width:var(--vcjs-core-width);
+    position:relative;
+    z-index:2;
+  }
+  .vestige-checkout-journey-safe{
+    width:calc(100% + (var(--vcjs-rail-width) * 2) + 32px);
+    margin-left:calc((var(--vcjs-rail-width) * -1) - 16px);
+    grid-template-columns:var(--vcjs-rail-width) minmax(0,1fr) var(--vcjs-rail-width);
+  }
+}
+.checkout-shell .order-form{position:relative;z-index:2}
+.checkout-submit{
+  display:block;
+  width:min(100%,380px)!important;
+  margin:20px auto 8px!important;
+  padding:11px 18px!important;
+  font-size:11px!important;
+  letter-spacing:1px!important;
+  line-height:1.25!important;
+}
+.contact-grid-two .contact-card{
+  padding:28px;
+}
+.contact-card-stage{
+  min-height:280px;
+}
+.contact-whatsapp-stage{
+  gap:20px;
+}
+.contact-whatsapp-qr{
+  width:min(100%,210px);
+}
+.contact-action-stack{
+  width:min(100%,250px);
+  gap:40px;
+}
+.contact-action-stack .btn{
+  padding:9px 12px;
+  font-size:9px;
+  letter-spacing:.8px;
+  line-height:1.2;
+}
+@media(max-width:760px){
+  .corporate-home .corporate-hero-grid,
+  .elfbar-page .brand-hero-grid,
+  .bc10000-hero-grid,
+  .master-hero-grid,
+  .pod-range-hero-grid,
+  .pod-detail-grid{
+    min-height:auto;
+    padding-top:36px;
+    padding-bottom:50px;
+  }
+  .contact-hero{
+    padding-top:48px;
+    min-height:280px;
+  }
+  .contact-grid-two .contact-card{padding:24px 20px}
+  .contact-card-stage{min-height:0;padding-top:22px}
+  .contact-whatsapp-qr{width:min(100%,190px)}
+  .contact-action-stack{max-width:250px;gap:36px}
+  .contact-action-stack .btn{padding:9px 11px;font-size:9px}
+  .checkout-submit{width:min(calc(100% - 32px),380px)!important;margin:18px auto 8px!important}
+}
