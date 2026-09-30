@@ -1,0 +1,5 @@
+[[d1_databases]]
+binding = "PREVIEW_DB"
+database_name = "vestige-checkout-preview"
+database_id = "ff06dc68-1b5e-4def-9f1b-4e9b9d532ddc"
+migrations_dir = "migrations"
