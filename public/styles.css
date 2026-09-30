@@ -1234,3 +1234,50 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
 @media(max-width:640px){
   .model-grid-v2 .approved-comparison-media{aspect-ratio:1122 / 1402}
 }
+
+
+/* V35.34.8 — requested visual repair pass */
+.discover-cta-row{display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap;margin:18px auto 0}
+.discover-range-cta,.discover-shop-cta{margin:0}
+.footer-diamond{display:inline-block;margin:0 .42em;color:#c89b43;font-size:.72em;line-height:1;vertical-align:middle}
+.footer-warning{white-space:normal;overflow-wrap:anywhere;word-break:normal}
+
+/* Reduce excessive empty top space while retaining premium breathing room. */
+.discover-hero{padding-top:clamp(48px,7vw,88px)!important;padding-bottom:clamp(48px,7vw,88px)!important}
+.contact-hero{padding-top:78px!important;padding-bottom:78px!important;min-height:360px!important}
+
+/* Shop: the basket is the single source of truth; keep every column and control inside the form. */
+#vestigeCartBuilder{margin-top:18px!important;padding:16px 18px!important;overflow:visible!important}
+#vestigeCart{overflow:visible!important}
+#vestigeCart .cart-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 12px;border-bottom:1px solid #dfe3e7}
+#vestigeCart .cart-row{display:grid;grid-template-columns:minmax(0,2fr) minmax(62px,.65fr) minmax(90px,.85fr) auto;gap:12px;align-items:center;padding:11px 12px}
+#vestigeCart .cart-row>div{min-width:0}
+#vestigeCart .cart-row strong,#vestigeCart .cart-row small{min-width:0;overflow-wrap:anywhere}
+#vestigeCart .cart-remove{justify-self:end;white-space:nowrap}
+#vestigeCart .cart-foot{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;padding:12px;border-top:1px solid #dfe3e7}
+#vestigeCart .cart-foot strong{font-variant-numeric:tabular-nums;white-space:nowrap}
+#vestigeCart .cart-foot strong#deliveryTotal{display:none!important}
+.cart-empty{padding:12px;color:#526170;font-size:12px}
+.cart-foot-empty{grid-template-columns:1fr auto!important}
+.confirmation-wrap{display:none!important}
+
+/* Contact: smaller actionable links and more deliberate spacing. */
+.contact-card .contact-social-btn{padding:10px 16px;font-size:11px}
+.contact-card .contact-link-btn{display:inline-block;margin-top:7px;padding:6px 10px;border:1px solid #d7dbe0;border-radius:4px;text-decoration:none!important;color:#8c621c!important;font-size:13px;line-height:1.25}
+.contact-card .contact-detail + .contact-detail{margin-top:14px}
+.contact-section .contact-card{padding:34px}
+@media(max-width:760px){
+ .discover-cta-row{flex-direction:column;width:100%}
+ .discover-range-cta,.discover-shop-cta{width:min(100%,320px);text-align:center}
+ .discover-hero{padding-top:42px!important;padding-bottom:55px!important}
+ .contact-hero{padding-top:58px!important;padding-bottom:58px!important;min-height:300px!important}
+ #vestigeCart .cart-row{grid-template-columns:minmax(0,1fr) auto;gap:7px 10px}
+ #vestigeCart .cart-row>span{grid-column:2;grid-row:1}
+ #vestigeCart .cart-row>strong:not(:first-child){grid-column:1}
+ #vestigeCart .cart-remove{grid-column:2;grid-row:2}
+ #vestigeCart .cart-foot{grid-template-columns:1fr auto}
+ #vestigeCart .cart-foot span:first-child{grid-column:1}
+ #vestigeCart .cart-foot span:nth-child(2){grid-column:1}
+ #vestigeCart .cart-foot strong#productTotal{grid-column:2;grid-row:1 / span 2}
+ #vestigeCart .cart-foot strong#orderTotal{grid-column:2;grid-row:3}
+}
