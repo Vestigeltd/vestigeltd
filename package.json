@@ -11,7 +11,7 @@
     "check": "node --check src/worker.js && node --check public/owner.js && node --check public/order-status.js && npm run verify && npm test && npm run responsive:check && npm run capability:check && npm run diamonds:check && npm run layout:check",
     "dry-run": "wrangler deploy --dry-run --outdir dist-check",
     "dev": "wrangler dev",
-    "preview": "wrangler preview --name development",
+    "preview": "wrangler versions upload --message \"V35.34.15 development preview — live production stock catalogue\" ",
     "clean": "node scripts/clean-workspace.mjs",
     "clean:check": "node scripts/clean-workspace.mjs --check",
     "responsive:check": "node scripts/verify-responsive-v35.34.0.mjs",
