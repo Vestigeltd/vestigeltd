@@ -15,6 +15,14 @@ database_name = "vestige-checkout"
 database_id = "da38e52e-adc9-407a-8cf9-6f4b59821f4b"
 migrations_dir = "migrations"
 
+[previews]
+
+[[previews.d1_databases]]
+binding = "CHECKOUT_DB"
+database_name = "vestige-checkout-preview"
+database_id = "ff06dc68-1b5e-4def-9f1b-4e9b9d532ddc"
+migrations_dir = "migrations"
+
 [triggers]
 crons = ["*/15 * * * *"]
 
