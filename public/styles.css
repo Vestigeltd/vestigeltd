@@ -2109,17 +2109,17 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
 
 /* Contact buttons: 1cm narrower on each side, with 1.5cm more separation. */
 .contact-action-stack{
-  gap:70px;
+  gap:calc(55px + 1.5cm);
 }
 .contact-action-stack .btn{
-  width:calc(100% - 40px);
+  width:calc(100% - 2cm);
   margin-inline:auto;
 }
 @media(max-width:760px){
   .contact-action-stack{
-    gap:70px;
+    gap:calc(55px + 1.5cm);
   }
   .contact-action-stack .btn{
-    width:calc(100% - 40px);
+    width:calc(100% - 2cm);
   }
 }
