@@ -395,7 +395,7 @@
     return {name:name,qty:qty,item:item,itemId:itemId};
   }
   function updateTotals(){
-    if(!productTotal||!orderTotal)return;
+    if(!orderTotal)return;
     // Only items actually added to the basket count toward checkout totals.
     // Merely choosing a flavour/quantity must leave the order at R0.00.
     var products=cart.length?cartProductsTotal():0;
@@ -405,17 +405,8 @@
     orderTotal.textContent=money(total);
     orderTotal.dataset.amount=total.toFixed(2);
     var deliveryCell=document.getElementById('deliveryTotal');
-    if(!deliveryCell){
-      var rows=document.querySelectorAll('.confirmation-table tbody tr');
-      Array.prototype.forEach.call(rows,function(row){
-        var th=row.querySelector('th');
-        if(!deliveryCell&&th&&/Courier Guy Locker/i.test(th.textContent||'')){
-          deliveryCell=row.querySelector('td');
-          if(deliveryCell)deliveryCell.id='deliveryTotal';
-        }
-      });
-    }
     if(deliveryCell)deliveryCell.textContent=money(delivery);
+    if(productTotal)productTotal.textContent=money(products);
     validateSelectedStock();
   }
   function validateSelectedStock(){
@@ -455,10 +446,10 @@
   }
   function renderCart(){
     if(!cartBox)return;
-    if(!cart.length){cartBox.hidden=true;cartBox.innerHTML='';updateTotals();saveBasketSession();publishCartSummary();return;}
+    if(!cart.length){cartBox.hidden=false;cartBox.innerHTML='<div class="cart-empty">Your basket is empty. Add a flavour and quantity above.</div><div class="cart-foot cart-foot-empty"><span>Total</span><strong id="orderTotal">R0.00</strong></div>';updateTotals();saveBasketSession();publishCartSummary();return;}
     cartBox.hidden=false;
     var rows=cart.map(function(item,index){return '<div class="cart-row"><div><strong>'+esc(item.flavour)+'</strong><small>'+money(PRODUCT_PRICE)+' each</small></div><span>Qty '+item.quantity+'</span><strong>'+money(item.quantity*PRODUCT_PRICE)+'</strong><button type="button" class="cart-remove" data-cart-index="'+index+'" aria-label="Remove '+esc(item.flavour)+'">Remove</button></div>';}).join('');
-    cartBox.innerHTML='<div class="cart-head"><strong>YOUR BASKET</strong><span>'+cartQuantity()+' item'+(cartQuantity()===1?'':'s')+'</span></div>'+rows+'<div class="cart-foot"><span>Products '+money(cartProductsTotal())+' + '+(selectedDeliveryMethod()==='collection'?'collection ':'delivery ')+money(currentDeliveryPrice())+'</span><strong>'+money(cartGrandTotal())+'</strong></div>';
+    cartBox.innerHTML='<div class="cart-head"><strong>YOUR BASKET</strong><span>'+cartQuantity()+' item'+(cartQuantity()===1?'':'s')+'</span></div>'+rows+'<div class="cart-foot"><span>Products '+money(cartProductsTotal())+'</span><span>'+ (selectedDeliveryMethod()==='collection'?'Collection':'Delivery') +' '+money(currentDeliveryPrice())+'</span><strong id="productTotal">'+money(cartProductsTotal())+'</strong><strong id="deliveryTotal" hidden>'+money(currentDeliveryPrice())+'</strong><strong id="orderTotal">'+money(cartGrandTotal())+'</strong></div>';
     updateTotals();
     saveBasketSession();
     publishCartSummary();
