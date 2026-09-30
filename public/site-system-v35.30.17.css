@@ -304,10 +304,10 @@
   width:10px;
   height:10px;
   box-sizing:border-box;
-  background:#00101f;
-  border:2px solid var(--vestige-gold);
+  background:var(--vestige-gold);
+  border:2px solid #00101f;
   transform:translate(-50%,-50%) rotate(45deg);
-  box-shadow:0 0 7px rgba(216,173,89,.16);
+  box-shadow:0 0 7px rgba(216,173,89,.22);
 }
 
 
