@@ -918,8 +918,9 @@
     const send=()=>{
       if(sent||receipt.hidden)return;
       sent=true;
-      const amountNode=document.getElementById('orderTotal');
-      const amount=amountNode?Number(String(amountNode.textContent||'').replace(/[^0-9.]/g,'')):null;
+      let basketSummary={};
+      try{basketSummary=JSON.parse(orderForm&&orderForm.dataset.basketSummary||'{}');}catch(_){}
+      const amount=Number(basketSummary.grandTotal||0)||null;
       track('payment_confirmed',{amount});
     };
     new MutationObserver(send).observe(receipt,{attributes:true,attributeFilter:['hidden','style','class']});
