@@ -1729,49 +1729,9 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
   }
 }
 /* V35.30.19_CANONICAL_BASKET_END */
-
-/* V35.34.9 — current-main repair layer */
-.corporate-home .vapes-action-buttons{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
-.corporate-home .vapes-action-buttons .btn{margin:0}
-.corporate-home .corporate-hero-grid{padding-top:46px;padding-bottom:48px}
-.contact-hero{padding:78px 0;min-height:360px}
-.contact-grid-two .contact-card{padding:34px}
-.contact-card-stage{min-height:350px}
-.contact-whatsapp-stage{gap:30px}
-.contact-whatsapp-qr{width:min(100%,250px)}
-.contact-action-stack{width:min(100%,300px);gap:30px}
-.contact-action-stack .btn{padding:11px 16px;font-size:10px;letter-spacing:1px}
-.buy-now{padding-top:72px}
-.vestige-cart-builder{width:100%;margin:12px 0 0;padding:0;overflow:visible;position:relative;z-index:4}
-#vestigeCart{width:100%;max-width:900px;margin:18px auto 26px;overflow:visible}
-#vestigeCart .cart-columns,#vestigeCart .cart-row,#vestigeCart .cart-delivery-row{width:100%}
-#vestigeCart .cart-remove{justify-self:end;white-space:nowrap}
-#vestigeCart .cart-foot{width:100%}
-.confirmation-wrap{display:none!important}
-@media(max-width:760px){
-.corporate-home .corporate-hero-grid{padding-top:46px;padding-bottom:54px}
-.contact-hero{padding:58px 0;min-height:300px}
-.contact-grid-two .contact-card{padding:28px 24px}
-.contact-card-stage{min-height:0;padding-top:28px}
-.contact-whatsapp-qr{width:min(100%,230px)}
-.contact-action-stack{max-width:300px;gap:28px}
-#vestigeCart{overflow:visible;margin:16px 0 24px}
-#vestigeCart .cart-head{position:static}
-#vestigeCart .cart-columns{display:none}
-#vestigeCart .cart-row{min-width:0;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"model remove" "flavour remove" "qty total" "price total";gap:7px 12px;padding:13px 16px}
-#vestigeCart .cart-model{grid-area:model}
-#vestigeCart .cart-flavour{grid-area:flavour}
-#vestigeCart .cart-qty{grid-area:qty;text-align:left}
-#vestigeCart .cart-price{grid-area:price;text-align:left}
-#vestigeCart .cart-line-total{grid-area:total;text-align:right;align-self:center}
-#vestigeCart .cart-remove{grid-area:remove;align-self:start;justify-self:end}
-#vestigeCart .cart-delivery-row{min-width:0;grid-template-columns:1fr auto;gap:8px;padding:12px 16px}
-#vestigeCart .cart-delivery-row strong{grid-column:1}
-#vestigeCart .cart-delivery-row>span:nth-of-type(3){grid-column:2;text-align:right}
-#vestigeCart .cart-foot{min-width:0;grid-template-columns:1fr auto;padding:13px 16px}
-}
-
-/* V35.34.11 — precise layout correction: restore rail geometry and tighten page rhythm */
+/* V35.34.12 — consolidated responsive layout corrections
+   Scope: corporate/Vestige Vapes hero rhythm, checkout rails, basket visibility,
+   contact-card proportions and accessible action sizing. */
 @media(min-width:761px){
   .corporate-home .corporate-hero-grid,
   .elfbar-page .brand-hero-grid,
@@ -1781,59 +1741,137 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
   .pod-detail-grid{
     padding-top:26px;
   }
+
   .contact-hero{
     padding-top:42px;
   }
 }
+
 @media(min-width:900px){
-  /* Restore the original blue-rail positioning. The centre column is the
-     available monitor space between the two fixed-width side rails. */
   .buy-now{
     --vcjs-rail-width:clamp(96px,calc((100vw - 780px)/2),260px);
+    --vcjs-center-width:min(
+      940px,
+      calc(100vw - (2 * var(--vcjs-rail-width)) - 56px)
+    );
   }
+
   .checkout-shell{
-    max-width:min(940px,calc(100vw - var(--vcjs-rail-width) - var(--vcjs-rail-width) - 44px));
+    width:var(--vcjs-center-width);
+    max-width:100%;
+    margin-inline:auto;
     position:relative;
     z-index:2;
   }
+
   .vestige-checkout-journey-safe{
     width:calc(100vw - 24px);
-    margin-left:calc((100% - 100vw + 24px)/2);
-    grid-template-columns:var(--vcjs-rail-width) minmax(0,1fr) var(--vcjs-rail-width);
+    margin-inline-start:calc((100% - 100vw + 24px) / 2);
+    grid-template-columns:
+      var(--vcjs-rail-width)
+      minmax(0,var(--vcjs-center-width))
+      var(--vcjs-rail-width);
+    column-gap:16px;
+  }
+
+  .checkout-shell .order-form{
+    width:100%;
+    min-width:0;
   }
 }
-.checkout-shell .order-form{position:relative;z-index:2}
+
+.checkout-shell .order-form{
+  position:relative;
+  z-index:2;
+  min-width:0;
+}
+
 .checkout-submit{
   display:block;
   width:min(100%,360px)!important;
+  min-height:44px;
   margin:18px auto 8px!important;
   padding:10px 16px!important;
-  font-size:10px!important;
+  font-size:11px!important;
   letter-spacing:.9px!important;
   line-height:1.25!important;
 }
+
+.vestige-cart-builder{
+  width:100%;
+  min-width:0;
+  margin:12px 0 0;
+  padding:0;
+  overflow:visible;
+  position:relative;
+  z-index:4;
+}
+
+.cart-builder-actions{
+  width:min(100%,900px);
+  margin-inline:auto;
+}
+
+#vestigeCart{
+  width:100%;
+  max-width:900px;
+  margin:18px auto 26px;
+  overflow:visible;
+}
+
+#vestigeCart .cart-columns,
+#vestigeCart .cart-row,
+#vestigeCart .cart-delivery-row{
+  width:100%;
+  min-width:0;
+}
+
+#vestigeCart .cart-remove{
+  justify-self:end;
+  white-space:nowrap;
+  min-width:44px;
+  min-height:32px;
+}
+
+#vestigeCart .cart-foot{
+  width:100%;
+  min-width:0;
+}
+
+.confirmation-wrap{
+  display:none!important;
+}
+
 .contact-grid-two .contact-card{
   padding:28px;
 }
+
 .contact-card-stage{
-  min-height:242px;
+  min-height:432px;
 }
+
 .contact-whatsapp-stage{
   gap:18px;
 }
+
 .contact-whatsapp-qr{
-  width:min(100%,200px);
-}
-.contact-action-stack{
   width:min(100%,240px);
-  gap:50px;
 }
+
+.contact-action-stack{
+  width:min(100%,300px);
+  gap:40px;
+}
+
 .contact-action-stack .btn{
-  padding:8px 10px;
-  font-size:8.5px;
-  letter-spacing:.7px;
-  line-height:1.15;
+  width:100%;
+  min-height:44px;
+  padding:10px 14px;
+  font-size:10px;
+  letter-spacing:.8px;
+  line-height:1.2;
 }
+
 @media(max-width:760px){
   .corporate-home .corporate-hero-grid,
   .elfbar-page .brand-hero-grid,
@@ -1845,14 +1883,97 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
     padding-top:16px;
     padding-bottom:50px;
   }
+
   .contact-hero{
     padding-top:42px;
     min-height:280px;
   }
-  .contact-grid-two .contact-card{padding:24px 20px}
-  .contact-card-stage{min-height:0;padding-top:22px}
-  .contact-whatsapp-qr{width:min(100%,185px)}
-  .contact-action-stack{max-width:240px;gap:46px}
-  .contact-action-stack .btn{padding:8px 10px;font-size:8.5px}
-  .checkout-submit{width:min(calc(100% - 32px),360px)!important;margin:16px auto 8px!important}
+
+  .contact-grid-two .contact-card{
+    padding:24px 20px;
+  }
+
+  .contact-card-stage{
+    min-height:0;
+    padding-top:22px;
+  }
+
+  .contact-whatsapp-qr{
+    width:min(100%,200px);
+  }
+
+  .contact-action-stack{
+    width:min(100%,300px);
+    max-width:300px;
+    gap:40px;
+  }
+
+  .contact-action-stack .btn{
+    min-height:44px;
+    padding:10px 14px;
+    font-size:10px;
+  }
+
+  .vestige-cart-builder{
+    margin-top:10px;
+  }
+
+  #vestigeCart{
+    margin:16px 0 24px;
+    overflow-x:auto;
+  }
+
+  #vestigeCart .cart-head{
+    position:sticky;
+    left:0;
+    justify-content:flex-start;
+    text-align:left;
+  }
+
+  #vestigeCart .cart-columns{
+    display:none;
+  }
+
+  #vestigeCart .cart-row{
+    min-width:0;
+    grid-template-columns:minmax(0,1fr) auto;
+    grid-template-areas:
+      "model remove"
+      "flavour remove"
+      "qty total"
+      "price total";
+    gap:7px 12px;
+    padding:13px 16px;
+  }
+
+  #vestigeCart .cart-model{grid-area:model}
+  #vestigeCart .cart-flavour{grid-area:flavour}
+  #vestigeCart .cart-qty{grid-area:qty;text-align:left}
+  #vestigeCart .cart-price{grid-area:price;text-align:left}
+  #vestigeCart .cart-line-total{grid-area:total;text-align:right;align-self:center}
+  #vestigeCart .cart-remove{grid-area:remove;align-self:start;justify-self:end}
+
+  #vestigeCart .cart-delivery-row{
+    min-width:0;
+    grid-template-columns:1fr auto;
+    gap:8px;
+    padding:12px 16px;
+  }
+
+  #vestigeCart .cart-delivery-row strong{grid-column:1}
+  #vestigeCart .cart-delivery-row>span:nth-of-type(3){
+    grid-column:2;
+    text-align:right;
+  }
+
+  #vestigeCart .cart-foot{
+    min-width:0;
+    grid-template-columns:1fr auto;
+    padding:13px 16px;
+  }
+
+  .checkout-submit{
+    width:min(calc(100% - 32px),360px)!important;
+    margin:16px auto 8px!important;
+  }
 }
