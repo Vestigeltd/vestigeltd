@@ -1963,7 +1963,7 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
   #vestigeCart .cart-delivery-row strong{grid-column:1}
   #vestigeCart .cart-delivery-row>span:nth-of-type(3){
     grid-column:2;
-    text-align:right;
+    text-align:center;
   }
 
   #vestigeCart .cart-foot{
@@ -2023,7 +2023,7 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
   grid-column:4;
   display:block;
   margin:0;
-  text-align:right;
+  text-align:center;
   font-variant-numeric:tabular-nums;
 }
 
@@ -2075,13 +2075,14 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
   display:flex;
   flex-direction:column;
   align-items:center;
-  justify-content:center;
+  justify-content:flex-start;
   text-align:center;
   gap:16px;
 }
 .information .info-card h3{
   margin:0;
-  text-align:center;
+  text-align:left;
+  align-self:flex-start;
 }
 .information .info-card .info-card-logo{
   display:block;
@@ -2128,7 +2129,6 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
 /* V35.34.15 — vape hero height and contact hero alignment */
 /* 1 CSS cm = 10px: reduce vape hero top and bottom padding by exactly 1cm. */
 @media(min-width:641px){
-  .elfbbar-page .brand-hero,
   .brand-hero{
     padding-top:100px;
     padding-bottom:80px;
