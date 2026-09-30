@@ -2123,3 +2123,75 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
     width:calc(100% - 2cm);
   }
 }
+
+
+/* V35.34.15 — vape hero height and contact hero alignment */
+/* 1 CSS cm = 10px: reduce vape hero top and bottom padding by exactly 1cm. */
+@media(min-width:641px){
+  .elfbbar-page .brand-hero,
+  .brand-hero{
+    padding-top:100px;
+    padding-bottom:80px;
+  }
+  .master-hero{
+    padding-top:90px;
+    padding-bottom:90px;
+  }
+  .pod-range-hero{
+    padding-top:105px;
+    padding-bottom:85px;
+  }
+  .pod-detail-hero{
+    padding-top:100px;
+    padding-bottom:80px;
+  }
+  .hero.bc10000-hero-v2{
+    padding-top:78px;
+    padding-bottom:78px;
+  }
+  .flavour-editorial-hero{
+    padding-top:64px;
+    padding-bottom:78px;
+  }
+  .contact-hero{
+    padding-top:110px;
+    padding-bottom:110px;
+    min-height:460px;
+    display:flex;
+    align-items:center;
+  }
+  .contact-hero .container{
+    text-align:left;
+  }
+}
+
+@media(max-width:640px){
+  .brand-hero,
+  .master-hero{
+    padding-top:62px;
+    padding-bottom:62px;
+  }
+  .pod-range-hero,
+  .pod-detail-hero{
+    padding-top:72px;
+    padding-bottom:60px;
+  }
+  .hero.bc10000-hero-v2{
+    padding-top:58px;
+    padding-bottom:58px;
+  }
+  .flavour-editorial-hero{
+    padding-top:64px;
+    padding-bottom:78px;
+  }
+  .contact-hero{
+    padding-top:110px;
+    padding-bottom:110px;
+    min-height:460px;
+    display:flex;
+    align-items:center;
+  }
+  .contact-hero .container{
+    text-align:left;
+  }
+}
