@@ -1977,3 +1977,115 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
     margin:16px auto 8px!important;
   }
 }
+
+
+/* V35.34.13 — precise spacing, basket alignment and contact refinement */
+@media(min-width:761px){
+  .corporate-home .corporate-hero-grid,
+  .elfbar-page .brand-hero-grid,
+  .bc10000-hero-grid,
+  .master-hero-grid,
+  .pod-range-hero-grid,
+  .pod-detail-grid{
+    padding-top:6px;
+  }
+}
+
+@media(max-width:760px){
+  .corporate-home .corporate-hero-grid,
+  .elfbar-page .brand-hero-grid,
+  .bc10000-hero-grid,
+  .master-hero-grid,
+  .pod-range-hero-grid,
+  .pod-detail-grid{
+    padding-top:0;
+  }
+}
+
+/* Keep delivery information centred as one visual unit. */
+#vestigeCart .cart-delivery-row{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  text-align:center;
+}
+#vestigeCart .cart-delivery-row > span:not(:nth-of-type(3)){
+  display:none;
+}
+#vestigeCart .cart-delivery-row strong{
+  grid-column:auto;
+  margin:0;
+  color:#172231;
+}
+#vestigeCart .cart-delivery-row > span:nth-of-type(3){
+  grid-column:auto;
+  text-align:center;
+  margin:0;
+}
+
+/* Put the basket total directly under the table's Total column. */
+#vestigeCart .cart-foot{
+  display:grid;
+  grid-template-columns:minmax(130px,1.25fr) minmax(150px,1.35fr) 62px 100px 100px 82px;
+  align-items:center;
+  column-gap:14px;
+  padding:12px 20px 14px;
+}
+#vestigeCart .cart-foot strong:first-child{
+  grid-column:1 / 5;
+  text-align:right;
+  padding-right:0;
+}
+#vestigeCart .cart-foot strong:last-child{
+  grid-column:5;
+  text-align:center;
+  justify-self:stretch;
+}
+
+@media(max-width:760px){
+  #vestigeCart .cart-delivery-row{
+    min-width:0!important;
+    width:100%;
+  }
+  #vestigeCart .cart-foot{
+    min-width:690px;
+  }
+}
+
+/* Compact the BC10000 information card after removing the social link. */
+.information .info-card{
+  padding:24px 30px;
+  min-height:0;
+}
+.information .info-card h3{
+  margin:0 0 20px;
+}
+.information .info-card .btn{
+  margin:0;
+}
+
+/* Contact hero: shorter overall, with content held 1cm lower from navigation. */
+.contact-hero{
+  padding:52px 0 48px;
+  min-height:360px;
+}
+.contact-action-stack{
+  gap:55px;
+}
+.contact-action-stack .btn{
+  width:calc(100% - 20px);
+  margin-inline:auto;
+}
+@media(max-width:760px){
+  .contact-hero{
+    padding:52px 0 38px;
+    min-height:240px;
+  }
+  .contact-action-stack{
+    gap:55px;
+  }
+  .contact-action-stack .btn{
+    width:calc(100% - 20px);
+  }
+}
