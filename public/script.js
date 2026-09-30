@@ -16,7 +16,7 @@
 
   var form=document.getElementById('orderForm'), model=document.getElementById('modelSelect'), quantity=document.getElementById('quantity'), flavour=document.getElementById('flavourSelect');
   var checkoutShell=document.querySelector('.checkout-shell'), soldOutOverlay=document.getElementById('soldOutOverlay'), soldOutRetry=document.getElementById('soldOutRetry');
-  var productTotal=document.getElementById('productTotal'), orderTotal=document.getElementById('orderTotal'), orderStatus=document.getElementById('orderStatus'), stockStatus=document.getElementById('stockStatus');
+  var orderStatus=document.getElementById('orderStatus'), stockStatus=document.getElementById('stockStatus');
   var deliveryMethodInputs=document.querySelectorAll('input[name="deliveryMethod"]'), courierLockerWrap=document.getElementById('courierLockerWrap'), collectionNote=document.getElementById('collectionNote'), courierLockerInput=form&&form.elements?form.elements.courierLocker:null;
   var collectionMethod=document.getElementById('collectionMethod'), collectionOption=document.getElementById('collectionOption'), collectionCodeInput=document.getElementById('collectionAccessCode'), validateCollectionButton=document.getElementById('validateCollectionAccess'), collectionAccessStatus=document.getElementById('collectionAccessStatus'), collectionLockLabel=document.getElementById('collectionLockLabel');
   var submitButton=document.getElementById('orderSubmit'), paymentPanel=document.getElementById('paymentPanel'), receiptPanel=document.getElementById('receiptPanel');
@@ -433,27 +433,8 @@
   }
 
   function updateTotals(){
-    if(!productTotal||!orderTotal)return;
-    // Only items actually added to the basket count toward checkout totals.
-    // Merely choosing a flavour/quantity must leave the order at R0.00.
-    var products=cart.length?cartProductsTotal():0;
-    var delivery=cart.length?currentDeliveryPrice():0;
-    var total=products+delivery;
-    productTotal.textContent=money(products);
-    orderTotal.textContent=money(total);
-    orderTotal.dataset.amount=total.toFixed(2);
-    var deliveryCell=document.getElementById('deliveryTotal');
-    if(!deliveryCell){
-      var rows=document.querySelectorAll('.confirmation-table tbody tr');
-      Array.prototype.forEach.call(rows,function(row){
-        var th=row.querySelector('th');
-        if(!deliveryCell&&th&&/Courier Guy Locker/i.test(th.textContent||'')){
-          deliveryCell=row.querySelector('td');
-          if(deliveryCell)deliveryCell.id='deliveryTotal';
-        }
-      });
-    }
-    if(deliveryCell)deliveryCell.textContent=money(delivery);
+    // Basket totals are rendered by renderCart(). The former confirmation table
+    // was a duplicate of that basket and is intentionally no longer used.
     validateSelectedStock();
   }
   function validateSelectedStock(){
@@ -914,8 +895,9 @@
 
   const orderForm=document.getElementById('orderForm');
   if(orderForm) orderForm.addEventListener('submit',()=>{
-    const amountNode=document.getElementById('orderTotal');
-    const amount=amountNode?Number(String(amountNode.textContent||'').replace(/[^0-9.]/g,'')):null;
+    let basketSummary={};
+    try{basketSummary=JSON.parse(orderForm&&orderForm.dataset.basketSummary||'{}');}catch(_){}
+    const amount=Number(basketSummary.grandTotal||0)||null;
     track('checkout_started',{basketItems:document.querySelectorAll('#vestigeCart .cart-row').length||1,amount});
   });
 
