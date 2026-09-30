@@ -2053,8 +2053,8 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
   padding:12px 20px 14px;
 }
 #vestigeCart .cart-foot strong:first-child{
-  grid-column:1 / 5;
-  text-align:right;
+  grid-column:1;
+  text-align:left;
   padding-right:0;
 }
 #vestigeCart .cart-foot strong:last-child{
@@ -2077,7 +2077,7 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
   align-items:center;
   justify-content:flex-start;
   text-align:center;
-  gap:16px;
+  gap:0;
 }
 .information .info-card h3{
   margin:0 0 16px;
@@ -2090,7 +2090,7 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
   height:auto;
   max-height:110px;
   object-fit:contain;
-  margin:0 auto;
+  margin:0 auto 32px;
 }
 .information .info-card .btn{
   margin:0 auto;
