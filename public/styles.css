@@ -2409,7 +2409,7 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
 }
 
 
-/* V35.34.18 — exact Website Product Update enforcement.
+/* V35.34.19 — exact Website Product Update enforcement.
    Only the requested presentation changes are enforced here. */
 
 /* Specialist Online Retail: remove exactly 11px from top and bottom of each button
@@ -2425,6 +2425,7 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
   height:62px;
   min-height:62px;
   width:calc(100% - 38px);
+  margin:0;
   padding:0 22px;
   display:flex;
   align-items:center;
@@ -2446,6 +2447,9 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
 }
 
 /* Connect with Vestige: one line-spacing before and after the logo. */
+.information .info-card h3{
+  margin-bottom:0;
+}
 .information .info-card .info-card-logo{
   margin:16px auto;
 }
