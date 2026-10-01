@@ -2080,7 +2080,7 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
   gap:0;
 }
 .information .info-card h3{
-  margin:0 0 32px;
+  margin:0 0 16px;
   text-align:left;
   align-self:flex-start;
 }
@@ -2090,7 +2090,7 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
   height:auto;
   max-height:110px;
   object-fit:contain;
-  margin:0 auto 32px;
+  margin:16px auto;
 }
 .information .info-card .btn{
   margin:0 auto;
@@ -2161,9 +2161,12 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
   gap:48px;
   align-items:stretch;
   width:100%;
+  margin-top:auto;
 }
 .corporate-home .vapes-action-buttons .btn{
-  min-height:84px;
+  min-height:62px;
+  width:calc(100% - 38px);
+  justify-self:center;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -2277,7 +2280,7 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
   display:flex;
   flex-direction:column;
   align-items:flex-start;
-  justify-content:center;
+  justify-content:flex-start;
   background:
     radial-gradient(circle at 96% 100%,rgba(36,77,114,.24),transparent 34%),
     linear-gradient(145deg,#071321 0%,#0b1b2e 62%,#0d243b 100%);
@@ -2286,7 +2289,7 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
   box-shadow:0 22px 50px rgba(9,22,38,.18);
 }
 .master-compatibility .compatibility-card .eyebrow{
-  margin-bottom:18px;
+  margin-bottom:32px;
   color:var(--vestige-gold-soft,#e0bb73);
 }
 .master-compatibility .compatibility-card h3{
@@ -2304,7 +2307,7 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
 }
 .master-compatibility .compatibility-card .btn{
   align-self:center;
-  margin-top:14px;
+  margin-top:auto;
   min-width:300px;
   text-align:center;
 }
@@ -2377,9 +2380,13 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
   padding:10px 14px;
   border-width:1px;
   box-shadow:none;
-  font-size:9px;
+  font-size:18px;
   letter-spacing:.9px;
   line-height:1.2;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
 }
 @media(max-width:760px){
   .contact-grid-two .contact-card{
