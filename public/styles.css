@@ -2154,7 +2154,7 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
 
 
 
-/* V35.34.24 — Website Product Update: precision textbox presentation and final contact refinements.
+/* V35.34.25 — Final contact and specialist retail textbox spacing refinements.
    Presentation only. Existing content, links, commerce logic and responsive structure are preserved. */
 
 /* 01 — Specialist Online Retail */
@@ -2187,7 +2187,7 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
   align-items:stretch;
   width:100%;
   margin-top:auto;
-  margin-bottom:8px;
+  margin-bottom:6px;
 }
 .corporate-home .vapes-action-buttons .btn{
   box-sizing:border-box;
@@ -2381,7 +2381,7 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
   gap:52px;
 }
 .contact-grid-two .contact-action-stack .btn{
-  width:152px;
+  width:158px;
   min-height:38px;
   margin-inline:auto;
   padding:10px 14px;
@@ -2410,7 +2410,7 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
   .corporate-home .vapes-action-buttons{
     grid-template-columns:1fr;
     gap:10px;
-    margin-block-end:8px;
+    margin-block-end:6px;
   }
   .corporate-home .vapes-action-buttons .btn{
     min-height:62px;
@@ -2461,7 +2461,7 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
     gap:52px;
   }
   .contact-grid-two .contact-action-stack .btn{
-    width:152px;
+    width:158px;
     min-height:44px;
     font-size:14px;
   }
