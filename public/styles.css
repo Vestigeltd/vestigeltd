@@ -2071,7 +2071,7 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
 /* V35.34.21 — Connect with Vestige card presentation. */
 .information .connect-vestige-card{
   min-height:355px;
-  padding:38px 42px 28px;
+  padding:26px 36px 24px;
   display:grid;
   grid-template-rows:auto minmax(0,1fr) auto;
   align-items:stretch;
@@ -2120,7 +2120,7 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
 @media(max-width:760px){
   .information .connect-vestige-card{
     min-height:300px;
-    padding:30px 28px 28px;
+    padding:24px 24px 22px;
   }
   .information .connect-vestige-card .info-card-logo{
     width:min(100%,92px);
@@ -2154,7 +2154,7 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
 
 
 
-/* V35.34.22 — Website Product Update: requested textbox presentation.
+/* V35.34.23 — Website Product Update: precision textbox presentation.
    Presentation only. Existing content, links, commerce logic and responsive structure are preserved. */
 
 /* 01 — Specialist Online Retail */
@@ -2187,7 +2187,7 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
   align-items:stretch;
   width:100%;
   margin-top:auto;
-  margin-bottom:95px;
+  margin-bottom:25px;
 }
 .corporate-home .vapes-action-buttons .btn{
   box-sizing:border-box;
@@ -2206,7 +2206,7 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
   position:absolute;
   left:42px;
   right:42px;
-  bottom:28px;
+  bottom:0;
   margin:0;
   color:#8492a1;
   font-size:10px;
@@ -2268,18 +2268,19 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
   width:auto;
   max-width:100%;
   margin:0;
-  padding:5px 10px;
+  padding:4px 8px;
   color:#f5efe2;
-  background:rgba(3,24,45,.82);
+  background:rgba(3,24,45,.72);
   font-family:Georgia,'Times New Roman',serif;
-  font-size:clamp(25px,2.8vw,38px);
-  line-height:1.12;
+  font-size:clamp(22px,2.2vw,32px);
+  line-height:1.14;
   font-weight:400;
   text-align:left;
 }
 .elfbar-page .shop-spec-card .btn{
   align-self:center;
-  margin-top:auto;
+  margin-block-start:auto;
+  margin-inline:auto;
   min-width:210px;
   padding:15px 24px;
   text-align:center;
@@ -2360,7 +2361,7 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
   line-height:1.72;
 }
 .contact-grid-two .contact-card-stage{
-  min-height:370px;
+  min-height:330px;
 }
 .contact-grid-two .contact-whatsapp-stage{
   gap:18px;
@@ -2409,7 +2410,7 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
   .corporate-home .vapes-action-buttons{
     grid-template-columns:1fr;
     gap:10px;
-    margin-block-end:95px;
+    margin-block-end:25px;
   }
   .corporate-home .vapes-action-buttons .btn{
     min-height:62px;
@@ -2417,7 +2418,7 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
   .corporate-home .vapes-action-card small{
     position:absolute;
     inset-inline:28px;
-    inset-block-end:28px;
+    inset-block-end:0;
     margin:0;
   }
 
@@ -2426,7 +2427,7 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
     padding:34px 30px 28px;
   }
   .elfbar-page .shop-spec-card .shop-availability-line{
-    font-size:29px;
+    font-size:24px;
   }
   .elfbar-page .shop-spec-card .btn{
     min-width:0;
