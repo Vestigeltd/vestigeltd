@@ -2218,60 +2218,6 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
   box-shadow:0 0 0 3px rgba(200,155,67,.12);
 }
 
-/* 03 — Vestige Pod Range / ELFA PRO cards */
-.pod-flavour-card{
-  overflow:hidden;
-  border:1px solid #d8dde2;
-  border-top:3px solid var(--pod-accent,#c89b43);
-  border-radius:0;
-  background:#fff;
-  box-shadow:0 18px 42px rgba(23,37,56,.10);
-  transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
-}
-.pod-flavour-card:hover,
-.pod-flavour-card:focus-visible{
-  transform:translateY(-3px);
-  border-color:rgba(200,155,67,.62);
-  box-shadow:0 24px 52px rgba(23,37,56,.15);
-}
-.pod-flavour-card .pod-card-copy{
-  position:relative;
-  z-index:2;
-  padding:25px 25px 27px;
-  background:linear-gradient(180deg,#fff 0%,#faf9f6 100%);
-  border-top:1px solid #e5e7e9;
-}
-.pod-flavour-card .pod-card-copy h3{
-  color:#101a26;
-  margin-bottom:10px;
-}
-.pod-flavour-card .pod-card-copy p:not(.eyebrow){
-  color:#5f6c79;
-  line-height:1.65;
-}
-.pod-flavour-card .pod-card-meta{
-  margin-top:14px;
-  padding-top:12px;
-  border-top:1px solid #e4e6e9;
-  color:#344252;
-  font-size:11px;
-}
-.pod-flavour-card .pod-card-copy>em{
-  color:#9a722e;
-  font-style:normal;
-  font-weight:700;
-  letter-spacing:.03em;
-}
-.pod-flavour-card .flavour-stock-state{
-  border:1px solid rgba(200,155,67,.55);
-  background:rgba(7,19,33,.92);
-  color:#f5efe2;
-  padding:6px 9px;
-  font-size:9px;
-  letter-spacing:.12em;
-  box-shadow:0 6px 16px rgba(0,0,0,.12);
-}
-
 /* 04 — Contact page boxes */
 .contact-grid.contact-grid-two{
   gap:28px;
