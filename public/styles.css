@@ -2128,18 +2128,17 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
 
 
 
-/* V35.34.16 — Website Product Update: box presentation refinement.
-   Scope: Specialist Online Retail, Shop, Vestige Pod Range, Contact.
-   Presentation only. Existing content, links, commerce logic and flavour colours are preserved. */
+/* V35.34.20 — Website Product Update: requested textbox presentation.
+   Presentation only. Existing content, links, commerce logic and responsive structure are preserved. */
 
 /* 01 — Specialist Online Retail */
 .corporate-home .vapes-action-card{
   position:relative;
   min-height:100%;
-  padding:42px 42px 38px;
+  padding:42px 42px 0;
   display:flex;
   flex-direction:column;
-  justify-content:center;
+  justify-content:flex-start;
   background:linear-gradient(145deg,#00101f 0%,#071f36 62%,#0d243b 100%);
   border:1px solid rgba(224,187,115,.20);
   border-top:2px solid var(--vestige-gold,#d8ad59);
@@ -2158,38 +2157,35 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
 .corporate-home .vapes-action-buttons{
   display:grid;
   grid-template-columns:minmax(0,2fr) minmax(170px,1fr);
-  gap:48px;
+  gap:10px;
   align-items:stretch;
   width:100%;
   margin-top:auto;
+  margin-bottom:95px;
 }
 .corporate-home .vapes-action-buttons .btn{
+  box-sizing:border-box;
+  height:62px;
   min-height:62px;
   width:calc(100% - 38px);
   justify-self:center;
+  margin:0;
+  padding:0 22px;
   display:flex;
   align-items:center;
   justify-content:center;
   text-align:center;
 }
 .corporate-home .vapes-action-card small{
-  margin-top:30px;
+  position:absolute;
+  left:42px;
+  right:42px;
+  bottom:28px;
+  margin:0;
   color:#8492a1;
   font-size:10px;
   line-height:1.5;
   letter-spacing:.08em;
-}
-@media(max-width:760px){
-  .corporate-home .vapes-action-card{
-    padding:34px 28px 32px;
-  }
-  .corporate-home .vapes-action-buttons{
-    grid-template-columns:1fr;
-    gap:12px;
-  }
-  .corporate-home .vapes-action-buttons .btn{
-    min-height:62px;
-  }
 }
 
 /* 02 — Shop */
@@ -2202,7 +2198,7 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
   display:flex;
   flex-direction:column;
   align-items:flex-start;
-  justify-content:center;
+  justify-content:flex-start;
   background:
     radial-gradient(circle at 92% 10%,rgba(36,77,114,.30),transparent 36%),
     linear-gradient(145deg,#00101f 0%,#041b31 56%,#0d243b 100%);
@@ -2223,13 +2219,15 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
   z-index:-1;
 }
 .elfbar-page .shop-spec-card>.eyebrow{
+  align-self:center;
   display:inline-block;
   width:auto;
-  margin:0 0 20px;
+  margin:0 0 24px;
   padding:13px 16px;
   background:#00182b;
   color:var(--vestige-gold-soft,#e0bb73);
   letter-spacing:.28em;
+  text-align:center;
 }
 .elfbar-page .shop-spec-card .shop-availability{
   width:100%;
@@ -2251,26 +2249,14 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
   font-size:clamp(25px,2.8vw,38px);
   line-height:1.12;
   font-weight:400;
+  text-align:left;
 }
 .elfbar-page .shop-spec-card .btn{
   align-self:center;
-  margin-top:28px;
+  margin-top:auto;
   min-width:210px;
   padding:15px 24px;
-}
-@media(max-width:760px){
-  .elfbar-page .shop-spec-card{
-    min-height:0;
-    padding:34px 30px 32px;
-  }
-  .elfbar-page .shop-spec-card .shop-availability-line{
-    font-size:29px;
-  }
-  .elfbar-page .shop-spec-card .btn{
-    min-width:0;
-    width:100%;
-    max-width:280px;
-  }
+  text-align:center;
 }
 
 /* 03 — Vestige Pod Range */
@@ -2307,20 +2293,14 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
 }
 .master-compatibility .compatibility-card .btn{
   align-self:center;
+  width:235px;
+  min-width:235px;
+  max-width:100%;
   margin-top:auto;
-  min-width:300px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   text-align:center;
-}
-@media(max-width:760px){
-  .master-compatibility .compatibility-card{
-    min-height:0;
-    padding:38px 28px 34px;
-  }
-  .master-compatibility .compatibility-card .btn{
-    min-width:0;
-    width:100%;
-    max-width:320px;
-  }
 }
 
 /* 04 — Contact page boxes */
@@ -2354,7 +2334,7 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
   line-height:1.72;
 }
 .contact-grid-two .contact-card-stage{
-  min-height:420px;
+  min-height:370px;
 }
 .contact-grid-two .contact-whatsapp-stage{
   gap:18px;
@@ -2371,24 +2351,73 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
 }
 .contact-grid-two .contact-action-stack{
   width:min(100%,360px);
-  gap:32px;
+  gap:52px;
 }
 .contact-grid-two .contact-action-stack .btn{
-  width:174px;
+  width:148px;
   min-height:38px;
   margin-inline:auto;
   padding:10px 14px;
   border-width:1px;
   box-shadow:none;
-  font-size:12px;
-  letter-spacing:.9px;
+  font-size:14px;
+  letter-spacing:0;
   line-height:1.2;
   display:flex;
   align-items:center;
   justify-content:center;
   text-align:center;
+  overflow-wrap:normal;
 }
+.information .info-card h3{
+  margin-bottom:0;
+}
+.information .info-card .info-card-logo{
+  margin:16px auto;
+}
+
 @media(max-width:760px){
+  .corporate-home .vapes-action-card{
+    padding:34px 28px 32px;
+  }
+  .corporate-home .vapes-action-buttons{
+    grid-template-columns:1fr;
+    gap:10px;
+    margin-bottom:0;
+  }
+  .corporate-home .vapes-action-buttons .btn{
+    min-height:62px;
+  }
+  .corporate-home .vapes-action-card small{
+    position:static;
+    margin-top:30px;
+  }
+
+  .elfbar-page .shop-spec-card{
+    min-height:0;
+    padding:34px 30px 32px;
+  }
+  .elfbar-page .shop-spec-card .shop-availability-line{
+    font-size:29px;
+  }
+  .elfbar-page .shop-spec-card .btn{
+    min-width:0;
+    width:100%;
+    max-width:280px;
+    margin-top:28px;
+  }
+
+  .master-compatibility .compatibility-card{
+    min-height:0;
+    padding:38px 28px 34px;
+  }
+  .master-compatibility .compatibility-card .btn{
+    width:min(235px,100%);
+    min-width:0;
+    max-width:100%;
+    margin-top:auto;
+  }
+
   .contact-grid-two .contact-card{
     padding:28px 22px;
   }
@@ -2400,66 +2429,11 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
   }
   .contact-grid-two .contact-action-stack{
     width:100%;
-    gap:22px;
+    gap:52px;
   }
   .contact-grid-two .contact-action-stack .btn{
-    width:min(100%,220px);
+    width:148px;
     min-height:44px;
+    font-size:14px;
   }
-}
-
-
-/* V35.34.19 — exact Website Product Update enforcement.
-   Only the requested presentation changes are enforced here. */
-
-/* Specialist Online Retail: remove exactly 11px from top and bottom of each button
-   (84px reference height -> 62px) and 19px from each horizontal side. */
-.corporate-home .vapes-action-card{
-  justify-content:flex-start;
-}
-.corporate-home .vapes-action-buttons{
-  margin-top:auto;
-}
-.corporate-home .vapes-action-buttons .btn{
-  box-sizing:border-box;
-  height:62px;
-  min-height:62px;
-  width:calc(100% - 38px);
-  margin:0;
-  padding:0 22px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-}
-
-/* VESTIGE POD RANGE: two line-spacings after the header; button centred and bottom aligned. */
-.master-compatibility .compatibility-card{
-  justify-content:flex-start;
-}
-.master-compatibility .compatibility-card .eyebrow{
-  margin-bottom:32px;
-}
-.master-compatibility .compatibility-card .btn{
-  align-self:center;
-  margin-top:auto;
-  text-align:center;
-}
-
-/* Connect with Vestige: one line-spacing before and after the logo. */
-.information .info-card h3{
-  margin-bottom:0;
-}
-.information .info-card .info-card-logo{
-  margin:16px auto;
-}
-
-/* Contact: 12px text with true horizontal and vertical centring. */
-.contact-grid-two .contact-action-stack .btn{
-  font-size:12px;
-  line-height:1.2;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
 }
