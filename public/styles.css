@@ -2130,92 +2130,194 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
 
 /* V35.34.16 — Website Product Update: box presentation refinement.
    Scope: Specialist Online Retail, Shop, Vestige Pod Range, Contact.
-   Presentation only. No content, commerce or interaction behaviour changed. */
+   Presentation only. Existing content, links, commerce logic and flavour colours are preserved. */
 
 /* 01 — Specialist Online Retail */
 .corporate-home .vapes-action-card{
   position:relative;
   min-height:100%;
-  padding:42px 44px 38px;
+  padding:42px 42px 38px;
   display:flex;
   flex-direction:column;
   justify-content:center;
-  background:linear-gradient(145deg,#0d243b 0%,#071321 72%);
-  border:1px solid rgba(224,187,115,.34);
-  border-top:3px solid var(--vestige-gold,#d8ad59);
-  box-shadow:0 24px 55px rgba(5,16,29,.20),inset 0 0 0 1px rgba(255,255,255,.025);
-}
-.corporate-home .vapes-action-card:before{
-  content:'';
-  position:absolute;
-  top:18px;
-  right:20px;
-  width:34px;
-  height:34px;
-  border-top:1px solid rgba(224,187,115,.55);
-  border-right:1px solid rgba(224,187,115,.55);
-  pointer-events:none;
+  background:linear-gradient(145deg,#00101f 0%,#071f36 62%,#0d243b 100%);
+  border:1px solid rgba(224,187,115,.20);
+  border-top:2px solid var(--vestige-gold,#d8ad59);
+  box-shadow:0 24px 54px rgba(9,22,38,.18);
 }
 .corporate-home .vapes-action-card p:not(.eyebrow){
-  max-width:520px;
-  margin:0 0 26px;
+  max-width:620px;
+  margin:0 0 28px;
   color:#d5dde5;
   font-size:15px;
-  line-height:1.75;
+  line-height:1.72;
 }
 .corporate-home .vapes-action-card .eyebrow{
-  margin-bottom:15px;
+  margin-bottom:18px;
+}
+.corporate-home .vapes-action-buttons{
+  display:grid;
+  grid-template-columns:minmax(0,2fr) minmax(170px,1fr);
+  gap:48px;
+  align-items:stretch;
+  width:100%;
+}
+.corporate-home .vapes-action-buttons .btn{
+  min-height:84px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
 }
 .corporate-home .vapes-action-card small{
-  margin-top:22px;
+  margin-top:30px;
   color:#8492a1;
   font-size:10px;
   line-height:1.5;
   letter-spacing:.08em;
 }
+@media(max-width:760px){
+  .corporate-home .vapes-action-card{
+    padding:34px 28px 32px;
+  }
+  .corporate-home .vapes-action-buttons{
+    grid-template-columns:1fr;
+    gap:12px;
+  }
+  .corporate-home .vapes-action-buttons .btn{
+    min-height:52px;
+  }
+}
 
-/* 02 — Shop / checkout box */
-.order-form{
+/* 02 — Shop */
+.elfbar-page .shop-spec-card{
   position:relative;
-  background:#fff;
-  border:1px solid #d5dbe1;
-  border-top:3px solid #c89b43;
-  box-shadow:0 24px 58px rgba(23,37,56,.11);
+  isolation:isolate;
+  overflow:hidden;
+  min-height:355px;
+  padding:38px 42px 28px;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:center;
+  background:
+    radial-gradient(circle at 92% 10%,rgba(36,77,114,.30),transparent 36%),
+    linear-gradient(145deg,#00101f 0%,#041b31 56%,#0d243b 100%);
+  border:1px solid rgba(224,187,115,.20);
+  border-top:2px solid var(--vestige-gold,#d8ad59);
+  box-shadow:0 24px 54px rgba(9,22,38,.18);
 }
-.checkout-block{
-  background:#fff;
+.elfbar-page .shop-spec-card:before{
+  content:"";
+  position:absolute;
+  width:220px;
+  height:220px;
+  right:-118px;
+  bottom:-122px;
+  border:1px solid rgba(224,187,115,.16);
+  border-radius:50%;
+  box-shadow:0 0 0 34px rgba(224,187,115,.025),0 0 0 68px rgba(91,137,179,.022);
+  z-index:-1;
 }
-.checkout-block + .checkout-block{
-  background:#fcfbf8;
+.elfbar-page .shop-spec-card>.eyebrow{
+  display:inline-block;
+  width:auto;
+  margin:0 0 20px;
+  padding:13px 16px;
+  background:#00182b;
+  color:var(--vestige-gold-soft,#e0bb73);
+  letter-spacing:.28em;
 }
-.checkout-block-head{
-  padding-bottom:12px;
-  border-bottom:1px solid #e4e6e9;
+.elfbar-page .shop-spec-card .shop-availability{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:8px;
+  margin:0;
 }
-.checkout-block-head>span{
-  width:34px;
-  height:34px;
-  border:1px solid rgba(200,155,67,.45);
-  background:#0b1727;
-  box-shadow:0 5px 14px rgba(11,23,39,.10);
+.elfbar-page .shop-spec-card .shop-availability-line{
+  display:inline-block;
+  width:auto;
+  max-width:100%;
+  margin:0;
+  padding:5px 10px;
+  color:#f5efe2;
+  background:rgba(3,24,45,.82);
+  font-family:Georgia,'Times New Roman',serif;
+  font-size:clamp(25px,2.8vw,38px);
+  line-height:1.12;
+  font-weight:400;
 }
-.checkout-block-head h3{
-  letter-spacing:0;
+.elfbar-page .shop-spec-card .btn{
+  align-self:center;
+  margin-top:28px;
+  min-width:210px;
+  padding:15px 24px;
 }
-.confirmation-wrap{
-  background:#f7f5ef;
+@media(max-width:760px){
+  .elfbar-page .shop-spec-card{
+    min-height:0;
+    padding:34px 30px 32px;
+  }
+  .elfbar-page .shop-spec-card .shop-availability-line{
+    font-size:29px;
+  }
+  .elfbar-page .shop-spec-card .btn{
+    min-width:0;
+    width:100%;
+    max-width:280px;
+  }
 }
-.payment-panel{
-  border-top:3px solid #c89b43;
-  box-shadow:0 14px 34px rgba(8,20,33,.16);
+
+/* 03 — Vestige Pod Range */
+.master-compatibility .compatibility-card{
+  min-height:360px;
+  padding:48px 52px 40px;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:center;
+  background:
+    radial-gradient(circle at 96% 100%,rgba(36,77,114,.24),transparent 34%),
+    linear-gradient(145deg,#071321 0%,#0b1b2e 62%,#0d243b 100%);
+  border:1px solid rgba(224,187,115,.18);
+  border-top:3px solid var(--vestige-gold,#c89b43);
+  box-shadow:0 22px 50px rgba(9,22,38,.18);
 }
-.order-form input,.order-form select{
-  border-color:#cbd2d9;
-  border-radius:2px;
+.master-compatibility .compatibility-card .eyebrow{
+  margin-bottom:18px;
+  color:var(--vestige-gold-soft,#e0bb73);
 }
-.order-form input:focus,.order-form select:focus{
-  border-color:#b68a36;
-  box-shadow:0 0 0 3px rgba(200,155,67,.12);
+.master-compatibility .compatibility-card h3{
+  margin:0 0 18px;
+  color:#f5efe2;
+  font-family:Georgia,'Times New Roman',serif;
+  font-size:clamp(30px,3vw,42px);
+  line-height:1.08;
+}
+.master-compatibility .compatibility-card p{
+  margin:0 0 14px;
+  color:#c4cfda!important;
+  font-size:15px;
+  line-height:1.65;
+}
+.master-compatibility .compatibility-card .btn{
+  align-self:center;
+  margin-top:14px;
+  min-width:300px;
+  text-align:center;
+}
+@media(max-width:760px){
+  .master-compatibility .compatibility-card{
+    min-height:0;
+    padding:38px 28px 34px;
+  }
+  .master-compatibility .compatibility-card .btn{
+    min-width:0;
+    width:100%;
+    max-width:320px;
+  }
 }
 
 /* 04 — Contact page boxes */
@@ -2226,21 +2328,13 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
   position:relative;
   overflow:hidden;
   background:#fff;
-  border:1px solid #d7dce1;
-  border-top:3px solid #c89b43;
+  border:1px solid rgba(200,155,67,.28);
+  border-top:2px solid rgba(200,155,67,.55);
   box-shadow:0 22px 50px rgba(23,37,56,.10);
   padding:38px;
 }
 .contact-grid-two .contact-card:before{
-  content:'';
-  position:absolute;
-  top:17px;
-  right:18px;
-  width:28px;
-  height:28px;
-  border-top:1px solid rgba(200,155,67,.45);
-  border-right:1px solid rgba(200,155,67,.45);
-  pointer-events:none;
+  content:none;
 }
 .contact-grid-two .contact-card-intro{
   padding-bottom:22px;
@@ -2259,27 +2353,50 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
 .contact-grid-two .contact-card-stage{
   min-height:420px;
 }
+.contact-grid-two .contact-whatsapp-stage{
+  gap:18px;
+}
+.contact-grid-two .contact-whatsapp-qr{
+  width:min(100%,230px);
+  padding:10px;
+  border:1px solid rgba(200,155,67,.35);
+  box-shadow:0 14px 30px rgba(23,37,56,.08);
+}
 .contact-grid-two .contact-whatsapp-note{
   color:#667181;
+  font-size:11px;
+}
+.contact-grid-two .contact-action-stack{
+  width:min(100%,360px);
+  gap:32px;
 }
 .contact-grid-two .contact-action-stack .btn{
+  width:174px;
+  min-height:38px;
+  margin-inline:auto;
+  padding:10px 14px;
   border-width:1px;
-  box-shadow:0 8px 20px rgba(23,37,56,.08);
+  box-shadow:none;
+  font-size:9px;
+  letter-spacing:.9px;
+  line-height:1.2;
 }
 @media(max-width:760px){
-  .corporate-home .vapes-action-card{
-    padding:34px 28px 32px;
-  }
-  .order-form{
-    border-top-width:2px;
-  }
-  .pod-flavour-card .pod-card-copy{
-    padding:22px 20px 24px;
-  }
   .contact-grid-two .contact-card{
     padding:28px 22px;
   }
   .contact-grid-two .contact-card-stage{
     min-height:0;
+  }
+  .contact-grid-two .contact-whatsapp-qr{
+    width:min(100%,230px);
+  }
+  .contact-grid-two .contact-action-stack{
+    width:100%;
+    gap:22px;
+  }
+  .contact-grid-two .contact-action-stack .btn{
+    width:min(100%,220px);
+    min-height:44px;
   }
 }
