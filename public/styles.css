@@ -2068,43 +2068,69 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
   }
 }
 
-/* Compact, centre the Connect with Vestige card and add the Vestige Ltd logo. */
-.information .info-card{
-  padding:22px 30px 24px;
-  min-height:0;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:flex-start;
-  text-align:center;
-  gap:0;
-}
-.information .info-card h3{
-  margin:0 0 16px;
+/* V35.34.21 — Connect with Vestige card presentation. */
+.information .connect-vestige-card{
+  min-height:355px;
+  padding:38px 42px 28px;
+  display:grid;
+  grid-template-rows:auto minmax(0,1fr) auto;
+  align-items:stretch;
+  justify-items:stretch;
+  background:
+    radial-gradient(circle at 92% 10%,rgba(36,77,114,.30),transparent 36%),
+    linear-gradient(145deg,#00101f 0%,#041b31 56%,#0d243b 100%);
+  border:1px solid rgba(224,187,115,.20);
+  border-top:2px solid var(--vestige-gold,#d8ad59);
+  box-shadow:0 24px 54px rgba(9,22,38,.18);
+  color:#fff;
   text-align:left;
-  align-self:flex-start;
 }
-.information .info-card .info-card-logo{
+.information .connect-vestige-card h3{
+  margin:0;
+  color:#f5efe2;
+  font-family:Georgia,'Times New Roman',serif;
+  font-size:clamp(28px,2.5vw,38px);
+  font-weight:400;
+  line-height:1.1;
+  text-align:left;
+  justify-self:start;
+  align-self:start;
+}
+.information .connect-vestige-card .info-card-logo{
   display:block;
   width:min(100%,110px);
-  height:auto;
+  height:110px;
   max-height:110px;
   object-fit:contain;
-  margin:16px auto;
-}
-.information .info-card .btn{
-  margin:0 auto;
+  justify-self:center;
   align-self:center;
+  margin:0;
 }
-
+.information .connect-vestige-card .btn{
+  justify-self:center;
+  align-self:end;
+  min-width:210px;
+  margin:0;
+  padding:15px 24px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
 @media(max-width:760px){
-  .information .info-card{
-    padding:20px 22px 22px;
-    gap:0;
+  .information .connect-vestige-card{
+    min-height:300px;
+    padding:30px 28px 28px;
   }
-  .information .info-card .info-card-logo{
+  .information .connect-vestige-card .info-card-logo{
     width:min(100%,92px);
+    height:92px;
     max-height:92px;
+  }
+  .information .connect-vestige-card .btn{
+    min-width:0;
+    width:100%;
+    max-width:280px;
   }
 }
 
