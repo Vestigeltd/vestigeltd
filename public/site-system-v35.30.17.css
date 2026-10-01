@@ -93,7 +93,7 @@
 .corporate-home .experience-map-owner{display:block;width:100%;height:auto;max-height:520px;object-fit:contain;background:#dff5fb}
 .corporate-home .experience-coordinate{position:absolute;left:18px;right:18px;bottom:17px;color:#8d6b2c;font-size:10px;font-weight:700;letter-spacing:.24em;text-transform:uppercase}
 
-/* Shared hero rhythm â€” same blue/gold visual language across product families. */
+/* V35.34.22 — Shared hero rhythm with the requested vertical trim. */
 .elfbar-page .brand-hero-grid,
 .bc10000-hero-grid,
 .master-hero-grid,
@@ -101,8 +101,7 @@
 .pod-detail-grid{
   min-height:clamp(560px,68vh,720px);
   align-items:center;
-  padding-top:clamp(56px,6vw,86px);
-  padding-bottom:clamp(56px,6vw,86px);
+  padding-block:clamp(0px,calc(6vw - 75px),11px) clamp(21px,calc(6vw - 35px),51px);
 }
 .elfbar-page .brand-hero-copy,
 .bc10000-hero-v2 .hero-copy,
@@ -230,8 +229,7 @@
   .pod-range-hero-grid,
   .pod-detail-grid{
     min-height:auto;
-    padding-top:54px;
-    padding-bottom:60px;
+    padding-block:0 25px;
   }
 }
 /* Contact â€” WhatsApp, Instagram and general enquiries in one coherent system. */
