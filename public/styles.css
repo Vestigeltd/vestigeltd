@@ -92,7 +92,7 @@
 #vestigeCartBuilder{margin-top:7px}
 .customer-details-block{margin-top:10px}
 #vestigeCartBuilder .cart-hint{color:#526170!important}
-#addToBasket{display:inline-flex!important;align-items:center!important;justify-content:center!important;min-height:46px!important;background:#0b1727!important;color:#fff!important;border:1px solid #0b1727!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important;cursor:pointer!important;position:relative!important;z-index:3!important}
+#addToBasket{display:inline-flex!important;align-items:center!important;justify-content:center!important;min-height:46px!important;background:#0b2742!important;color:#fff!important;border:1px solid #0b2742!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important;cursor:pointer!important;position:relative!important;z-index:3!important}
 #addToBasket:hover,#addToBasket:focus{background:#15283e!important;border-color:#c89b43!important;color:#fff!important}
 #orderSubmit{pointer-events:auto!important;cursor:pointer!important;opacity:1!important;position:relative!important;z-index:2!important}
 #orderStatus{color:#344252!important;font-weight:600!important;min-height:24px!important}
@@ -2466,3 +2466,5 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
     font-size:14px;
   }
 }
+/* V35.34.26 — Shop Add to Basket button colour refinement.
+   Presentation only. Existing checkout logic and button behaviour are preserved. */

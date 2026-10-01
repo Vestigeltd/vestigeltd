@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root=process.cwd();
-const css=fs.readFileSync(path.join(root,"public","styles.css"),"utf8");
+const css=fs.readFileSync(path.join(root,"public","styles.css"),"utf8").replace(/\r\n/g,"\n");
 const failures=[];
 
 function need(condition,message){
