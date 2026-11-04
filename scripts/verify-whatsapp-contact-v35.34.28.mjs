@@ -11,7 +11,7 @@ function collectTextFiles(dir) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) files.push(...collectTextFiles(full));
-    else if (/\\.(html|js|css|json|txt|svg|xml)$/i.test(entry.name)) files.push(full);
+    else if (/\.(html|js|css|json|txt|svg|xml)$/i.test(entry.name)) files.push(full);
   }
   return files;
 }
