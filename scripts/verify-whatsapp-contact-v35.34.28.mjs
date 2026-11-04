@@ -19,6 +19,9 @@ function collectTextFiles(dir) {
 const publicFiles = collectTextFiles("public");
 const publicText = publicFiles.map(read).join("\\n");
 const checks = [
+  [pkg.scripts?.preview === "wrangler preview", "Preview command uses isolated branch Worker Previews, not production-resource Version URLs"],
+  [pkg.scripts?.["preview:whatsapp-secret"] === "wrangler preview secret put VESTIGE_WHATSAPP_NUMBER", "WhatsApp secret setup targets the current branch Preview"],
+  [pkg.scripts?.["preview:secrets"] === "wrangler preview secret list", "Preview secret listing is scoped to the current branch Preview"],
   [pkg.version === "35.34.28", "Package version is 35.34.28"],
   [contact.includes('href="/whatsapp"') && contact.includes("Chat on WhatsApp"), "Contact page exposes a direct-chat button through the private Worker route"],
   [!contact.includes("wa.me/"), "Contact HTML does not expose a direct WhatsApp destination"],
