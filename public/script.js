@@ -33,14 +33,14 @@
     Object.freeze({productKey:'bc10000:blue-razz-ice',family:'BC10000',variant:'Blue Razz Ice',displayName:'ELFBAR BC10000 · Blue Razz Ice',unitPrice:300}),
     Object.freeze({productKey:'bc10000:strawberry-kiwi-ice',family:'BC10000',variant:'Strawberry Kiwi Ice',displayName:'ELFBAR BC10000 · Strawberry Kiwi Ice',unitPrice:300}),
     Object.freeze({productKey:'bc10000:watermelon-ice',family:'BC10000',variant:'Watermelon Ice',displayName:'ELFBAR BC10000 · Watermelon Ice',unitPrice:300}),
-    Object.freeze({productKey:'elfa-master:dark-cosmo',family:'ELFA MASTER',variant:'Dark Cosmo',displayName:'ELFA MASTER · Dark Cosmo + Miami Mint',unitPrice:250}),
-    Object.freeze({productKey:'elfa-master:dusty-pink',family:'ELFA MASTER',variant:'Dusty Pink',displayName:'ELFA MASTER · Dusty Pink + Peach Ice',unitPrice:250}),
-    Object.freeze({productKey:'elfa-master:black-knight',family:'ELFA MASTER',variant:'Black Knight',displayName:'ELFA MASTER · Black Knight + Pink Lemonade',unitPrice:250}),
-    Object.freeze({productKey:'elfa-pro:grape',family:'ELFA PRO',variant:'Grape',displayName:'ELFA PRO · Grape · 2-pod pack',unitPrice:150}),
-    Object.freeze({productKey:'elfa-pro:peach-ice',family:'ELFA PRO',variant:'Peach Ice',displayName:'ELFA PRO · Peach Ice · 2-pod pack',unitPrice:150}),
-    Object.freeze({productKey:'elfa-pro:watermelon',family:'ELFA PRO',variant:'Watermelon',displayName:'ELFA PRO · Watermelon · 2-pod pack',unitPrice:150}),
-    Object.freeze({productKey:'elfa-pro:miami-mint',family:'ELFA PRO',variant:'Miami Mint',displayName:'ELFA PRO · Miami Mint · 2-pod pack',unitPrice:150}),
-    Object.freeze({productKey:'elfa-pro:spearmint',family:'ELFA PRO',variant:'Spearmint',displayName:'ELFA PRO · Spearmint · 2-pod pack',unitPrice:150})
+    Object.freeze({productKey:'elfa-master:dark-cosmo',family:'ELFA MASTER',variant:'Dark Cosmo',displayName:'ELFA MASTER · Dark Cosmo + Miami Mint',unitPrice:220}),
+    Object.freeze({productKey:'elfa-master:dusty-pink',family:'ELFA MASTER',variant:'Dusty Pink',displayName:'ELFA MASTER · Dusty Pink + Peach Ice',unitPrice:220}),
+    Object.freeze({productKey:'elfa-master:black-knight',family:'ELFA MASTER',variant:'Black Knight',displayName:'ELFA MASTER · Black Knight + Pink Lemonade',unitPrice:220}),
+    Object.freeze({productKey:'elfa-pro:grape',family:'ELFA PRO',variant:'Grape',displayName:'ELFA PRO · Grape · 2-pod pack',unitPrice:120}),
+    Object.freeze({productKey:'elfa-pro:peach-ice',family:'ELFA PRO',variant:'Peach Ice',displayName:'ELFA PRO · Peach Ice · 2-pod pack',unitPrice:120}),
+    Object.freeze({productKey:'elfa-pro:watermelon',family:'ELFA PRO',variant:'Watermelon',displayName:'ELFA PRO · Watermelon · 2-pod pack',unitPrice:120}),
+    Object.freeze({productKey:'elfa-pro:miami-mint',family:'ELFA PRO',variant:'Miami Mint',displayName:'ELFA PRO · Miami Mint · 2-pod pack',unitPrice:120}),
+    Object.freeze({productKey:'elfa-pro:spearmint',family:'ELFA PRO',variant:'Spearmint',displayName:'ELFA PRO · Spearmint · 2-pod pack',unitPrice:120})
   ]);
   var PRODUCT_VARIANTS_BY_KEY={};
   PRODUCT_VARIANTS.forEach(function(spec){PRODUCT_VARIANTS_BY_KEY[spec.productKey]=spec;});
@@ -70,6 +70,23 @@
     });
     if(selected&&options.some(function(spec){return spec.productKey===selected;}))flavour.value=selected;
     flavour.disabled=false;
+  }
+  function updateModelPriceOptions(){
+    if(!model)return;
+    function familyPrice(family){
+      var rows=PRODUCT_VARIANTS.filter(function(spec){return spec.family===family;}).map(function(spec){return catalogue[spec.productKey];}).filter(Boolean);
+      if(!rows.length)return null;
+      var prices=rows.map(function(row){return Number(row.unitPrice);}).filter(function(price){return Number.isFinite(price)&&price>0;});
+      if(!prices.length||prices.length!==rows.length)return null;
+      var first=prices[0];
+      return prices.every(function(price){return Math.abs(price-first)<0.001;})?first:null;
+    }
+    var master=familyPrice('ELFA MASTER');
+    var pods=familyPrice('ELFA PRO');
+    var masterOption=model.querySelector('option[value="ELFA_MASTER"]');
+    var podsOption=model.querySelector('option[value="ELFA_PRO"]');
+    if(masterOption&&master!==null)masterOption.textContent='ELFA MASTER — R'+master.toFixed(2);
+    if(podsOption&&pods!==null)podsOption.textContent='ELFA PRO — R'+pods.toFixed(2)+' · 2-pod pack';
   }
   function selectedModel(){return String(model&&model.value||'BC10000');}
   function bc10000Selected(){return selectedModelFamily()==='BC10000';}
@@ -550,6 +567,7 @@
       var result=await apiRequest({action:'availability'});
       availability=result.availability||{};
       catalogue=result.catalogue||{};
+      updateModelPriceOptions();
       if(!Object.keys(catalogue).length)throw new Error('The live product catalogue was not returned.');
       availabilityResolved=true;
       populateProductOptions();
