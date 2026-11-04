@@ -140,14 +140,14 @@ var require_zoho_integration = __commonJS({
     var STOCK_LOCATION_ID_ENV = "ZOHO_LOCATION_ID";
     var ALLOWED_FLAVOURS = new Set(Object.keys(PRODUCT_NAMES));
     var OWNER_INVENTORY_PRODUCTS = Object.freeze({
-      "ELFA MASTER \xB7 Dark Cosmo": Object.freeze({ family: "ELFA MASTER", variant: "Dark Cosmo", sku: "ELFH01", expectedRetailPrice: 250, checkoutEnabled: true, nameHints: ["ELFA Master Dark Cosmo", "ELFA Master Dark Cosmo Kit", "ELFA Master Prefilled Pod Kit Dark Cosmo"] }),
-      "ELFA MASTER \xB7 Dusty Pink": Object.freeze({ family: "ELFA MASTER", variant: "Dusty Pink", sku: "ELFH02", expectedRetailPrice: 250, checkoutEnabled: true, nameHints: ["ELFA Master Dusty Pink", "ELFA Master Dusty Pink Kit", "ELFA Master Prefilled Pod Kit Dusty Pink"] }),
-      "ELFA MASTER \xB7 Black Knight": Object.freeze({ family: "ELFA MASTER", variant: "Black Knight", sku: "ELFH03", expectedRetailPrice: 250, checkoutEnabled: true, nameHints: ["ELFA Master Black Knight", "ELFA Master Black Knight Kit", "ELFA Master Prefilled Pod Kit Black Knight"] }),
-      "ELFA PRO \xB7 Grape": Object.freeze({ family: "ELFA PRO", variant: "Grape", sku: "ELFI03", expectedRetailPrice: 150, checkoutEnabled: true, nameHints: ["ELFA PRO Grape 50mg", "ELFA PRO Grape"] }),
-      "ELFA PRO \xB7 Peach Ice": Object.freeze({ family: "ELFA PRO", variant: "Peach Ice", sku: "ELFI06", expectedRetailPrice: 150, checkoutEnabled: true, nameHints: ["ELFA PRO Peach Ice 50mg", "ELFA PRO Peach Ice"] }),
-      "ELFA PRO \xB7 Watermelon": Object.freeze({ family: "ELFA PRO", variant: "Watermelon", sku: "ELFI08", expectedRetailPrice: 150, checkoutEnabled: true, nameHints: ["ELFA PRO Watermelon 50mg", "ELFA PRO Watermelon"] }),
-      "ELFA PRO \xB7 Miami Mint": Object.freeze({ family: "ELFA PRO", variant: "Miami Mint", sku: "ELFI09", expectedRetailPrice: 150, checkoutEnabled: true, nameHints: ["ELFA PRO Miami Mint 50mg", "ELFA PRO Miami Mint"] }),
-      "ELFA PRO \xB7 Spearmint": Object.freeze({ family: "ELFA PRO", variant: "Spearmint", sku: "ELFI02", expectedRetailPrice: 150, checkoutEnabled: true, nameHints: ["ELFA PRO Spearmint 50mg", "ELFA PRO Spearmint"] })
+      "ELFA MASTER \xB7 Dark Cosmo": Object.freeze({ family: "ELFA MASTER", variant: "Dark Cosmo", sku: "ELFH01", expectedRetailPrice: 220, checkoutEnabled: true, nameHints: ["ELFA Master Dark Cosmo", "ELFA Master Dark Cosmo Kit", "ELFA Master Prefilled Pod Kit Dark Cosmo"] }),
+      "ELFA MASTER \xB7 Dusty Pink": Object.freeze({ family: "ELFA MASTER", variant: "Dusty Pink", sku: "ELFH02", expectedRetailPrice: 220, checkoutEnabled: true, nameHints: ["ELFA Master Dusty Pink", "ELFA Master Dusty Pink Kit", "ELFA Master Prefilled Pod Kit Dusty Pink"] }),
+      "ELFA MASTER \xB7 Black Knight": Object.freeze({ family: "ELFA MASTER", variant: "Black Knight", sku: "ELFH03", expectedRetailPrice: 220, checkoutEnabled: true, nameHints: ["ELFA Master Black Knight", "ELFA Master Black Knight Kit", "ELFA Master Prefilled Pod Kit Black Knight"] }),
+      "ELFA PRO \xB7 Grape": Object.freeze({ family: "ELFA PRO", variant: "Grape", sku: "ELFI03", expectedRetailPrice: 120, checkoutEnabled: true, nameHints: ["ELFA PRO Grape 50mg", "ELFA PRO Grape"] }),
+      "ELFA PRO \xB7 Peach Ice": Object.freeze({ family: "ELFA PRO", variant: "Peach Ice", sku: "ELFI06", expectedRetailPrice: 120, checkoutEnabled: true, nameHints: ["ELFA PRO Peach Ice 50mg", "ELFA PRO Peach Ice"] }),
+      "ELFA PRO \xB7 Watermelon": Object.freeze({ family: "ELFA PRO", variant: "Watermelon", sku: "ELFI08", expectedRetailPrice: 120, checkoutEnabled: true, nameHints: ["ELFA PRO Watermelon 50mg", "ELFA PRO Watermelon"] }),
+      "ELFA PRO \xB7 Miami Mint": Object.freeze({ family: "ELFA PRO", variant: "Miami Mint", sku: "ELFI09", expectedRetailPrice: 120, checkoutEnabled: true, nameHints: ["ELFA PRO Miami Mint 50mg", "ELFA PRO Miami Mint"] }),
+      "ELFA PRO \xB7 Spearmint": Object.freeze({ family: "ELFA PRO", variant: "Spearmint", sku: "ELFI02", expectedRetailPrice: 120, checkoutEnabled: true, nameHints: ["ELFA PRO Spearmint 50mg", "ELFA PRO Spearmint"] })
     });
     var BC_CHECKOUT_KEYS_BY_FLAVOUR = Object.freeze({
       "Blueberry Mint": "bc10000:blueberry-mint",
@@ -162,19 +162,23 @@ var require_zoho_integration = __commonJS({
       "bc10000:blue-razz-ice": Object.freeze({ family: "BC10000", variant: "Blue Razz Ice", inventoryLabel: "BC10000 \xB7 Blue Razz Ice", displayName: "ELFBAR BC10000 \xB7 Blue Razz Ice", unitPrice: 300 }),
       "bc10000:strawberry-kiwi-ice": Object.freeze({ family: "BC10000", variant: "Strawberry Kiwi Ice", inventoryLabel: "BC10000 \xB7 Strawberry Kiwi Ice", displayName: "ELFBAR BC10000 \xB7 Strawberry Kiwi Ice", unitPrice: 300 }),
       "bc10000:watermelon-ice": Object.freeze({ family: "BC10000", variant: "Watermelon Ice", inventoryLabel: "BC10000 \xB7 Watermelon Ice", displayName: "ELFBAR BC10000 \xB7 Watermelon Ice", unitPrice: 300 }),
-      "elfa-master:dark-cosmo": Object.freeze({ family: "ELFA MASTER", variant: "Dark Cosmo", inventoryLabel: "ELFA MASTER \xB7 Dark Cosmo", displayName: "ELFA MASTER \xB7 Dark Cosmo + Miami Mint", unitPrice: 250 }),
-      "elfa-master:dusty-pink": Object.freeze({ family: "ELFA MASTER", variant: "Dusty Pink", inventoryLabel: "ELFA MASTER \xB7 Dusty Pink", displayName: "ELFA MASTER \xB7 Dusty Pink + Peach Ice", unitPrice: 250 }),
-      "elfa-master:black-knight": Object.freeze({ family: "ELFA MASTER", variant: "Black Knight", inventoryLabel: "ELFA MASTER \xB7 Black Knight", displayName: "ELFA MASTER \xB7 Black Knight + Pink Lemonade", unitPrice: 250 }),
-      "elfa-pro:grape": Object.freeze({ family: "ELFA PRO", variant: "Grape", inventoryLabel: "ELFA PRO \xB7 Grape", displayName: "ELFA PRO \xB7 Grape \xB7 2-pod pack", unitPrice: 150 }),
-      "elfa-pro:peach-ice": Object.freeze({ family: "ELFA PRO", variant: "Peach Ice", inventoryLabel: "ELFA PRO \xB7 Peach Ice", displayName: "ELFA PRO \xB7 Peach Ice \xB7 2-pod pack", unitPrice: 150 }),
-      "elfa-pro:watermelon": Object.freeze({ family: "ELFA PRO", variant: "Watermelon", inventoryLabel: "ELFA PRO \xB7 Watermelon", displayName: "ELFA PRO \xB7 Watermelon \xB7 2-pod pack", unitPrice: 150 }),
-      "elfa-pro:miami-mint": Object.freeze({ family: "ELFA PRO", variant: "Miami Mint", inventoryLabel: "ELFA PRO \xB7 Miami Mint", displayName: "ELFA PRO \xB7 Miami Mint \xB7 2-pod pack", unitPrice: 150 }),
-      "elfa-pro:spearmint": Object.freeze({ family: "ELFA PRO", variant: "Spearmint", inventoryLabel: "ELFA PRO \xB7 Spearmint", displayName: "ELFA PRO \xB7 Spearmint \xB7 2-pod pack", unitPrice: 150 })
+      "elfa-master:dark-cosmo": Object.freeze({ family: "ELFA MASTER", variant: "Dark Cosmo", inventoryLabel: "ELFA MASTER \xB7 Dark Cosmo", displayName: "ELFA MASTER \xB7 Dark Cosmo + Miami Mint", unitPrice: 220 }),
+      "elfa-master:dusty-pink": Object.freeze({ family: "ELFA MASTER", variant: "Dusty Pink", inventoryLabel: "ELFA MASTER \xB7 Dusty Pink", displayName: "ELFA MASTER \xB7 Dusty Pink + Peach Ice", unitPrice: 220 }),
+      "elfa-master:black-knight": Object.freeze({ family: "ELFA MASTER", variant: "Black Knight", inventoryLabel: "ELFA MASTER \xB7 Black Knight", displayName: "ELFA MASTER \xB7 Black Knight + Pink Lemonade", unitPrice: 220 }),
+      "elfa-pro:grape": Object.freeze({ family: "ELFA PRO", variant: "Grape", inventoryLabel: "ELFA PRO \xB7 Grape", displayName: "ELFA PRO \xB7 Grape \xB7 2-pod pack", unitPrice: 120 }),
+      "elfa-pro:peach-ice": Object.freeze({ family: "ELFA PRO", variant: "Peach Ice", inventoryLabel: "ELFA PRO \xB7 Peach Ice", displayName: "ELFA PRO \xB7 Peach Ice \xB7 2-pod pack", unitPrice: 120 }),
+      "elfa-pro:watermelon": Object.freeze({ family: "ELFA PRO", variant: "Watermelon", inventoryLabel: "ELFA PRO \xB7 Watermelon", displayName: "ELFA PRO \xB7 Watermelon \xB7 2-pod pack", unitPrice: 120 }),
+      "elfa-pro:miami-mint": Object.freeze({ family: "ELFA PRO", variant: "Miami Mint", inventoryLabel: "ELFA PRO \xB7 Miami Mint", displayName: "ELFA PRO \xB7 Miami Mint \xB7 2-pod pack", unitPrice: 120 }),
+      "elfa-pro:spearmint": Object.freeze({ family: "ELFA PRO", variant: "Spearmint", inventoryLabel: "ELFA PRO \xB7 Spearmint", displayName: "ELFA PRO \xB7 Spearmint \xB7 2-pod pack", unitPrice: 120 })
     });
     var CHECKOUT_PRODUCT_KEYS = Object.freeze(Object.keys(CHECKOUT_PRODUCTS));
-    function checkoutProductDefinition(productKey) {
+    function checkoutProductDefinition(productKey, priceOverrides = {}) {
       const key = cleanText(productKey, 80).toLowerCase();
-      return CHECKOUT_PRODUCTS[key] || null;
+      const spec = CHECKOUT_PRODUCTS[key] || null;
+      if (!spec || spec.family === "BC10000") return spec;
+      const override = Number(priceOverrides?.[key]);
+      if (!Number.isFinite(override) || override < 1 || override > 1e4) return spec;
+      return { ...spec, unitPrice: Math.round(override * 100) / 100 };
     }
     __name(checkoutProductDefinition, "checkoutProductDefinition");
     __name2(checkoutProductDefinition, "checkoutProductDefinition");
@@ -338,6 +342,20 @@ var require_zoho_integration = __commonJS({
     }
     __name(getD1Store, "getD1Store");
     __name2(getD1Store, "getD1Store");
+    async function getWebsitePriceOverrides() {
+      const record = await getD1Store("vestige-product-pricing").getWithMetadata("current");
+      const raw = record?.data?.prices && typeof record.data.prices === "object" ? record.data.prices : {};
+      const prices = {};
+      for (const key of CHECKOUT_PRODUCT_KEYS) {
+        const spec = CHECKOUT_PRODUCTS[key];
+        if (!spec || spec.family === "BC10000") continue;
+        const value = Number(raw[key]);
+        if (Number.isFinite(value) && value >= 1 && value <= 1e4) prices[key] = Math.round(value * 100) / 100;
+      }
+      return prices;
+    }
+    __name(getWebsitePriceOverrides, "getWebsitePriceOverrides");
+    __name2(getWebsitePriceOverrides, "getWebsitePriceOverrides");
     async function getStockLockStore() {
       return getD1Store("vestige-stock-locks");
     }
@@ -1709,7 +1727,7 @@ If you received this email, Worker owner alerts are operational.`
     }
     __name(validateOrder, "validateOrder");
     __name2(validateOrder, "validateOrder");
-    function validateBankCartOrder(input, { trustedStored = false } = {}) {
+    function validateBankCartOrder(input, { trustedStored = false, priceOverrides = {} } = {}) {
       const customerName = cleanText(input.customerName ?? input.name, 100);
       const email = cleanText(input.email, 100).toLowerCase();
       const mobile = cleanText(input.mobile, 50);
@@ -1737,7 +1755,7 @@ If you received this email, Worker owner alerts are operational.`
       const seenItemIds = /* @__PURE__ */ new Set();
       const items = rawItems.map((raw) => {
         const productKey = checkoutProductKeyFromInput(raw);
-        const spec = checkoutProductDefinition(productKey);
+        const spec = checkoutProductDefinition(productKey, priceOverrides);
         const requestedItemId = cleanText(raw?.itemId, 40);
         const itemId = /^\d+$/.test(requestedItemId) ? requestedItemId : "";
         const quantity = Number(raw?.quantity);
@@ -1747,7 +1765,10 @@ If you received this email, Worker owner alerts are operational.`
         if (seenProductKeys.has(productKey) || seenItemIds.has(itemId)) throw new TypeError("Each product variant may appear only once in the basket.");
         seenProductKeys.add(productKey);
         seenItemIds.add(itemId);
-        const unitPrice = Number(spec.unitPrice);
+        const storedUnitPrice = Number(raw?.unitPrice);
+        const unitPrice = trustedStored && Number.isFinite(storedUnitPrice) && storedUnitPrice > 0
+          ? Math.round(storedUnitPrice * 100) / 100
+          : Number(spec.unitPrice);
         return {
           productKey,
           productFamily: spec.family,
@@ -2325,6 +2346,7 @@ If you received this email, Worker owner alerts are operational.`
     __name(getOwnerInventoryAvailability, "getOwnerInventoryAvailability");
     __name2(getOwnerInventoryAvailability, "getOwnerInventoryAvailability");
     async function getPublicInventoryCatalogue(forceStockRefresh = false, forceCatalogRefresh = false) {
+      const priceOverrides = await getWebsitePriceOverrides();
       const [bcAvailability, elfaAvailability] = await Promise.all([
         getProductAvailability(forceStockRefresh, forceCatalogRefresh, true),
         getOwnerInventoryAvailability(forceStockRefresh, forceCatalogRefresh)
@@ -2332,7 +2354,7 @@ If you received this email, Worker owner alerts are operational.`
       const catalogue = {};
       for (const [flavour, state] of Object.entries(bcAvailability || {})) {
         const productKey = BC_CHECKOUT_KEYS_BY_FLAVOUR[flavour];
-        const spec = CHECKOUT_PRODUCTS[productKey];
+        const spec = checkoutProductDefinition(productKey, priceOverrides);
         if (!spec) continue;
         catalogue[productKey] = {
           productKey,
@@ -2350,7 +2372,7 @@ If you received this email, Worker owner alerts are operational.`
       for (const [label, state] of Object.entries(elfaAvailability || {})) {
         const ownerSpec = OWNER_INVENTORY_PRODUCTS[label];
         const productKey = CHECKOUT_PRODUCT_KEYS.find((key) => CHECKOUT_PRODUCTS[key]?.inventoryLabel === label);
-        const spec = productKey ? CHECKOUT_PRODUCTS[productKey] : null;
+        const spec = productKey ? checkoutProductDefinition(productKey, priceOverrides) : null;
         if (!ownerSpec || !spec) continue;
         const itemId = cleanText(state?.itemId || state?.item_id, 80) || null;
         let adjusted = state;
@@ -2748,7 +2770,11 @@ If you received this email, Worker owner alerts are operational.`
     __name2(buildCheckoutStockSnapshot, "buildCheckoutStockSnapshot");
     async function requireCheckoutStockState(line) {
       const productKey = checkoutProductKeyFromInput(line);
-      const spec = checkoutProductDefinition(productKey);
+      const baseSpec = checkoutProductDefinition(productKey);
+      const storedUnitPrice = Number(line?.unitPrice);
+      const spec = baseSpec && Number.isFinite(storedUnitPrice) && storedUnitPrice > 0
+        ? { ...baseSpec, unitPrice: Math.round(storedUnitPrice * 100) / 100 }
+        : baseSpec;
       if (!spec || !checkoutProductEnabled(spec)) {
         const e = new TypeError("This product is not enabled for checkout.");
         e.statusCode = 400;
@@ -3708,7 +3734,7 @@ If you received this email, Worker owner alerts are operational.`
         const productKey = checkoutProductKeyFromInput(line);
         const spec = checkoutProductDefinition(productKey);
         const quantity = Number(line.quantity || 0);
-        const unitPrice = Number(spec?.unitPrice ?? line.unitPrice ?? PRODUCT_PRICE_ZAR);
+        const unitPrice = Number(line.unitPrice ?? spec?.unitPrice ?? PRODUCT_PRICE_ZAR);
         return {
           productKey: productKey || null,
           productFamily: spec?.family || cleanText(line.productFamily, 80) || "BC10000",
@@ -3945,7 +3971,10 @@ If you received this email, Worker owner alerts are operational.`
     __name(adminCancelUnpaidBankOrder, "adminCancelUnpaidBankOrder");
     __name2(adminCancelUnpaidBankOrder, "adminCancelUnpaidBankOrder");
     async function adminStockDashboard() {
-      const availability = await getOwnerInventoryAvailability(true, false);
+      const [availability, priceOverrides] = await Promise.all([
+        getOwnerInventoryAvailability(true, false),
+        getWebsitePriceOverrides()
+      ]);
       const result = {};
       for (const [flavour, item] of Object.entries(availability)) {
         const itemId = cleanText(item.itemId || item.item_id, 80) || null;
@@ -3967,6 +3996,8 @@ If you received this email, Worker owner alerts are operational.`
           }
         }
         const zohoStock = Math.max(0, Number(item.stock || 0));
+        const productKey = CHECKOUT_PRODUCT_KEYS.find((key) => CHECKOUT_PRODUCTS[key]?.inventoryLabel === flavour);
+        const priceSpec = productKey ? checkoutProductDefinition(productKey, priceOverrides) : null;
         let alertLevel = "healthy";
         if (sellableStock <= 0) alertLevel = "out";
         else if (sellableStock <= 2) alertLevel = "critical";
@@ -3986,7 +4017,7 @@ If you received this email, Worker owner alerts are operational.`
           sku: cleanText(item.sku, 80) || null,
           itemName: cleanText(item.itemName, 180) || null,
           price: Number.isFinite(Number(item.price)) ? Number(item.price) : null,
-          expectedRetailPrice: Number.isFinite(Number(item.expectedRetailPrice)) ? Number(item.expectedRetailPrice) : null,
+          expectedRetailPrice: Number.isFinite(Number(priceSpec?.unitPrice ?? item.expectedRetailPrice)) ? Number(priceSpec?.unitPrice ?? item.expectedRetailPrice) : null,
           checkoutEnabled: item.checkoutEnabled === true
         };
       }
@@ -3994,6 +4025,141 @@ If you received this email, Worker owner alerts are operational.`
     }
     __name(adminStockDashboard, "adminStockDashboard");
     __name2(adminStockDashboard, "adminStockDashboard");
+    async function adminProductPriceStatus() {
+      const [availability, overrides, record] = await Promise.all([
+        getOwnerInventoryAvailability(true, true),
+        getWebsitePriceOverrides(),
+        getD1Store("vestige-product-pricing").getWithMetadata("current")
+      ]);
+      const rows = Object.entries(OWNER_INVENTORY_PRODUCTS).map(([label, ownerSpec]) => {
+        const productKey = CHECKOUT_PRODUCT_KEYS.find((key) => CHECKOUT_PRODUCTS[key]?.inventoryLabel === label) || null;
+        const websiteSpec = productKey ? checkoutProductDefinition(productKey, overrides) : null;
+        const state = availability[label] || {};
+        const zohoPrice = Number(state.price);
+        const websitePrice = Number(websiteSpec?.unitPrice);
+        const active = Boolean(state.itemId) && state.reason !== "Zoho item is inactive";
+        const priceMatches = Number.isFinite(zohoPrice) && Number.isFinite(websitePrice) && Math.abs(zohoPrice - websitePrice) <= PAYMENT_EPSILON;
+        return {
+          productKey,
+          productFamily: ownerSpec.family,
+          variant: ownerSpec.variant,
+          sku: ownerSpec.sku,
+          itemId: cleanText(state.itemId, 80) || null,
+          itemName: cleanText(state.itemName, 180) || null,
+          websitePrice: Number.isFinite(websitePrice) ? websitePrice : null,
+          zohoPrice: Number.isFinite(zohoPrice) ? zohoPrice : null,
+          priceMatches,
+          active,
+          stock: Math.max(0, Math.floor(Number(state.stock || 0))),
+          available: state.available === true,
+          reason: cleanText(state.reason, 180) || null
+        };
+      });
+      return {
+        rows,
+        allPricesMatch: rows.length === 8 && rows.every((row) => row.priceMatches),
+        source: record?.data?.source || "Worker defaults",
+        updatedAt: record?.data?.updatedAt || null
+      };
+    }
+    __name(adminProductPriceStatus, "adminProductPriceStatus");
+    __name2(adminProductPriceStatus, "adminProductPriceStatus");
+    async function buildProductPriceSyncPlan() {
+      const status = await adminProductPriceStatus();
+      const groups = { "ELFA MASTER": [], "ELFA PRO": [] };
+      const blockers = [];
+      const proposedPrices = {};
+      const familyPrices = {};
+      for (const row of status.rows) {
+        if (groups[row.productFamily]) groups[row.productFamily].push(row);
+        if (!row.productKey || !row.itemId || !row.active || !Number.isFinite(Number(row.zohoPrice))) {
+          blockers.push(row.productFamily + " " + row.variant + ": Zoho Books item/rate could not be verified.");
+        } else if (Number(row.zohoPrice) < 1 || Number(row.zohoPrice) > 1e4) {
+          blockers.push(row.productFamily + " " + row.variant + ": Zoho Books rate is outside the permitted range.");
+        }
+      }
+      for (const [family, expectedCount] of [["ELFA MASTER", 3], ["ELFA PRO", 5]]) {
+        const familyRows = groups[family] || [];
+        if (familyRows.length !== expectedCount) {
+          blockers.push(family + ": expected " + expectedCount + " mapped Zoho items; found " + familyRows.length + ".");
+          continue;
+        }
+        const rates = familyRows.map((row) => Number(row.zohoPrice));
+        const firstRate = rates[0];
+        if (!Number.isFinite(firstRate) || rates.some((rate) => !Number.isFinite(rate) || Math.abs(rate - firstRate) > PAYMENT_EPSILON)) {
+          blockers.push(family + ": all variants must have the same Zoho Books selling rate before syncing.");
+          continue;
+        }
+        familyPrices[family] = Math.round(firstRate * 100) / 100;
+        for (const row of familyRows) proposedPrices[row.productKey] = familyPrices[family];
+      }
+      const previewFingerprint = createHash("sha256").update(JSON.stringify({
+        proposedPrices,
+        rows: status.rows.map((row) => ({ productKey: row.productKey, itemId: row.itemId, zohoPrice: row.zohoPrice, websitePrice: row.websitePrice }))
+      })).digest("hex");
+      return {
+        canApply: blockers.length === 0 && Object.keys(proposedPrices).length === 8,
+        rows: status.rows,
+        blockers,
+        familyPrices,
+        proposedPrices,
+        confirmationRequired: "SYNC ELFA PRICES",
+        previewFingerprint,
+        zohoBooksChanged: false,
+        websitePricesChanged: false
+      };
+    }
+    __name(buildProductPriceSyncPlan, "buildProductPriceSyncPlan");
+    __name2(buildProductPriceSyncPlan, "buildProductPriceSyncPlan");
+    async function adminPreviewProductPriceSync() {
+      return buildProductPriceSyncPlan();
+    }
+    __name(adminPreviewProductPriceSync, "adminPreviewProductPriceSync");
+    __name2(adminPreviewProductPriceSync, "adminPreviewProductPriceSync");
+    async function adminApplyProductPriceSync(input, requestId) {
+      const plan = await buildProductPriceSyncPlan();
+      const suppliedFingerprint = cleanText(input?.previewFingerprint, 80).toLowerCase();
+      const confirmation = cleanText(input?.confirmation, 100).toUpperCase();
+      if (!plan.canApply) {
+        const e = new Error("Zoho Books pricing cannot be synced until every ELFA variant is mapped, active and consistently priced.");
+        e.statusCode = 409;
+        throw e;
+      }
+      if (!/^[a-f0-9]{64}$/.test(suppliedFingerprint) || !safeEqual(suppliedFingerprint, plan.previewFingerprint)) {
+        const e = new Error("Price-sync preview is stale. Check Zoho prices and preview the sync again.");
+        e.statusCode = 409;
+        throw e;
+      }
+      if (!safeEqual(confirmation, plan.confirmationRequired)) {
+        const e = new Error("Type the exact confirmation phrase: " + plan.confirmationRequired);
+        e.statusCode = 409;
+        throw e;
+      }
+      await getD1Store("vestige-product-pricing").setJSON("current", {
+        schemaVersion: 1,
+        source: "Zoho Books",
+        updatedAt: (/* @__PURE__ */ new Date()).toISOString(),
+        prices: plan.proposedPrices
+      });
+      await writeAuditEvent({
+        action: "admin_sync_product_prices",
+        actor: "owner",
+        outcome: "success",
+        message: "ELFA website prices synchronised from Zoho Books.",
+        requestId,
+        prices: plan.familyPrices
+      });
+      const updated = await adminProductPriceStatus();
+      return {
+        success: true,
+        message: "ELFA website prices are now aligned with Zoho Books. BC10000 pricing was not changed.",
+        prices: plan.familyPrices,
+        rows: updated.rows,
+        updatedAt: updated.updatedAt
+      };
+    }
+    __name(adminApplyProductPriceSync, "adminApplyProductPriceSync");
+    __name2(adminApplyProductPriceSync, "adminApplyProductPriceSync");
     function validateOwnerStockAdjustmentInput(input) {
       const flavour = cleanText(input?.flavour, 80);
       if (!ALLOWED_FLAVOURS.has(flavour)) {
@@ -5081,6 +5247,21 @@ ${ownerConsoleUrl()}`
           const stock = await adminStockDashboard();
           return json(200, { success: true, stock, verifiedAt: (/* @__PURE__ */ new Date()).toISOString(), requestId });
         }
+        if (body.action === "admin_product_price_status") {
+          requirePaymentAdmin(event);
+          const pricing = await adminProductPriceStatus();
+          return json(200, { success: true, ...pricing, verifiedAt: (/* @__PURE__ */ new Date()).toISOString(), requestId });
+        }
+        if (body.action === "admin_preview_product_price_sync") {
+          requirePaymentAdmin(event);
+          const preview = await adminPreviewProductPriceSync();
+          return json(200, { success: true, preview, requestId });
+        }
+        if (body.action === "admin_apply_product_price_sync") {
+          requirePaymentAdmin(event);
+          const result = await adminApplyProductPriceSync(body, requestId);
+          return json(200, { ...result, requestId });
+        }
         if (body.action === "admin_preview_stock_adjustment") {
           requirePaymentAdmin(event);
           const preview = await adminPreviewStockAdjustment(body);
@@ -5221,7 +5402,8 @@ ${ownerConsoleUrl()}`
           return json(200, { success: true, order: status, requestId });
         }
         if (body.action === "prepare_bank_order") {
-          const order2 = validateBankCartOrder(body);
+          const priceOverrides = await getWebsitePriceOverrides();
+          const order2 = validateBankCartOrder(body, { priceOverrides });
           const prepared = await prepareBankOrder(order2, requestId);
           await writeAuditEvent({
             action: "bank_order_created",
