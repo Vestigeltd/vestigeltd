@@ -13,6 +13,11 @@ on:
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/deploy-production.yml'
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
   workflow_dispatch:
 
 permissions:
@@ -24,6 +29,7 @@ concurrency:
 
 jobs:
   deploy:
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.merged == true }}
     name: Validate and deploy production
     runs-on: ubuntu-latest
     timeout-minutes: 20
