@@ -75,7 +75,7 @@
     if(!model)return;
     function familyPrice(family){
       var rows=PRODUCT_VARIANTS.filter(function(spec){return spec.family===family;}).map(function(spec){return catalogue[spec.productKey];}).filter(Boolean);
-      if(!rows.length)return null;
+      if(rows.length!==(family==='ELFA MASTER'?3:5))return null;
       var prices=rows.map(function(row){return Number(row.unitPrice);}).filter(function(price){return Number.isFinite(price)&&price>0;});
       if(!prices.length||prices.length!==rows.length)return null;
       var first=prices[0];
