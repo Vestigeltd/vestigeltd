@@ -6563,8 +6563,8 @@ var worker_default = {
         methodResponse.headers.set("Cache-Control", "no-store");
         return methodResponse;
       }
-      const whatsappNumber = String(env.VESTIGE_WHATSAPP_NUMBER || "").replace(/\\D/g, "");
-      if (!/^\\d{8,15}$/.test(whatsappNumber)) {
+      const whatsappNumber = String(env.VESTIGE_WHATSAPP_NUMBER || "").replace(/\D/g, "");
+      if (!/^\d{8,15}$/.test(whatsappNumber)) {
         const unavailable = withSecurityHeaders(
           new Response("WhatsApp contact is temporarily unavailable.", { status: 503 }),
           url.pathname
