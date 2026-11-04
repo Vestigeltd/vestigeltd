@@ -16,6 +16,19 @@ const html=read('public/bc10000/index.html');
 const styles=read('public/styles.css');
 const contact=read('public/contact.html');
 const homepage=read('public/index.html');
+const master=read('public/elfa-master/index.html');
+const elfaPro=read('public/elfa-pro/index.html');
+const elfaPods=[
+  read('public/elfa-pro/peach-ice.html'),
+  read('public/elfa-pro/spearmint.html'),
+  read('public/elfa-pro/miami-mint.html'),
+  read('public/elfa-pro/grape.html'),
+  read('public/elfa-pro/watermelon.html')
+];
+const elfbar=read('public/elfbar/index.html');
+const owner=read('public/owner.html');
+const ownerJs=read('public/owner.js');
+const productStatus=read('public/product-status.js');
 const pkg=JSON.parse(read('package.json'));
 
 must(worker.includes('expectedRetailPrice: 220') && worker.includes('expectedRetailPrice: 120') && worker.includes('unitPrice: 220') && worker.includes('unitPrice: 120'),'Worker ELFA prices are R220 and R120');
@@ -184,6 +197,69 @@ must(
   html.includes('/styles.css?v=35.34.26'),
   'Shop page loads the V35.34.26 stylesheet cache'
 );
+must(
+  master.includes('data-product-price-family="ELFA MASTER">R220.00') &&
+  master.includes('data-product-price-family="ELFA PRO">R120.00'),
+  'ELFA MASTER page shows R220 and ELFA PRO cross-sell shows R120'
+);
+
+must(
+  master.includes('data-stock-product-key="elfa-master:dark-cosmo"') &&
+  master.includes('data-stock-product-key="elfa-master:dusty-pink"') &&
+  master.includes('data-stock-product-key="elfa-master:black-knight"') &&
+  !master.includes('Sale activation will follow'),
+  'ELFA MASTER finishes use live availability messaging'
+);
+
+must(
+  elfaPro.includes('data-product-price-family="ELFA PRO">R120.00') &&
+  !elfaPro.includes('R150.00'),
+  'ELFA PRO range page shows R120 across its price references'
+);
+
+must(
+  elfaPods.every(page=>page.includes('product-status.js?v=35.34.27') && page.includes('data-stock-product-key=') && !page.includes('R150.00')),
+  'All five ELFA PRO detail pages show R120 and live availability'
+);
+
+must(
+  elfbar.includes('data-product-price-family="ELFA MASTER">R220.00') &&
+  !elfbar.includes('R250.00'),
+  'ELFBAR landing page shows the revised ELFA MASTER price'
+);
+
+must(
+  html.includes('BC10000 — R300.00') &&
+  worker.includes('var PRODUCT_PRICE_ZAR = 300;'),
+  'BC10000 public and backend price remain R300'
+);
+
+must(
+  owner.includes('id="productPricingPanel"') &&
+  ownerJs.includes('admin_product_price_status') &&
+  ownerJs.includes('admin_preview_product_price_sync') &&
+  ownerJs.includes('admin_apply_product_price_sync'),
+  'Owner Console includes guarded Zoho price management'
+);
+
+must(
+  productStatus.includes("body:JSON.stringify({action:'availability'})") &&
+  productStatus.includes('data-product-price-family') &&
+  productStatus.includes('data-stock-product-key'),
+  'Public ELFA pages refresh price and stock status from the Worker catalogue'
+);
+
+must(
+  contact.includes('contact-whatsapp-qr-link') &&
+  contact.includes('Open WhatsApp QR full size'),
+  'WhatsApp QR opens at full size from the contact page'
+);
+
+must(
+  owner.includes('SYNC ELFA PRICES'),
+  'Owner price sync requires the explicit confirmation phrase'
+);
+
 if(process.exitCode){
   console.error('\nV35.34.27 verification FAILED.');
   process.exit(process.exitCode);
