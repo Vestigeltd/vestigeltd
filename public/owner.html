@@ -118,6 +118,47 @@
       </div>
     </section>
 
+    <section class="owner-card owner-pricing-card" id="productPricingPanel">
+      <div class="owner-section-head owner-section-head-wrap">
+        <div>
+          <p class="owner-kicker">PRODUCT PRICING</p>
+          <h2>ELFA pricing & Zoho Books verification</h2>
+          <p>Zoho Books is the source of truth. Change all variants in Zoho Books first, then preview and sync the website. BC10000 remains fixed at R300.00.</p>
+        </div>
+        <div class="owner-inline-actions">
+          <button class="btn btn-outline" id="refreshProductPricing" type="button">Check Zoho prices</button>
+          <button class="btn btn-gold" id="previewProductPriceSync" type="button">Preview website sync</button>
+        </div>
+      </div>
+      <div class="owner-health-summary" aria-live="polite">
+        <div><span>Price alignment</span><strong id="productPricingMatchState">Not checked</strong></div>
+        <div><span>Price source</span><strong id="productPricingSource">Worker defaults</strong></div>
+        <div><span>Variants checked</span><strong id="productPricingVariantCount">0 / 8</strong></div>
+        <div><span>Last sync</span><strong id="productPricingLastSync">—</strong></div>
+      </div>
+      <div id="productPricingTable" class="owner-table-wrap">
+        <div class="owner-audit-help">Check Zoho Books to load the current website and accounting prices for all eight ELFA variants.</div>
+      </div>
+      <div id="productPriceSyncPreview" class="owner-reset-preview" hidden>
+        <h3>Website price-sync preview</h3>
+        <div class="owner-exception-summary">
+          <div><span>ELFA MASTER</span><strong id="previewMasterPrice">—</strong></div>
+          <div><span>ELFA PRO Pods</span><strong id="previewPodsPrice">—</strong></div>
+          <div><span>Variants</span><strong id="previewVariantCount">—</strong></div>
+        </div>
+        <p class="owner-audit-help" id="productPriceSyncDetail"></p>
+        <p class="owner-audit-help" id="productPriceSyncBlockers" hidden></p>
+        <p class="owner-audit-help">Required confirmation: <strong id="productPriceSyncConfirmationRequired">SYNC ELFA PRICES</strong></p>
+        <label class="owner-stock-note">Confirmation phrase
+          <input id="productPriceSyncConfirmation" type="text" autocomplete="off" spellcheck="false">
+        </label>
+        <div class="owner-inline-actions">
+          <button class="btn btn-gold" id="applyProductPriceSync" type="button" disabled>Apply website price sync</button>
+        </div>
+      </div>
+      <p class="owner-message" id="productPricingMessage" role="status"></p>
+    </section>
+
     <section class="owner-card owner-lookup-card">
       <div class="owner-section-head">
         <div><p class="owner-kicker">ORDER OPERATIONS</p><h2>Find an order</h2></div>
@@ -397,7 +438,7 @@
 </section>
 </main>
 
-<script src="owner.js?v=35.28.5"></script>
+<script src="owner.js?v=35.34.27"></script>
 
 </body>
 </html>
