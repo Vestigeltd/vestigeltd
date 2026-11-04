@@ -1,0 +1,28 @@
+name: Validate development branch
+
+on:
+  push:
+    branches:
+      - feat/elfa-pricing-stock-contact-admin-2026-11-04
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Run repository validation
+        run: npm run check

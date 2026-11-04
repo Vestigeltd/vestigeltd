@@ -2366,8 +2366,16 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
 .contact-grid-two .contact-whatsapp-stage{
   gap:18px;
 }
+.contact-grid-two .contact-whatsapp-qr-link{
+  display:flex;
+  width:100%;
+  justify-content:center;
+  align-items:center;
+}
 .contact-grid-two .contact-whatsapp-qr{
+  display:block;
   width:min(100%,230px);
+  margin-inline:auto;
   padding:10px;
   border:1px solid rgba(200,155,67,.35);
   box-shadow:0 14px 30px rgba(23,37,56,.08);
@@ -2377,11 +2385,20 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
   font-size:11px;
 }
 .contact-grid-two .contact-action-stack{
-  width:min(100%,360px);
+  width:fit-content;
+  max-width:100%;
+  display:grid;
+  grid-template-columns:minmax(0,max-content);
+  justify-items:stretch;
   gap:52px;
+  margin-inline:auto;
 }
 .contact-grid-two .contact-action-stack .btn{
-  width:158px;
+  box-sizing:border-box;
+  width:100%;
+  min-width:0;
+  max-width:100%;
+  white-space:nowrap;
   min-height:38px;
   margin-inline:auto;
   padding:10px 14px;
@@ -2457,11 +2474,12 @@ linear-gradient(135deg,#06101d,#0b1727 64%,#07111c)}
     width:min(100%,230px);
   }
   .contact-grid-two .contact-action-stack{
-    width:100%;
+    width:fit-content;
+    max-width:100%;
     gap:52px;
   }
   .contact-grid-two .contact-action-stack .btn{
-    width:158px;
+    width:100%;
     min-height:44px;
     font-size:14px;
   }

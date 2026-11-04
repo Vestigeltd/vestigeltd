@@ -22,6 +22,7 @@ var autoRefreshTimer=null;
 var auditEventsCache=[];
 var activeAuditFilter='all';
 var exceptionCache=[];
+var productPriceSyncPreviewState=null;
 
 function esc(value){
   return String(value==null?'':value).replace(/[&<>"']/g,function(c){
@@ -200,6 +201,104 @@ async function refreshDashboard(silent){
 }
 
 
+function renderProductPricing(rows,status){
+  var host=document.getElementById('productPricingTable');
+  if(!host)return;
+  rows=Array.isArray(rows)?rows:[];
+  status=status||{};
+  var verified=rows.filter(function(row){return row.zohoPrice!==null&&row.zohoPrice!==undefined&&row.zohoPrice!==''&&Number.isFinite(Number(row.zohoPrice));}).length;
+  document.getElementById('productPricingMatchState').textContent=status.allPricesMatch?'All aligned':'Review required';
+  document.getElementById('productPricingSource').textContent=status.source||'Worker defaults';
+  document.getElementById('productPricingVariantCount').textContent=verified+' / 8';
+  document.getElementById('productPricingLastSync').textContent=status.updatedAt?new Date(status.updatedAt).toLocaleString():'Not synced';
+  if(!rows.length){
+    host.innerHTML='<div class="owner-audit-help">No ELFA pricing rows were returned.</div>';
+    return;
+  }
+  host.innerHTML='<table class="owner-table"><thead><tr><th>Product</th><th>SKU</th><th>Website</th><th>Zoho Books</th><th>Price check</th><th>Stock</th></tr></thead><tbody>'+
+    rows.map(function(row){
+      var site=Number.isFinite(Number(row.websitePrice))?money(row.websitePrice):'—';
+      var hasZohoPrice=row.zohoPrice!==null&&row.zohoPrice!==undefined&&row.zohoPrice!=='';
+      var zoho=hasZohoPrice&&Number.isFinite(Number(row.zohoPrice))?money(row.zohoPrice):'Not verified';
+      var check=!row.active?'Item not verified':(row.priceMatches?'Match':'Mismatch');
+      var stock=Number.isFinite(Number(row.stock))?String(Math.max(0,Math.floor(Number(row.stock)))):'—';
+      return '<tr><td><strong>'+esc(row.productFamily)+' · '+esc(row.variant)+'</strong></td><td>'+esc(row.sku||'—')+'</td><td>'+esc(site)+'</td><td>'+esc(zoho)+'</td><td>'+esc(check)+'</td><td>'+esc(stock)+'</td></tr>';
+    }).join('')+'</tbody></table>';
+}
+async function refreshProductPricing(silent){
+  if(!adminKey)return;
+  if(!silent)setMessage(document.getElementById('productPricingMessage'),'Checking live Zoho Books prices…');
+  var button=document.getElementById('refreshProductPricing');
+  if(button)button.disabled=true;
+  try{
+    var result=await api({action:'admin_product_price_status'});
+    renderProductPricing(result.rows||[],result);
+    if(!silent)setMessage(document.getElementById('productPricingMessage'),result.allPricesMatch?'All eight ELFA prices match Zoho Books.':'Review the mismatches or missing Zoho item mappings before syncing.',''+(result.allPricesMatch?'ok':''));
+  }catch(e){
+    if(e.status===401){lockConsole();setMessage(loginMessage,'Owner session expired. Unlock again.','error');return;}
+    if(!silent)setMessage(document.getElementById('productPricingMessage'),e.message,'error');
+  }finally{
+    if(button)button.disabled=false;
+  }
+}
+function renderProductPriceSyncPreview(preview){
+  productPriceSyncPreviewState=preview||null;
+  var panel=document.getElementById('productPriceSyncPreview');
+  if(!panel)return;
+  panel.hidden=false;
+  var familyPrices=preview.familyPrices||{};
+  document.getElementById('previewMasterPrice').textContent=Number.isFinite(Number(familyPrices['ELFA MASTER']))?money(familyPrices['ELFA MASTER']):'—';
+  document.getElementById('previewPodsPrice').textContent=Number.isFinite(Number(familyPrices['ELFA PRO']))?money(familyPrices['ELFA PRO']):'—';
+  var rows=Array.isArray(preview.rows)?preview.rows:[];
+  document.getElementById('previewVariantCount').textContent=rows.length+' / 8';
+  document.getElementById('productPriceSyncDetail').textContent=rows.map(function(row){
+    var hasZohoPrice=row.zohoPrice!==null&&row.zohoPrice!==undefined&&row.zohoPrice!=='';
+    return row.variant+': website '+(Number.isFinite(Number(row.websitePrice))?money(row.websitePrice):'—')+' → Zoho '+(hasZohoPrice&&Number.isFinite(Number(row.zohoPrice))?money(row.zohoPrice):'—');
+  }).join(' · ');
+  var blockers=Array.isArray(preview.blockers)?preview.blockers:[];
+  var blockerHost=document.getElementById('productPriceSyncBlockers');
+  blockerHost.textContent=blockers.join(' ');
+  blockerHost.hidden=!blockers.length;
+  document.getElementById('productPriceSyncConfirmationRequired').textContent=preview.confirmationRequired||'SYNC ELFA PRICES';
+  document.getElementById('productPriceSyncConfirmation').value='';
+  document.getElementById('applyProductPriceSync').disabled=!preview.canApply;
+}
+async function previewProductPriceSync(){
+  var button=document.getElementById('previewProductPriceSync');
+  button.disabled=true;
+  setMessage(document.getElementById('productPricingMessage'),'Building a read-only price-sync preview…');
+  try{
+    var result=await api({action:'admin_preview_product_price_sync'});
+    var preview=result.preview||{};
+    renderProductPricing(preview.rows||[],preview);
+    renderProductPriceSyncPreview(preview);
+    setMessage(document.getElementById('productPricingMessage'),preview.canApply?'Preview ready. Confirm the phrase to sync website pricing from Zoho Books.':'Preview complete. Resolve every blocker before applying a sync.',preview.canApply?'ok':'');
+  }catch(e){setMessage(document.getElementById('productPricingMessage'),e.message,'error');}
+  finally{button.disabled=false;}
+}
+async function applyProductPriceSync(){
+  if(!productPriceSyncPreviewState||!productPriceSyncPreviewState.canApply)return;
+  var confirmation=String(document.getElementById('productPriceSyncConfirmation').value||'').trim().toUpperCase();
+  if(confirmation!==String(productPriceSyncPreviewState.confirmationRequired||'').toUpperCase()){
+    setMessage(document.getElementById('productPricingMessage'),'Type the exact confirmation phrase shown in the preview.','error');
+    return;
+  }
+  var button=document.getElementById('applyProductPriceSync');
+  button.disabled=true;
+  setMessage(document.getElementById('productPricingMessage'),'Synchronising website prices from Zoho Books…');
+  try{
+    var result=await api({
+      action:'admin_apply_product_price_sync',
+      confirmation:confirmation,
+      previewFingerprint:productPriceSyncPreviewState.previewFingerprint
+    });
+    productPriceSyncPreviewState=null;
+    document.getElementById('productPriceSyncPreview').hidden=true;
+    renderProductPricing(result.rows||[],{allPricesMatch:true,source:'Zoho Books',updatedAt:result.updatedAt||null});
+    setMessage(document.getElementById('productPricingMessage'),result.message||'Website prices synchronised.','ok');
+    await refreshDashboard(true);
+  }catch(e){setMessage(document.getElementById('productPricingMessage'),e.message,'error');button.disabled=false;}
+}
 function renderExceptions(items){
   var host=document.getElementById('exceptionList');
   if(!host)return;
@@ -921,6 +1020,13 @@ async function applyStockAdjustment(){
     await refreshDashboard(true);
   }catch(e){setMessage(document.getElementById('stockAdjustmentMessage'),e.message,'error');button.disabled=false;}
 }
+var refreshProductPricingButton=document.getElementById('refreshProductPricing');
+if(refreshProductPricingButton)refreshProductPricingButton.addEventListener('click',function(){refreshProductPricing(false);});
+var previewProductPriceSyncButton=document.getElementById('previewProductPriceSync');
+if(previewProductPriceSyncButton)previewProductPriceSyncButton.addEventListener('click',previewProductPriceSync);
+var applyProductPriceSyncButton=document.getElementById('applyProductPriceSync');
+if(applyProductPriceSyncButton)applyProductPriceSyncButton.addEventListener('click',applyProductPriceSync);
+
 var previewStockAdjustmentButton=document.getElementById('previewStockAdjustment');
 if(previewStockAdjustmentButton)previewStockAdjustmentButton.addEventListener('click',previewStockAdjustment);
 var applyStockAdjustmentButton=document.getElementById('applyStockAdjustment');
