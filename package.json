@@ -17,9 +17,7 @@
     "responsive:check": "node scripts/verify-responsive-v35.34.0.mjs",
     "capability:check": "node scripts/verify-capability-v35.34.5.mjs",
     "diamonds:check": "node scripts/verify-standard-diamonds-v35.34.6.mjs",
-    "layout:check": "node scripts/verify-layout-v35.34.12.mjs",
-    "preview:whatsapp-secret": "wrangler preview secret put VESTIGE_WHATSAPP_NUMBER",
-    "preview:secrets": "wrangler preview secret list"
+    "layout:check": "node scripts/verify-layout-v35.34.12.mjs"
   },
   "devDependencies": {
     "wrangler": "4.135.0"
