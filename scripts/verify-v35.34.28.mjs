@@ -161,8 +161,21 @@ must(
 );
 
 must(
-  styles.includes('.contact-grid-two .contact-action-stack .btn{\n  width:158px;'),
-  'Contact e-mail and Instagram buttons use the approved 158px width'
+  styles.includes('.contact-grid-two .contact-action-stack{\n  width:fit-content;\n  max-width:100%;\n  display:grid;\n  grid-template-columns:minmax(0,max-content);') &&
+  styles.includes('.contact-grid-two .contact-action-stack .btn{\n  box-sizing:border-box;\n  width:100%;') &&
+  styles.includes('  white-space:nowrap;'),
+  'Contact buttons share the width of the longest label and the stack fits its content'
+);
+
+must(
+  styles.includes('.contact-grid-two .contact-whatsapp-qr-link{\n  display:flex;\n  width:100%;\n  justify-content:center;') &&
+  styles.includes('  margin-inline:auto;'),
+  'Contact WhatsApp QR is centred within its card'
+);
+
+must(
+  styles.includes('  .contact-grid-two .contact-action-stack{\n    width:fit-content;\n    max-width:100%;'),
+  'Contact action buttons retain content-based sizing on mobile'
 );
 
 must(
@@ -176,7 +189,7 @@ must(
 );
 
 must(
-  contact.includes('styles.css?v=35.34.25'),
+  contact.includes('styles.css?v=35.34.29'),
   'Contact page loads V35.34.25 stylesheet cache'
 );
 
