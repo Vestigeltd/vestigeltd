@@ -27,7 +27,7 @@
         const item=catalogue[key];
         badge.classList.remove('unavailable','in-stock','out-of-stock');
         if(!item||item.checkoutEnabled!==true){
-          badge.textContent='Stock status unavailable';
+          badge.textContent=item&&String(item.reason||'').toLowerCase().indexOf('price does not match')!==-1?'Price verification pending':'Stock status unavailable';
           badge.classList.add('unavailable');
           return;
         }
