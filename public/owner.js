@@ -162,7 +162,6 @@ async function unlock(){
     document.getElementById('healthDetail').textContent=(health.ownerNotificationsConfigured?'Email alerts ready · ':'Email alerts need setup · ')+(health.zohoBankAccountMapped?'Zoho bank mapping configured':'Admin API connected');
     setMessage(loginMessage,'');
     await refreshDashboard();
-    await refreshProductPricing(false);
     scheduleAutoRefresh();
   }catch(e){
     clearKey();
@@ -270,8 +269,9 @@ async function previewProductPriceSync(){
   setMessage(document.getElementById('productPricingMessage'),'Building a read-only price-sync preview…');
   try{
     var result=await api({action:'admin_preview_product_price_sync'});
-    renderProductPriceSyncPreview(result.preview||{});
     var preview=result.preview||{};
+    renderProductPricing(preview.rows||[],preview);
+    renderProductPriceSyncPreview(preview);
     setMessage(document.getElementById('productPricingMessage'),preview.canApply?'Preview ready. Confirm the phrase to sync website pricing from Zoho Books.':'Preview complete. Resolve every blocker before applying a sync.',preview.canApply?'ok':'');
   }catch(e){setMessage(document.getElementById('productPricingMessage'),e.message,'error');}
   finally{button.disabled=false;}
