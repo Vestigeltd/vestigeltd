@@ -207,7 +207,7 @@ function renderProductPricing(rows,status){
   if(!host)return;
   rows=Array.isArray(rows)?rows:[];
   status=status||{};
-  var verified=rows.filter(function(row){return Number.isFinite(Number(row.zohoPrice));}).length;
+  var verified=rows.filter(function(row){return row.zohoPrice!==null&&row.zohoPrice!==undefined&&row.zohoPrice!==''&&Number.isFinite(Number(row.zohoPrice));}).length;
   document.getElementById('productPricingMatchState').textContent=status.allPricesMatch?'All aligned':'Review required';
   document.getElementById('productPricingSource').textContent=status.source||'Worker defaults';
   document.getElementById('productPricingVariantCount').textContent=verified+' / 8';
@@ -219,7 +219,8 @@ function renderProductPricing(rows,status){
   host.innerHTML='<table class="owner-table"><thead><tr><th>Product</th><th>SKU</th><th>Website</th><th>Zoho Books</th><th>Price check</th><th>Stock</th></tr></thead><tbody>'+
     rows.map(function(row){
       var site=Number.isFinite(Number(row.websitePrice))?money(row.websitePrice):'—';
-      var zoho=Number.isFinite(Number(row.zohoPrice))?money(row.zohoPrice):'Not verified';
+      var hasZohoPrice=row.zohoPrice!==null&&row.zohoPrice!==undefined&&row.zohoPrice!=='';
+      var zoho=hasZohoPrice&&Number.isFinite(Number(row.zohoPrice))?money(row.zohoPrice):'Not verified';
       var check=!row.active?'Item not verified':(row.priceMatches?'Match':'Mismatch');
       var stock=Number.isFinite(Number(row.stock))?String(Math.max(0,Math.floor(Number(row.stock)))):'—';
       return '<tr><td><strong>'+esc(row.productFamily)+' · '+esc(row.variant)+'</strong></td><td>'+esc(row.sku||'—')+'</td><td>'+esc(site)+'</td><td>'+esc(zoho)+'</td><td>'+esc(check)+'</td><td>'+esc(stock)+'</td></tr>';
@@ -252,7 +253,8 @@ function renderProductPriceSyncPreview(preview){
   var rows=Array.isArray(preview.rows)?preview.rows:[];
   document.getElementById('previewVariantCount').textContent=rows.length+' / 8';
   document.getElementById('productPriceSyncDetail').textContent=rows.map(function(row){
-    return row.variant+': website '+(Number.isFinite(Number(row.websitePrice))?money(row.websitePrice):'—')+' → Zoho '+(Number.isFinite(Number(row.zohoPrice))?money(row.zohoPrice):'—');
+    var hasZohoPrice=row.zohoPrice!==null&&row.zohoPrice!==undefined&&row.zohoPrice!=='';
+    return row.variant+': website '+(Number.isFinite(Number(row.websitePrice))?money(row.websitePrice):'—')+' → Zoho '+(hasZohoPrice&&Number.isFinite(Number(row.zohoPrice))?money(row.zohoPrice):'—');
   }).join(' · ');
   var blockers=Array.isArray(preview.blockers)?preview.blockers:[];
   var blockerHost=document.getElementById('productPriceSyncBlockers');
