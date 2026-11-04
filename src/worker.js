@@ -6554,40 +6554,6 @@ __name2(injectGoogleAvailability, "injectGoogleAvailability");
 var worker_default = {
   async fetch(request, env) {
     const url = new URL(request.url);
-    if (url.pathname === "/whatsapp") {
-      if (request.method !== "GET" && request.method !== "HEAD") {
-        const methodResponse = withSecurityHeaders(
-          new Response("Method not allowed.", { status: 405, headers: { Allow: "GET, HEAD" } }),
-          url.pathname
-        );
-        methodResponse.headers.set("Cache-Control", "no-store");
-        return methodResponse;
-      }
-      const whatsappNumber = String(env.VESTIGE_WHATSAPP_NUMBER || "").replace(/\D/g, "");
-      if (!/^\d{8,15}$/.test(whatsappNumber)) {
-        const unavailable = withSecurityHeaders(
-          new Response("WhatsApp contact is temporarily unavailable.", { status: 503 }),
-          url.pathname
-        );
-        unavailable.headers.set("Cache-Control", "no-store");
-        unavailable.headers.set("X-Robots-Tag", "noindex, nofollow");
-        return unavailable;
-      }
-      const whatsappRedirect = withSecurityHeaders(
-        new Response(null, {
-          status: 302,
-          headers: {
-            Location: `https://wa.me/${whatsappNumber}`,
-            "Referrer-Policy": "no-referrer"
-          }
-        }),
-        url.pathname
-      );
-      whatsappRedirect.headers.set("Cache-Control", "no-store");
-      whatsappRedirect.headers.set("Referrer-Policy", "no-referrer");
-      whatsappRedirect.headers.set("X-Robots-Tag", "noindex, nofollow");
-      return whatsappRedirect;
-    }
     if ((request.method === "GET" || request.method === "HEAD") && /^\/elfa-pro\/(peach-ice|spearmint|miami-mint|grape|watermelon)$/.test(url.pathname)) {
       const rewritten = new URL(request.url);
       rewritten.pathname = url.pathname + ".html";
