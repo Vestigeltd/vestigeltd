@@ -4057,7 +4057,7 @@ If you received this email, Worker owner alerts are operational.`
       });
       return {
         rows,
-        allPricesMatch: rows.length === 8 && rows.every((row) => row.priceMatches),
+        allPricesMatch: rows.length === 8 && rows.every((row) => row.priceMatches && row.active),
         source: record?.data?.source || "Worker defaults",
         updatedAt: record?.data?.updatedAt || null
       };
