@@ -4035,7 +4035,7 @@ If you received this email, Worker owner alerts are operational.`
         const productKey = CHECKOUT_PRODUCT_KEYS.find((key) => CHECKOUT_PRODUCTS[key]?.inventoryLabel === label) || null;
         const websiteSpec = productKey ? checkoutProductDefinition(productKey, overrides) : null;
         const state = availability[label] || {};
-        const zohoPrice = Number(state.price);
+        const zohoPrice = state.price === null || state.price === void 0 || state.price === "" ? NaN : Number(state.price);
         const websitePrice = Number(websiteSpec?.unitPrice);
         const active = Boolean(state.itemId) && state.reason !== "Zoho item is inactive";
         const priceMatches = Number.isFinite(zohoPrice) && Number.isFinite(websitePrice) && Math.abs(zohoPrice - websitePrice) <= PAYMENT_EPSILON;
