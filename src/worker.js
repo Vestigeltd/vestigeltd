@@ -4105,6 +4105,9 @@ If you received this email, Worker owner alerts are operational.`
         proposedPrices,
         confirmationRequired: "SYNC ELFA PRICES",
         previewFingerprint,
+        allPricesMatch: status.allPricesMatch,
+        source: status.source,
+        updatedAt: status.updatedAt,
         zohoBooksChanged: false,
         websitePricesChanged: false
       };
