@@ -11,13 +11,15 @@
     "check": "node --check src/worker.js && node --check public/owner.js && node --check public/order-status.js && node --check public/product-status.js && node scripts/verify-whatsapp-contact-v35.34.28.mjs && npm run verify && npm test && npm run responsive:check && npm run capability:check && npm run diamonds:check && npm run layout:check",
     "dry-run": "wrangler deploy --dry-run --outdir dist-check",
     "dev": "wrangler dev",
-    "preview": "wrangler versions upload --message \"V35.34.28 isolated development preview - ELFA pricing, stock and private WhatsApp contact\"",
+    "preview": "wrangler preview",
     "clean": "node scripts/clean-workspace.mjs",
     "clean:check": "node scripts/clean-workspace.mjs --check",
     "responsive:check": "node scripts/verify-responsive-v35.34.0.mjs",
     "capability:check": "node scripts/verify-capability-v35.34.5.mjs",
     "diamonds:check": "node scripts/verify-standard-diamonds-v35.34.6.mjs",
-    "layout:check": "node scripts/verify-layout-v35.34.12.mjs"
+    "layout:check": "node scripts/verify-layout-v35.34.12.mjs",
+    "preview:whatsapp-secret": "wrangler preview secret put VESTIGE_WHATSAPP_NUMBER",
+    "preview:secrets": "wrangler preview secret list"
   },
   "devDependencies": {
     "wrangler": "4.135.0"
