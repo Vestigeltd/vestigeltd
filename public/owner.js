@@ -162,7 +162,7 @@ async function unlock(){
     document.getElementById('healthDetail').textContent=(health.ownerNotificationsConfigured?'Email alerts ready · ':'Email alerts need setup · ')+(health.zohoBankAccountMapped?'Zoho bank mapping configured':'Admin API connected');
     setMessage(loginMessage,'');
     await refreshDashboard();
-    await refreshProductPricing(true);
+    await refreshProductPricing(false);
     scheduleAutoRefresh();
   }catch(e){
     clearKey();
