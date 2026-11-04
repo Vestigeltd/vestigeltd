@@ -33,6 +33,8 @@ jobs:
     name: Validate and deploy production
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    permissions:
+      contents: read
     steps:
       - name: Check out source
         uses: actions/checkout@v4
@@ -54,12 +56,13 @@ jobs:
         shell: bash
         env:
           CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          if [[ -n "$CF_API_TOKEN" ]]; then
+          if [[ -n "$CF_API_TOKEN" && -n "$CF_ACCOUNT_ID" ]]; then
             echo "available=true" >> "$GITHUB_OUTPUT"
           else
             echo "available=false" >> "$GITHUB_OUTPUT"
-            echo "::warning::Production deployment skipped. Add the CLOUDFLARE_API_TOKEN repository secret to enable automatic Cloudflare deployment."
+            echo "::warning::Production deployment skipped. Add both CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID repository secrets."
           fi
 
       - name: Deploy production Worker and static assets
@@ -71,4 +74,31 @@ jobs:
 
       - name: Report skipped deployment
         if: steps.cloudflare.outputs.available != 'true'
-        run: echo "Source validation passed. Cloudflare deployment was skipped because CLOUDFLARE_API_TOKEN is not configured."
+        run: echo "Source validation passed. Cloudflare deployment was skipped because one or both Cloudflare repository secrets are missing."
+
+  cleanup_merged_branches:
+    if: ${{ github.event_name == 'pull_request' && github.event.pull_request.merged == true && github.event.pull_request.number == 3 }}
+    name: Remove superseded release branches
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Delete merged and redundant branches
+        shell: bash
+        run: |
+          set -euo pipefail
+          for branch in \
+            "feat/elfa-pricing-stock-contact-admin-2026-11-04" \
+            "backup/development-v35.34.15-pre-reset-20260930"; do
+            if git ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1; then
+              git push origin --delete "$branch"
+              echo "Deleted superseded branch: $branch"
+            else
+              echo "Branch already absent: $branch"
+            fi
+          done
